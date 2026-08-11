@@ -92,10 +92,16 @@
       steps.forEach(function (s, i) {
         var on = s.getAttribute('data-spine-step') === n;
         s.classList.toggle('is-active', on);
-        if (on) idx = i;
+        // Colour alone cannot carry state (WCAG 1.4.1), and assistive tech
+        // needs a programmatic equivalent of "you are here".
+        if (on) { s.setAttribute('aria-current', 'step'); idx = i; }
+        else { s.removeAttribute('aria-current'); }
       });
+      // scaleY, not height: the rail is an auto-height absolute box, so a
+      // percentage height never resolved and the fill measured 0px at all
+      // five phases. This also keeps us to transform-only animation.
       if (fill && steps.length > 1) {
-        fill.style.height = (idx / (steps.length - 1) * 100) + '%';
+        fill.style.transform = 'scaleY(' + (idx / (steps.length - 1)) + ')';
       }
     }
 
@@ -107,12 +113,36 @@
     }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
 
     phases.forEach(function (p) { io.observe(p); });
+
+    // The observer only speaks after a real scroll, so a deep link to
+    // #phase-4 left the spine reading "01 The Standard" — every anchor in
+    // the brief was broken. Resolve the active phase from geometry instead.
+    function syncFromScroll() {
+      var mid = window.innerHeight / 2, best = null, bestDist = Infinity;
+      phases.forEach(function (p) {
+        var b = p.getBoundingClientRect();
+        var d = Math.abs((b.top + b.bottom) / 2 - mid);
+        if (b.bottom > 0 && b.top < window.innerHeight && d < bestDist) { bestDist = d; best = p; }
+      });
+      if (best) setActive(best.getAttribute('data-phase'));
+    }
+    syncFromScroll();
+    window.addEventListener('load', syncFromScroll, { once: true });
+    window.addEventListener('hashchange', function () { setTimeout(syncFromScroll, 60); });
   }
 
   /* ---- PIECE 09: stat counters (count once, then rest) ---------- */
   function initCounters() {
     var nums = document.querySelectorAll('[data-count]');
     if (!nums.length || reduceMotion.matches) return;
+
+    // A small number counting from zero spends most of its animation reading
+    // "0 Formulation Phases", which looks broken rather than impressive.
+    // Counting only earns its place on figures big enough to feel like a tally.
+    nums = Array.prototype.filter.call(nums, function (el) {
+      return parseInt(el.getAttribute('data-count'), 10) >= 1000;
+    });
+    if (!nums.length) return;
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -138,7 +168,7 @@
       });
     }, { threshold: 0.4 });
 
-    nums.forEach(function (n) { io.observe(n); });
+    Array.prototype.forEach.call(nums, function (n) { io.observe(n); });
   }
 
   /* ---- Boot ----------------------------------------------------- */
