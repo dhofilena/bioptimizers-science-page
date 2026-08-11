@@ -20,7 +20,14 @@
     });
   }
 
-  /* ---- Shared reveal observer ---------------------------------- */
+  /* ---- Shared reveal observer ----------------------------------
+     Hiding content until an observer says otherwise is a promise the
+     page has to keep. If the observer misses — a deep link that jumps
+     past it, a bfcache restore, a browser that throttles callbacks —
+     the reader gets a blank page and no way to recover. So the reveal
+     is the enhancement and VISIBILITY IS THE FLOOR: three independent
+     paths can reveal an element, and the last one always fires.
+     -------------------------------------------------------------- */
   function initReveals() {
     var els = document.querySelectorAll('[data-reveal]');
     if (!els.length) return;
@@ -36,6 +43,34 @@
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
 
     els.forEach(function (el) { io.observe(el); });
+
+    // Path 2: anything already on screen is revealed now, without waiting
+    // for a callback. Covers the hash-jump case, where the scroll happens
+    // before the observer has a position to measure against.
+    function sweepVisible() {
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      els.forEach(function (el) {
+        if (el.classList.contains('is-in')) return;
+        var b = el.getBoundingClientRect();
+        if (b.top < vh && b.bottom > 0) { el.classList.add('is-in'); io.unobserve(el); }
+      });
+    }
+    sweepVisible();
+    window.addEventListener('load', sweepVisible, { once: true });
+    window.addEventListener('hashchange', function () { setTimeout(sweepVisible, 60); });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) sweepVisible(); });
+
+    // Path 3: the floor. If anything is still hidden after 2.5s, the
+    // observer is not doing its job and copy must not stay invisible.
+    setTimeout(function () {
+      var stuck = document.querySelectorAll('[data-reveal]:not(.is-in)');
+      if (!stuck.length) return;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      stuck.forEach(function (el) {
+        var b = el.getBoundingClientRect();
+        if (b.top < vh * 1.5) { el.classList.add('is-in'); io.unobserve(el); }
+      });
+    }, 2500);
   }
 
   /* ---- PIECE 03: phase spine (scroll-animated) ------------------
