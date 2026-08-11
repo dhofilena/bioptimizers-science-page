@@ -6,6 +6,15 @@
 <title>Breakthrough Science You Can Feel | BIOptimizers</title>
 <meta name="description" content="See how we're building the science of what's possible.">
 <link rel="stylesheet" href="./styles.css">
+<!-- app.js promises that "visibility is the floor" and gives the reveal three
+     independent ways to fire — but all three live inside the script, so the
+     one failure they do not cover is the script never running at all. With JS
+     off, every [data-reveal] stays at opacity:0 and the reader gets a blank
+     page. This is that floor, written where no script is needed to reach it.
+     Reduced motion was already safe: its escape hatch is pure CSS. -->
+<noscript><style>
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+</style></noscript>
 </head>
 <body>
 

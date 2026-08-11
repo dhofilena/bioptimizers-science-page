@@ -326,8 +326,8 @@
        p 0.50–0.64          the diagram recedes and hands off.
        p 0.54–0.72  BEAT 3  "The Formula", then 1 + 1 = staggered in.
        p 0.66–0.82          the "5" lands LATE, OVERSIZED and on a
-                            back-out curve — it overshoots and settles,
-                            deliberately not the page's expo-out.
+                            back-out curve — it overshoots and settles.
+                            The only overshoot anywhere on this page.
        p 0.86–1.00          hold. ~20vh of stillness before release.
 
      Rules kept: transform and opacity only, one rAF per scroll event,
@@ -385,9 +385,18 @@
 
     function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
     function seg(p, a, b) { return clamp01((p - a) / (b - a)); }
-    function eo(t) { return 1 - Math.pow(1 - t, 3); }          // the page's voice
+    // Ease-out-cubic, not the stylesheet's expo-out. A scrub is pushed by the
+    // reader, and expo-out spends 90% of its travel in the first 10% of the
+    // gesture — under a finger it would arrive instantly and then feel dead
+    // for the rest of the scroll. Scrubbed values get a curve you can push.
+    function eo(t) { return 1 - Math.pow(1 - t, 3); }
     function mix(a, b, t) { return a + (b - a) * t; }
-    function backOut(t) {                                       // the "5" only
+    // THE PAGE'S ONLY OVERSHOOT, and it stays that way. A play control in
+    // PIECE 11 used to run a back-out too; the coherence pass took it off,
+    // because if everything that appears overshoots then overshoot stops
+    // meaning "more came out than went in" — which is the entire claim this
+    // one glyph exists to make.
+    function backOut(t) {
       var s = 2.2, u = t - 1;
       return 1 + (s + 1) * u * u * u + s * u * u;
     }
@@ -520,6 +529,9 @@
         function tick(ts) {
           if (start === null) start = ts;
           var p = Math.min((ts - start) / DUR, 1);
+          // Ease-out-cubic: a count is a value being read, not an object
+          // arriving, and the stylesheet's expo-out would land the number in
+          // the first 150ms and then rule the line at nothing for 1.35s.
           var eased = 1 - Math.pow(1 - p, 3);
           if (p < 1) {
             el.textContent = Math.round(target * eased).toLocaleString('en-US');
