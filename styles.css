@@ -248,29 +248,186 @@ section { position: relative; padding-block: var(--pad-y); }
   letter-spacing: 0.18em; color: var(--deep) !important;
 }
 
-/* ---- PIECE 07 — the money moment ---- */
-.equation {
-  background: var(--deep); color: var(--white);
-  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem);
-  text-align: center; display: flex; flex-direction: column; gap: 1.75rem;
-}
-.equation__label { font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--vital); }
-.equation__math {
-  font-size: var(--t-figure); font-weight: 700; line-height: 1;
-  letter-spacing: -0.06em; color: var(--vital);
-}
-.equation__tail { max-width: 32ch; margin-inline: auto; opacity: 0.75; }
+/* ============================================================
+   PIECE 07 — SYNERGY. THE MECHANISM.
+   The page's thesis is that a combination yields more than its
+   parts. This is the only block on the page that takes the whole
+   screen: full-bleed --deep, pinned ~1.5 viewport heights, and
+   scrubbed by scroll POSITION (initSynergy in app.js).
 
-.stack { border-top: 1px solid var(--dark-12); padding-top: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem; }
-.stack__label { font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--deep); }
-.stack__list { display: flex; flex-direction: column; }
-.stack__row {
-  display: flex; align-items: baseline; gap: 1rem;
-  padding-block: 1rem; border-bottom: 1px solid var(--dark-12);
+   EVERY DECLARATION BELOW DESCRIBES THE *FINAL* COMPOSITION.
+   JS moves elements away from it on the way in and returns them
+   to it as you scroll through. So no-JS, a dead observer and
+   prefers-reduced-motion all land on the finished, legible still
+   instead of a blank stage — visibility stays the floor.
+
+   COLOUR. --vital and --white are the two inputs. --orange marks
+   the SURPLUS and only the surplus: the emergent third form and
+   the "5" — the two things that did not exist before the
+   combination. Orange is CTA-only everywhere else on this page,
+   which is exactly why it reads as "this wasn't here before".
+   Measured on --deep #103608: white 13.52:1, --vital 10.99:1,
+   --cream 12.9:1, --orange 5.60:1 (AA body, far past 3:1 large).
+   ============================================================ */
+.synergy { position: relative; z-index: 3; margin-top: clamp(1.5rem, 4vw, 3.5rem); }
+
+/* Full bleed without touching the shared grid: the scene stays in flow and
+   its canvas is pulled left by exactly its own distance from the viewport
+   edge (measured in JS). The offset is a negative margin rather than a
+   relative `left` so the canvas's layout box lands ON the viewport instead
+   of hanging 360px past its right edge — otherwise the page carries phantom
+   horizontal overflow that only `overflow-x: hidden` is hiding. The pull is
+   measured on .synergy, whose own width is set by the grid, so the child's
+   margin can never feed back into it. Without JS the fallbacks collapse
+   this to a normal in-column block. */
+.synergy__bleed {
+  position: relative;
+  margin-left: calc(var(--syn-bleed, 0px) * -1);
+  width: var(--syn-vw, 100%);
+  background: var(--deep);
+  color: var(--white);
 }
-.stack__row b { font-size: var(--t-lead); font-weight: 700; letter-spacing: -0.01em; }
-.stack__row span { margin-left: auto; font-size: var(--t-small); color: var(--muted); }
-.stack__sum { font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--deep); }
+.synergy.is-live .synergy__bleed { height: 250vh; }
+
+.synergy__stage {
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(3rem, 7vw, 5.5rem) var(--gutter);
+}
+.synergy.is-live .synergy__stage {
+  position: sticky; top: 0;
+  height: 100svh; padding-block: clamp(1.25rem, 3vh, 2.5rem);
+}
+.synergy__inner {
+  width: 100%; max-width: var(--shell); margin-inline: auto;
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(1rem, 2.4vh, 2.25rem); text-align: center;
+}
+
+/* ---- The stack is the payoff, not a footnote 400px below. ---- */
+.stack__label {
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.22em; color: var(--vital);
+}
+
+/* ---- Beat 1+2: two named inputs, and the form their overlap makes ---- */
+.venn {
+  --d: clamp(132px, 15.5vw, 212px);      /* input diameter */
+  --pad: 3.1rem;                          /* label gutters (small screens) */
+  position: relative; width: 100%;
+  height: calc(var(--d) * 2 + var(--pad) * 2);
+  transform: translate3d(0, -6px, 0) scale(0.9);
+  will-change: transform;
+}
+.venn__field {
+  position: absolute; left: 0; right: 0; top: var(--pad); bottom: var(--pad);
+  isolation: isolate; opacity: 0.6; pointer-events: none;
+}
+.venn__disc {
+  position: absolute; inset: 0; margin: auto;
+  width: var(--d); height: var(--d); border-radius: 50%;
+  will-change: transform, opacity;
+}
+/* The two inputs. `screen` makes the intersection self-evidently brighter
+   than either disc — the lens is computed, not drawn. */
+/* The fills are close to flat on purpose: a steep falloff would go
+   transparent exactly where the two discs meet, and the lens has to be the
+   brightest thing on the stage for the overlap to mean anything. */
+.venn__disc--a {
+  border: 2px solid rgba(167, 254, 117, 1);
+  background: radial-gradient(circle at 50% 42%, rgba(167, 254, 117, 0.30), rgba(167, 254, 117, 0.17));
+  mix-blend-mode: screen;
+  transform: translate3d(calc(var(--d) * -0.34), 0, 0);
+}
+.venn__disc--b {
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.13));
+  mix-blend-mode: screen;
+  transform: translate3d(calc(var(--d) * 0.34), 0, 0);
+}
+/* The surplus. 1.85x the diameter of either input, so it is larger than the
+   two of them put together — not just larger than each. Its body is --deep
+   at partial alpha, which both keeps the label at 6.7:1 over the bright lens
+   and lets the two parents stay visible inside the thing they made. */
+.venn__disc--c {
+  width: calc(var(--d) * 1.85); height: calc(var(--d) * 1.85);
+  border: 3px solid var(--orange);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 134, 41, 0) 62%, rgba(255, 134, 41, 0.26) 92%, rgba(255, 134, 41, 0.10) 100%),
+    radial-gradient(circle at 50% 50%, rgba(16, 54, 8, 0.46) 0%, rgba(16, 54, 8, 0.34) 46%, rgba(16, 54, 8, 0) 78%);
+  box-shadow: 0 0 60px -10px rgba(255, 134, 41, 0.5);
+}
+
+.stack__list { position: absolute; inset: 0; pointer-events: none; }
+.agent { position: absolute; display: flex; flex-direction: column; gap: 0.35rem; }
+.agent b {
+  font-size: var(--t-small); font-weight: 700; line-height: 1.15;
+  letter-spacing: -0.01em; color: var(--white);
+}
+.agent span {
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.18em; line-height: 1.3; color: var(--vital);
+}
+.agent--a { left: 0; right: 0; top: 0; height: var(--pad); justify-content: center; align-items: flex-start; text-align: left; padding-left: 4%; }
+.agent--b { left: 0; right: 0; bottom: 0; height: var(--pad); justify-content: center; align-items: flex-end; text-align: right; padding-right: 4%; }
+.agent--c { inset: 0; justify-content: center; align-items: center; text-align: center; padding-inline: 6%; }
+.agent--c b { font-size: clamp(1.15rem, 1.9vw, 1.7rem); }
+
+/* ---- Beat 3: the equation lands ---- */
+.equation {
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(0.55rem, 1.5vh, 1.15rem); text-align: center; color: var(--white);
+}
+.equation__label {
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.22em; color: var(--vital);
+}
+.equation__math {
+  display: flex; align-items: baseline; justify-content: center; gap: 0.05em;
+  font-size: clamp(2.3rem, 5.2vw, 4.2rem); font-weight: 700;
+  line-height: 0.92; letter-spacing: -0.045em; color: var(--white);
+}
+.equation__math > span { display: block; }
+/* The "5" is the only orange type in the narrative, the only glyph on a
+   back-out curve, and roughly twice the height of the ones it exceeds. */
+.equation__five {
+  margin-left: 0.11em;
+  font-size: clamp(4.2rem, 10.2vw, 8.4rem);
+  color: var(--orange);
+  transform-origin: 50% 86%;
+  will-change: transform, opacity;
+}
+.equation__tail { max-width: 34ch; font-size: var(--t-small); color: var(--cream); }
+
+.stack__sum {
+  max-width: 42ch; font-size: var(--t-eyebrow); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.2em; color: var(--vital);
+}
+
+/* A pinned scene needs room to be pinned in. Below that, and for readers who
+   asked for less motion, the same composition is simply a tall still block. */
+@media (prefers-reduced-motion: reduce), (max-height: 640px) {
+  .synergy.is-live .synergy__bleed { height: auto; }
+  .synergy.is-live .synergy__stage {
+    position: static; height: auto; padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+}
+
+/* PIECE 07 — from tablet up there is room to flank the diagram, so each
+   input's name sits on the edge it entered from and stays out of the venn. */
+@media (min-width: 700px) {
+  .venn { --pad: 0px; height: calc(var(--d) * 2); }
+  .agent--a {
+    left: 3%; right: auto; top: 0; bottom: 0; height: auto; width: 21%;
+    justify-content: center; align-items: flex-end; text-align: right; padding: 0;
+  }
+  .agent--b {
+    right: 3%; left: auto; top: 0; bottom: 0; height: auto; width: 21%;
+    justify-content: center; align-items: flex-start; text-align: left; padding: 0;
+  }
+  .agent b { font-size: var(--t-lead); }
+  .agent--c b { font-size: clamp(1.3rem, 2vw, 1.8rem); }
+}
 
 /* ---- PIECE 08 ---- */
 .ledger { border-block: 1px solid var(--dark-12); padding-block: 1.5rem; }
@@ -409,8 +566,11 @@ section { position: relative; padding-block: var(--pad-y); }
   .phase--flip .phase__head, .phase--flip .phase__prose { grid-column: 2; }
   .phase--wide .phase__plate { grid-column: 2; grid-row: 1 / span 2; }
   .phase--wide .assay { grid-column: 1 / -1; }
-  .phase--synergy .equation { grid-column: 2; grid-row: 1 / span 2; align-self: stretch; justify-content: center; }
-  .phase--synergy .stack { grid-column: 1; }
+  /* PIECE 07 — the intro pair sits on one row; the scene takes the next row
+     whole, then breaks the grid entirely. */
+  .phase--synergy .phase__head { grid-column: 1; grid-row: 1; }
+  .phase--synergy .phase__prose { grid-column: 2; grid-row: 1; max-width: 40rem; }
+  .phase--synergy .synergy { grid-column: 1 / -1; grid-row: 2; }
 
   .figures { grid-template-columns: repeat(3, 1fr); }
   .proof { grid-template-columns: 1fr 1fr; align-items: center; }
