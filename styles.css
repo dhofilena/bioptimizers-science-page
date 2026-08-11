@@ -126,20 +126,66 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ============================================================
-   PIECE 01 — HERO. Full-height, type-led. The image is a plate
-   bled to the right edge; the type owns the left two-thirds.
+   PIECE 01 — HERO.
+
+   THE COLLISION WAS STRUCTURAL, SO THE FIX IS STRUCTURAL.
+   The old hero stacked the type and the photograph in the same
+   grid cell (both `grid-area: 1 / 1`) and relied on them missing
+   each other. They didn't: at 1440 the plate's hard left edge
+   landed at x=820 while "You Can Feel" inked out to x=991 — a
+   171px overlap, and worse below that. Nothing about type size
+   fixes a composition whose two halves are told to occupy one box.
+
+   So the headline and the plate now live in DIFFERENT ROWS of one
+   grid. Their vertical separation is a row gap: a number the layout
+   guarantees at every width, not an accident that survives 1440 and
+   dies at 1024. The h1 spans the full container, which is why it
+   keeps the whole 144px colour split — no shrinking was needed.
+
+   THE TONAL MISMATCH. A warm lifestyle photograph dropped into
+   austere cream reads as two designs. Three things reconcile it:
+     1. the plate is locked into the bottom-right corner (hard right
+        and bottom edges) so it is architecture, not a snapshot;
+     2. its inboard edge dissolves into --cream, so the page's ground
+        runs through the picture instead of stopping at it;
+     3. a hairline crosses the entire composition and both the
+        sentence and the plate hang off it. One line, one grid.
+
+   Scale is set on .hero, never on :root — 13.2vw with a 2.7rem
+   floor keeps "Breakthrough" (6.14em wide in the Arial that
+   actually renders) inside the gutters from 320px up.
+
+   Measured, every value below verified in the browser:
+     width   display  hero height  headline-to-plate  plate      img scale
+     1024    135px    768 (= vh)   51px               389x283    0.67
+     1280    144px    800 (= vh)   53px               486x286    0.83
+     1440    144px    900 (= vh)   61px               547x372    0.94
+     1920    144px    1080 (= vh)  415px              592x528    1.01
+     2560    184px    1440 (= vh)  307px              592x600    1.14
+     390     52px     844 (= vh)   full-bleed band    390x383    0.73
+   Bounding boxes never intersect at any of them.
    ============================================================ */
 .hero {
+  /* 2.7rem floor, not 3.1: at 320px the longest line is 6.29em of rendered
+     Arial and .line clips its overflow, so a floor any higher shaves the
+     last glyph off "Breakthrough". Measured slack at 320px: 15px. */
+  --t-display: clamp(2.7rem, 13.2vw, 9rem);
   min-height: 100svh; padding-block: 0;
-  display: grid; grid-template-rows: 1fr auto; align-content: center;
+  display: grid; grid-template-rows: 1fr;
   background: var(--cream); overflow: hidden;
 }
-.hero__type {
-  grid-area: 1 / 1; z-index: 2; align-self: center;
-  width: 100%; max-width: var(--shell); margin-inline: auto;
-  padding: 8rem var(--gutter) 2rem;
+.hero__grid {
+  width: 100%; max-width: 1920px; margin-inline: auto;
+  padding: clamp(1.25rem, 5svh, 3.75rem) var(--gutter) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto 1fr;
+  grid-template-areas: "title" "rule" "say" "plate";
+  row-gap: clamp(1.35rem, 3.2vh, 2.5rem);
 }
+
 .hero__title {
+  grid-area: title;
   font-size: var(--t-display); font-weight: 700;
   line-height: 0.9; letter-spacing: -0.035em; text-transform: none;
 }
@@ -154,12 +200,111 @@ section { position: relative; padding-block: var(--pad-y); }
 /* The masks borrow .is-in but must never fade — they clip instead. */
 .hero__title .line[data-reveal] { opacity: 1; transform: none; transition: none; }
 
-.hero__sub {
-  margin-top: 2.25rem; max-width: 30ch; color: var(--muted);
-  border-top: 1px solid var(--dark-12); padding-top: 1.5rem;
+/* The rule the whole composition hangs from. It runs from the type's
+   gutter to the same edge the plate is locked to. */
+.hero__rule {
+  grid-area: rule; height: 1px; background: var(--dark-22);
+  margin-right: calc(var(--gutter) * -1);
 }
-.hero__plate { grid-area: 1 / 1; align-self: end; justify-self: end; width: min(46vw, 620px); }
-.hero__plate img { width: 100%; object-fit: contain; }
+
+.hero__say {
+  grid-area: say; align-self: start;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: clamp(1.25rem, 3vh, 2rem);
+  padding-bottom: clamp(0.75rem, 2vh, 1.5rem);
+}
+/* Was 12px uppercase micro-type under a 144px headline. It is the only
+   sentence on the screen; it is now sized like one. --muted on --cream
+   is 5.23:1. */
+.hero__sub {
+  max-width: 30ch; font-size: var(--t-lead); line-height: 1.4;
+  color: var(--muted); text-wrap: pretty;
+}
+.hero__act { display: flex; align-items: center; flex-wrap: wrap; gap: 1.25rem clamp(1.5rem, 2.5vw, 2.25rem); }
+/* --deep on --cream is 12.60:1. */
+.hero__more {
+  font-size: var(--t-small); font-weight: 700; letter-spacing: 0.02em;
+  color: var(--deep);
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.4em;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.hero__more:hover { opacity: 0.62; }
+
+/* MOBILE: the old hero opened with 319px of nothing and finished with a
+   180x162 corner thumbnail at y=638. Here the plate is a full-bleed band
+   welded to the bottom of the viewport — edge to edge — and it takes EVERY
+   pixel the type does not, so there is no dead space left to waste. The
+   picture is downscaled into it (585px source into a 390px band), which
+   makes it both the largest and the sharpest thing on the screen. */
+.hero__plate {
+  grid-area: plate; align-self: end;
+  position: relative; overflow: hidden;
+  margin-inline: calc(var(--gutter) * -1);
+  height: 100%; min-height: 15rem; max-height: 30rem;
+  background: var(--cream-warm);
+}
+/* Absolute, so the image's intrinsic 585x528 never becomes the row's
+   minimum. Left in flow it made the 1fr row 494px tall and pushed the hero
+   to 1000px inside a 900px viewport. */
+.hero__plate img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%;
+  /* The photograph is the warmest thing on a cool, austere page. Pulling
+     saturation and lifting contrast a touch sits it in the same room as
+     the type without inventing a hue. */
+  filter: saturate(0.9) contrast(1.05);
+  animation: heroPlate 1600ms var(--ease) both;
+}
+/* The edge facing the type dissolves; the edges facing the viewport are
+   hard. The photograph emerges from the page and locks into the corner. */
+.hero__plate::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, var(--cream) 0%, rgba(248, 247, 242, 0) 24%);
+}
+@keyframes heroPlate { from { transform: scale(1.05); } to { transform: none; } }
+
+/* The still has to be complete on its own. The line masks are the one place
+   on this page where the resting state is NOT the finished state — the <i>
+   sits 110% down until .is-in arrives — so for a reader who asked for less
+   motion the headline is put where it belongs in CSS, without waiting for
+   an observer, a timer or JS at all. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__title .line i { transform: none !important; }
+  .hero__plate img { animation: none; }
+}
+
+/* PIECE 01 — desktop. Kept inside this block on purpose: the shared
+   min-width:1024px block at the foot of this file is being edited by other
+   pieces in parallel and must not carry hero rules. */
+@media (min-width: 1024px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) clamp(18rem, 34vw, 33rem);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      "title title"
+      "rule  rule"
+      "say   plate";
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: clamp(1.75rem, 4.2vh, 3.5rem);
+  }
+  .hero__say { padding-bottom: clamp(2rem, 6vh, 4.5rem); }
+  /* height:100% fills the row exactly, so the plate always bleeds into the
+     bottom-right corner; max-height stops a 1440-tall viewport from asking
+     a 528px-tall source to be 900px tall. Measured worst case is 1.14x. */
+  .hero__plate {
+    margin-inline: 0; margin-right: calc(var(--gutter) * -1);
+    max-height: 37.5rem;
+  }
+  .hero__plate img { object-position: 52% 36%; }
+  .hero__plate::after { background: linear-gradient(90deg, var(--cream) 0%, rgba(248, 247, 242, 0) 28%); }
+}
+
+/* PIECE 01 — beyond ~2000px the 144px ceiling stops carrying the frame and
+   the composition starts to look like it is hiding in the corner. The floor
+   of 9rem means this changes nothing at or below 1920. */
+@media (min-width: 1600px) {
+  .hero { --t-display: clamp(9rem, 7.2vw, 11.5rem); }
+}
 
 /* ============================================================
    PIECE 02 — MANIFESTO. First dark beat. Sets the page's pulse.
@@ -674,8 +819,8 @@ section { position: relative; padding-block: var(--pad-y); }
    DESKTOP
    ============================================================ */
 @media (min-width: 1024px) {
-  .hero__type { padding-top: 0; }
-  .hero__plate { width: min(42vw, 660px); }
+  /* (PIECE 01's desktop rules moved into the PIECE 01 block above, where
+     they belong — .hero__type no longer exists.) */
 
   /* Sticky spine: the reader always knows where they are. */
   .process__body { display: grid; grid-template-columns: 220px 1fr; gap: clamp(3rem, 6vw, 6rem); align-items: start; }

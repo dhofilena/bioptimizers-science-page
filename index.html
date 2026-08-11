@@ -14,19 +14,43 @@
 <main id="main">
 
 <!-- ============ PIECE 01: HERO — START ============ -->
+<!-- The headline and the photograph live in DIFFERENT GRID ROWS. That is the
+     whole fix: the collision was structural (both were placed in one 1/1 cell
+     and left to miss each other by luck), so the answer is structural too.
+     The h1 spans the full container and keeps its 144px colour split; the
+     photograph is a plate locked into the bottom-right corner of the row
+     BELOW it. A single hairline crosses the whole composition and both the
+     sentence and the plate hang off it — one grid, one design.
+     The reader can now act from the first screen: an orange CTA to the shop
+     and a quiet link down to the process. Both labels already exist on this
+     page ("Shop best sellers", "Learn More"); no new copy was invented. -->
 <section class="hero" id="hero" aria-labelledby="hero-heading">
-  <div class="hero__type">
+  <div class="hero__grid">
+
     <h1 id="hero-heading" class="hero__title">
       <span class="line" data-reveal><i>Breakthrough</i></span>
       <span class="line" data-reveal><i>Science</i></span>
       <span class="line line--alt" data-reveal><i>You Can Feel</i></span>
     </h1>
-    <p class="hero__sub eyebrow" data-reveal data-reveal-delay="3">See how we're building the science of what's possible.</p>
-  </div>
-  <div class="hero__plate">
-    <img src="./magnesium-breakthrough-sleep-wellness-m-859b0c885009fa5ac7b4ea28e211aabb.png"
-         alt="Smiling woman holding BIOptimizers Magnesium Breakthrough, wearing a sleep mask"
-         width="585" height="528" fetchpriority="high" decoding="async">
+
+    <div class="hero__rule" aria-hidden="true"></div>
+
+    <div class="hero__say">
+      <p class="hero__sub" data-reveal data-reveal-delay="2">See how we're building the science of what's possible.</p>
+      <div class="hero__act">
+        <a class="btn" href="https://bioptimizers.com/shop" data-reveal data-reveal-delay="3">Shop best sellers</a>
+        <a class="hero__more" href="#phases" data-reveal data-reveal-delay="3">Learn More</a>
+      </div>
+    </div>
+
+    <!-- LCP element. No [data-reveal] here on purpose: hiding it behind an
+         observer would push the largest paint past the reveal. -->
+    <div class="hero__plate">
+      <img src="./magnesium-breakthrough-sleep-wellness-m-859b0c885009fa5ac7b4ea28e211aabb.png"
+           alt="Smiling woman holding BIOptimizers Magnesium Breakthrough, wearing a sleep mask"
+           width="585" height="528" fetchpriority="high" decoding="async">
+    </div>
+
   </div>
 </section>
 <!-- ============ PIECE 01: HERO — END ============ -->
