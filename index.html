@@ -237,23 +237,79 @@
 
 
 <!-- ============ PIECE 09: EVERY NUMBER EARNED — START ============ -->
-<section class="ledger-wall" id="stats" aria-labelledby="stats-heading">
-  <img class="ledger-wall__texture"
+<!--
+  A REGISTER, NOT A STAT GRID. Six equal bordered cells is what every B2B site
+  ships, and it also lies: only two of these values are countable quantities.
+  So the wall is built the way a lab actually keeps score — one struck tally at
+  the top, then a ruled register beneath it. The rules are full-bleed; the
+  entries sit on the lines. Order runs how long we've worked → how we work →
+  how fast → who runs it → who it reached, so the last line handed to the
+  reader is the 1.2M+ that PIECE 10 opens by talking about.
+-->
+<section class="numwall" id="stats" aria-labelledby="stats-heading">
+  <img class="numwall__texture"
        src="./desktop-bg-precision-not-guesswork-d-b8213e23cc7e3ba6f8c347c49018c541.png"
        alt="" aria-hidden="true" width="1440" height="577" loading="lazy" decoding="async">
   <div class="shell">
-    <header class="ledger-wall__head">
+    <header class="numwall__head">
       <p class="eyebrow" data-reveal>Precision, Not Guesswork</p>
-      <h2 id="stats-heading" class="ledger-wall__title" data-reveal data-reveal-delay="1">Every Number Earned</h2>
+      <h2 id="stats-heading" class="numwall__title" data-reveal data-reveal-delay="1">Every Number Earned</h2>
     </header>
-    <ul class="figures">
-      <li class="figure" data-reveal><p class="figure__num" data-count="80648">80,648</p><p class="figure__label">Lab Tests Conducted</p><p class="figure__desc">Every formula is stress-tested until it can't be improved.</p></li>
-      <li class="figure" data-reveal data-reveal-delay="1"><p class="figure__num" data-count="5">5</p><p class="figure__label">Formulation Phases</p><p class="figure__desc">No formula ships until it passes each stage of our process.</p></li>
-      <li class="figure" data-reveal data-reveal-delay="2"><p class="figure__num">24 mo</p><p class="figure__label">Avg. Time to Market</p><p class="figure__desc">We take the time it takes. No shortcuts, ever.</p></li>
-      <li class="figure" data-reveal><p class="figure__num">20+</p><p class="figure__label">Years of Research</p><p class="figure__desc">Two decades of compound learning built into each capsule.</p></li>
-      <li class="figure" data-reveal data-reveal-delay="1"><p class="figure__num">1.2M+</p><p class="figure__label">People Helped</p><p class="figure__desc">Real people. Measurable outcomes. That's our benchmark.</p></li>
-      <li class="figure" data-reveal data-reveal-delay="2"><p class="figure__num">PhD</p><p class="figure__label">Led Formulation</p><p class="figure__desc">Every formula is built and validated by credentialed scientists.</p></li>
-    </ul>
+
+    <ol class="tally" data-tally>
+      <li class="tally__entry tally__entry--lead" data-entry>
+        <div class="tally__lead">
+          <p class="tally__val tally__val--lead" data-count="80648" data-count-rule="tally-strike">80,648</p>
+          <div class="tally__mask">
+            <div class="tally__stack">
+              <p class="tally__label">Lab Tests Conducted</p>
+              <p class="tally__desc">Every formula is stress-tested until it can't be improved.</p>
+            </div>
+          </div>
+        </div>
+        <span class="tally__strike" id="tally-strike" aria-hidden="true"></span>
+      </li>
+
+      <li class="tally__entry" data-entry>
+        <div class="tally__mask"><div class="tally__row">
+          <p class="tally__val">20+</p>
+          <p class="tally__label">Years of Research</p>
+          <p class="tally__desc">Two decades of compound learning built into each capsule.</p>
+        </div></div>
+      </li>
+
+      <li class="tally__entry" data-entry>
+        <div class="tally__mask"><div class="tally__row">
+          <p class="tally__val">5</p>
+          <p class="tally__label">Formulation Phases</p>
+          <p class="tally__desc">No formula ships until it passes each stage of our process.</p>
+        </div></div>
+      </li>
+
+      <li class="tally__entry" data-entry>
+        <div class="tally__mask"><div class="tally__row">
+          <p class="tally__val">24 mo</p>
+          <p class="tally__label">Avg. Time to Market</p>
+          <p class="tally__desc">We take the time it takes. No shortcuts, ever.</p>
+        </div></div>
+      </li>
+
+      <li class="tally__entry" data-entry>
+        <div class="tally__mask"><div class="tally__row">
+          <p class="tally__val">PhD</p>
+          <p class="tally__label">Led Formulation</p>
+          <p class="tally__desc">Every formula is built and validated by credentialed scientists.</p>
+        </div></div>
+      </li>
+
+      <li class="tally__entry" data-entry>
+        <div class="tally__mask"><div class="tally__row">
+          <p class="tally__val">1.2M+</p>
+          <p class="tally__label">People Helped</p>
+          <p class="tally__desc">Real people. Measurable outcomes. That's our benchmark.</p>
+        </div></div>
+      </li>
+    </ol>
   </div>
 </section>
 <!-- ============ PIECE 09: EVERY NUMBER EARNED — END ============ -->
