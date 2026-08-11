@@ -621,13 +621,101 @@ section { position: relative; padding-block: var(--pad-y); }
   font-size: var(--t-lead); line-height: 1.5; color: var(--muted);
 }
 
-.process__body { width: 100%; max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter); }
-.spine { display: none; }
+.process__body {
+  width: 100%; max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter);
+  /* The spine column GROWS with the shell. At a fixed 220px against the
+     now-1456px content column at 2560 it was 13% of the row — a gutter with
+     words in it. 220 at 1280, 317 at 1920, 330 at 2560. */
+  --spine-col: clamp(220px, 16.5vw, 330px);
+}
+
+/* ---- THE SPINE ----------------------------------------------------
+   NAVIGATION, MEASURED AS NAVIGATION.
+
+   CONTRAST IS WHAT THE PIXEL DOES, NOT WHAT THE TOKEN SAYS. The old
+   inactive step used --muted (5.23:1, passing) and then multiplied it
+   by `opacity: 0.45`, which renders at 1.88:1. A previous round
+   measured the token, declared contrast fixed, and shipped a failure.
+   There is no opacity in this component at all now. Every value below
+   is the rendered value:
+     inactive  --muted #6e6663 on --cream  = 5.23:1
+     active    --deep  #103608 on --cream  = 12.60:1
+   --green never carries a letter here (3.59:1 is large-text only); it
+   is spent on the rail fill, which is a graphic and needs 3:1.
+
+   ACTIVE IS NOT A COLOUR. WCAG 1.4.1. Three signals, only one chromatic:
+     1. weight   500 -> 700 on the name
+     2. marker   a 2px rule DRAWN from the rail to the active label
+                 (desktop) / down the row's left edge (mobile)
+     3. colour   --muted -> --deep
+   -------------------------------------------------------------------- */
+.spine { position: relative; }
+
+/* The nav's accessible name. Visually hidden, genuinely present: an
+   aria-label would say the same thing to a screen reader and nothing to
+   the copy gate, and this page's rule is that new microcopy gets seen. */
+.spine__label {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* ---- Under 1024px: A RULED INDEX, NOT A DELETION.
+   The old spine was `display: none` below 1024 and orientation went with
+   it — a phone reader fell into a 1,726px phase with no map and no way
+   out of it. A sticky rail is the wrong instrument on a phone (it eats a
+   scarce column and duplicates the ghost numeral already set at 272px in
+   every phase head). A contents list at the top of the section is the
+   right one: it costs one screen once, states all five phases in order,
+   and every row is a jump. Position-while-scrolling is then carried by
+   the copy itself — "Phase One" ... "Phase Five" and the 01–05 ghosts. */
+.spine__list {
+  display: grid; gap: 1px; background: var(--dark-12);
+  border-block: 1px solid var(--dark-12);
+  margin-bottom: clamp(3.5rem, 8vw, 5.5rem);
+}
+.spine__rail { display: none; }
+.spine__link {
+  position: relative; background: var(--cream);
+  display: grid; grid-template-columns: auto 1fr; align-items: baseline;
+  column-gap: 0.9rem; padding: 0.95rem 0.4rem 0.95rem 1.15rem;
+  color: var(--muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+.spine__num {
+  font-size: var(--t-eyebrow); font-weight: 700; letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+.spine__name {
+  font-size: 1rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.005em;
+}
+/* THE MARKER. A ruled line, drawn — the same gesture as the rail fill,
+   the manifesto seam and the register rules, so "you are here" speaks the
+   page's own language instead of inventing a badge. Transform only. */
+.spine__link::before {
+  content: ""; position: absolute; background: var(--deep);
+  left: 0; top: 0; bottom: 0; width: 3px;
+  transform: scaleY(0); transform-origin: top;
+  transition: transform var(--dur-fast) var(--ease-draw);
+}
+.spine__item.is-active .spine__link { color: var(--deep); }
+.spine__item.is-active .spine__name { font-weight: 700; }
+.spine__item.is-active .spine__link::before { transform: scaleY(1); }
+.spine__link:hover { color: var(--deep); }
+.spine__link:hover .spine__name {
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.24em;
+}
 
 .phases { display: flex; flex-direction: column; gap: clamp(6rem, 12vw, 11rem); }
 
 /* ---- PIECES 04–08 — shared phase shell ---- */
-.phase { position: relative; display: grid; gap: 2rem; }
+/* Each phase is the SPINE'S LANDING PAD, so it owns two things the spine
+   depends on: room above the heading when the browser jumps to it, and no
+   focus ring. It carries tabindex="-1" purely so fragment navigation puts
+   focus here — it is a destination, not a control, and ringing 1,700px of
+   article would be noise. The confirmation a sighted reader gets is the
+   arrival itself plus the spine row that just went bold. */
+.phase { position: relative; display: grid; gap: 2rem; scroll-margin-top: clamp(2.5rem, 9vh, 6.5rem); }
+.phase:focus { outline: none; }
 .phase__ghost {
   position: absolute; top: -0.30em; right: 0; left: auto; z-index: 0;
   font-size: var(--t-ghost); font-weight: 700; line-height: 1;
@@ -1356,27 +1444,66 @@ section { position: relative; padding-block: var(--pad-y); }
    DESKTOP
    ============================================================ */
 @media (min-width: 1024px) {
-  /* Sticky spine: the reader always knows where they are. */
-  .process__body { display: grid; grid-template-columns: 220px 1fr; gap: clamp(3rem, 6vw, 6rem); align-items: start; }
-  .spine { display: block; position: sticky; top: 22vh; }
-  .spine__rail { position: absolute; left: 0; top: 0.6rem; bottom: 0.6rem; width: 1px; background: var(--dark-12); }
+  /* ---- STICKY SPINE. A CONTENTS COLUMN, NOT FOOTER CHROME.
+     12px caps at 1.68px tracking in a 220px column is the scale of a
+     legal link. This is the structure of a 13,000px argument, so it is
+     set like one: the names come off uppercase into the case they are
+     actually written in, they scale with the shell (15px at 1280 ->
+     18px at 1920 -> 20px at 2560), the rail doubles to 2px, and the
+     rows get real air. It reads as a table of contents because that is
+     what it is. ---- */
+  .process__body { display: grid; grid-template-columns: var(--spine-col) 1fr; gap: clamp(3rem, 6vw, 6rem); align-items: start; }
+  /* ONE EM SPACE FOR THE WHOLE COMPONENT. The rail, the marker and the rows
+     all have to line up on the same horizontal, so the type scale lives on
+     .spine and everything below it measures in that inherited em. Sizing the
+     rows and the rail in different fonts is how a spine ends up 3px out of
+     true at one width and right at another. */
+  .spine {
+    display: block; position: sticky; top: 18vh;
+    --spine-pad: clamp(1.6rem, 1.5vw, 2.4rem);
+    font-size: clamp(0.9375rem, 0.95vw, 1.25rem);
+  }
+  /* The rail runs from the FIRST marker to the LAST one — it is the span of
+     the journey, so its ends are the two ends of the journey. JS then scales
+     the fill to land its head exactly on the active row's marker (measured,
+     not fractioned), so the drawn rule and the fill head are one point. */
+  .spine__rail { display: block; position: absolute; left: 0; top: 0.92em; bottom: 0.97em; width: 2px; background: var(--dark-12); }
   /* DRAW. PIECE 11's roster rule calls itself "the horizontal answer to the
      spine's vertical fill" — so the two of them had better be drawn by the
      same hand. Both now run --ease-draw. */
   .spine__fill {
-    position: absolute; left: 0; top: 0; width: 1px; height: 100%;
+    position: absolute; left: 0; top: 0; width: 2px; height: 100%;
     background: var(--green); transform: scaleY(0); transform-origin: top;
     transition: transform 620ms var(--ease-draw);
   }
-  .spine__list { display: flex; flex-direction: column; gap: 1.5rem; padding-left: 1.5rem; }
-  .spine__item {
-    display: flex; align-items: baseline; gap: 0.75rem;
-    font-size: var(--t-eyebrow); text-transform: uppercase; letter-spacing: 0.14em;
-    color: var(--muted); opacity: 0.45;
-    transition: opacity var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  .spine__list {
+    display: flex; flex-direction: column; gap: 0.72em;
+    padding-left: var(--spine-pad);
+    background: none; border: 0; margin-bottom: 0;
   }
-  .spine__item b { font-weight: 700; }
-  .spine__item.is-active { opacity: 1; color: var(--green); }
+  /* 0.32em of padding above and below turns a 19px line of text into a 29px
+     row (WCAG 2.5.8 wants 24). The row is already full-column wide, so this
+     is the axis that was short. */
+  .spine__link {
+    background: none; padding: 0.32em 0;
+    column-gap: clamp(0.7rem, 0.7vw, 1.1rem);
+    font-size: inherit;
+  }
+  /* The numeral is a fixed proportion of the name it marks, floored at 12px
+     so it never falls out of legibility at the small end. 12 / 12.8 / 14px
+     across 1280 / 1920 / 2560. */
+  .spine__num { font-size: max(0.75rem, 0.7em); letter-spacing: 0.08em; }
+  .spine__name { font-size: 1em; }
+  /* The marker turns 90°: on desktop the "you are here" is a rule drawn
+     OUT of the rail to the label it belongs to, so the line and the word
+     are visibly one object. */
+  .spine__link::before {
+    left: calc(var(--spine-pad) * -1); top: 0.92em; bottom: auto;
+    width: var(--spine-pad); height: 2px;
+    transform: scaleX(0); transform-origin: left;
+  }
+  .spine__item.is-active .spine__link::before { transform: scaleX(1); }
+  .spine__link:focus-visible { outline-offset: 6px; }
 
   .phase { grid-template-columns: repeat(2, 1fr); gap: clamp(2rem, 4vw, 4rem) clamp(2.5rem, 5vw, 5rem); align-items: start; }
   .phase__head { grid-column: 1; }

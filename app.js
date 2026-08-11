@@ -251,38 +251,98 @@
     reduceMotion.addEventListener('change', function (e) { if (e.matches) disarm(); });
   }
 
-  /* ---- PIECE 03: phase spine (scroll-animated) ------------------
-     Two jobs: mark the active step, and grow the rail fill so the
-     reader can see how far through the five phases they are. The
-     fill is driven off the active index rather than raw scroll
-     position — it stays in lockstep with the labels that way, and
-     costs no scroll listener. ------------------------------------ */
+  /* ---- PIECE 03: phase spine — NAVIGATION -----------------------
+     The spine is five real in-page links now, so this function has
+     three jobs, and the first one is the one it used not to have:
+
+       1. TRAVEL. A click is a jump: smooth (unless reduced motion),
+          hash updated, and FOCUS MOVED to the phase. Everything here
+          is an enhancement of an <a href="#phase-n"> that already
+          works with the script deleted — the browser jumps and, since
+          each .phase carries tabindex="-1", the browser also lands
+          focus there by itself. We are only making it smooth and
+          keeping the URL honest.
+       2. STATE. Mark the active step and mirror it as aria-current on
+          the ANCHOR, where assistive tech actually reaches it. Round 1
+          set aria-current inside an aria-hidden container, so the page
+          had exactly one aria-current and nothing on earth could see
+          it.
+       3. PROGRESS. Grow the rail fill. Still transform-only, still no
+          scroll listener — but the scale is now MEASURED against the
+          active row's marker rather than fractioned idx/(n-1), so the
+          head of the fill and the drawn marker are the same point even
+          when "Never-Ending Evolution" takes two lines and the rows
+          stop being evenly spaced.
+     ------------------------------------------------------------- */
   function initSpine() {
     var spine = document.querySelector('[data-spine]');
     var phases = document.querySelectorAll('.phase[data-phase]');
     if (!spine || !phases.length) return;
 
     var steps = spine.querySelectorAll('[data-spine-step]');
+    var rail = spine.querySelector('.spine__rail');
     var fill = spine.querySelector('[data-spine-fill]');
 
+    // Where the active row's marker sits, as a 0–1 position along the rail.
+    // The marker is a ::before whose `top` is authored in em, so read it back
+    // rather than restating the number here and letting the two drift.
+    function progressFor(link) {
+      if (!rail || !link) return null;
+      var railBox = rail.getBoundingClientRect();
+      if (!railBox.height) return null;                 // mobile: rail is display:none
+      var linkBox = link.getBoundingClientRect();
+      var markTop = 0;
+      try { markTop = parseFloat(window.getComputedStyle(link, '::before').top) || 0; } catch (e) {}
+      var k = (linkBox.top + markTop + 1 - railBox.top) / railBox.height;
+      return Math.max(0, Math.min(1, k));
+    }
+
     function setActive(n) {
-      var idx = 0;
+      var idx = 0, activeLink = null;
       steps.forEach(function (s, i) {
         var on = s.getAttribute('data-spine-step') === n;
+        var link = s.querySelector('[data-spine-link]');
         s.classList.toggle('is-active', on);
-        // Colour alone cannot carry state (WCAG 1.4.1), and assistive tech
-        // needs a programmatic equivalent of "you are here".
-        if (on) { s.setAttribute('aria-current', 'step'); idx = i; }
-        else { s.removeAttribute('aria-current'); }
+        // Colour alone cannot carry state (WCAG 1.4.1) — weight and the drawn
+        // marker carry it too — and assistive tech needs a programmatic
+        // equivalent of "you are here", ON the focusable thing.
+        if (link) {
+          if (on) { link.setAttribute('aria-current', 'step'); }
+          else { link.removeAttribute('aria-current'); }
+        }
+        if (on) { idx = i; activeLink = link; }
       });
       // scaleY, not height: the rail is an auto-height absolute box, so a
       // percentage height never resolved and the fill measured 0px at all
       // five phases. This also keeps us to transform-only animation.
       if (fill && steps.length > 1) {
-        fill.style.transform = 'scaleY(' + (idx / (steps.length - 1)) + ')';
+        var k = progressFor(activeLink);
+        if (k === null) k = idx / (steps.length - 1);
+        fill.style.transform = 'scaleY(' + k + ')';
       }
     }
 
+    /* ---- 1. TRAVEL ---- */
+    spine.addEventListener('click', function (e) {
+      var link = e.target && e.target.closest ? e.target.closest('[data-spine-link]') : null;
+      if (!link || e.defaultPrevented) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      var id = (link.getAttribute('href') || '').slice(1);
+      var target = id && document.getElementById(id);
+      if (!target) return;                       // let the browser have its go
+      e.preventDefault();
+      setActive(link.getAttribute('data-spine-link'));   // answer the click at once
+      if (window.history && window.history.pushState) window.history.pushState(null, '', '#' + id);
+      target.scrollIntoView({
+        behavior: reduceMotion.matches ? 'auto' : 'smooth',
+        block: 'start'
+      });
+      // preventScroll, or the focus call re-jumps the page and kills the
+      // smooth travel it was supposed to accompany.
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    });
+
+    /* ---- 2/3. STATE + PROGRESS ---- */
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
@@ -307,6 +367,10 @@
     syncFromScroll();
     window.addEventListener('load', syncFromScroll, { once: true });
     window.addEventListener('hashchange', function () { setTimeout(syncFromScroll, 60); });
+    // The fill is measured, so a reflow (resize, a label rewrapping, the
+    // shell growing past a clamp) has to be re-measured or the head of the
+    // line stops landing on its marker.
+    window.addEventListener('resize', function () { setTimeout(syncFromScroll, 120); });
   }
 
   /* ---- PIECE 07: SYNERGY — the mechanism, scrubbed by scroll ----
@@ -675,9 +739,18 @@
     // PIECE 02 owns its own motion and its own scroll listener; under
     // reduced motion it returns immediately and the still stands.
     initManifesto();
+    // PIECE 03 RUNS IN BOTH MOTION MODES. It used to sit below the
+    // reduced-motion early return, which was defensible while the spine was
+    // an animated progress bar and indefensible the moment it became
+    // navigation: a reduced-motion reader deep-linked to #phase-4 got a spine
+    // still reading "01 The Standard", no aria-current on the phase they were
+    // in, and no click handling. Measured before the fix — reduced motion,
+    // /#phase-4, scrollY 5665, phase 4 filling the screen, spine says 01.
+    // Its own motion is already neutral here: the fill's transition is zeroed
+    // by the global reduced-motion rule, and the jump asks for 'auto'.
+    initSpine();
     if (reduceMotion.matches) { revealAllImmediately(); return; }
     initReveals();
-    initSpine();
     initCounters();
     initNumberWall();
   }
