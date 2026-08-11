@@ -14,6 +14,20 @@
      Reduced motion was already safe: its escape hatch is pure CSS. -->
 <noscript><style>
   [data-reveal] { opacity: 1 !important; transform: none !important; }
+  /* WAVE 3 — THE FLOOR HAD A HOLE IN IT. The rule above reaches the element
+     that carries [data-reveal]; five transforms on this page live on a
+     DESCENDANT of that element and wait for the same .is-in class. Nothing
+     was putting those back. Measured with scripts off at 1920: the <i> inside
+     every .hero__title .line sat at translateY(205.9px) — 110% of its own
+     height, inside an overflow:hidden mask — so the page's H1 was INVISIBLE
+     and the hero opened with 680px of empty cream. Three photographs were
+     also frozen at their opening crop (1.12 / 1.17 / 1.06 instead of their
+     resting values). Every line below is the finished still. */
+  .hero__title .line i { transform: none !important; }
+  .film img, .film.is-in img { transform: scale(1.06) !important; }
+  .person__frame img { transform: scale(1.10) translateY(var(--ty, 0)) !important; }
+  .phase__plate img { transform: none !important; }
+  .proof__plate img { transform: scale(1.05) !important; }
 </style></noscript>
 </head>
 <body>
@@ -87,7 +101,21 @@
   </div>
   <span class="manifesto__seam" aria-hidden="true"></span>
 
+  <!-- WAVE 3 — THE TITLE ARRIVES WITH ITS SECTION, NOT AFTER IT.
+       This h2 used to be the LAST element in the section: the greeting
+       rendered under its own explanation and, because the choreography runs
+       in DOM order, it carried a ~1.45s delay — the name of the place landed
+       a second and a half after the place did. The UI/UX critic and the copy
+       gate's order check found it independently, and the source says the same
+       thing: "Welcome to the BIOLab." is the heading, the sentence is the
+       body under it. So the greeting opens, a rule is drawn under it, and the
+       sentence then builds to 80,648 — which now lands LAST and largest,
+       where a climax belongs, instead of halfway up the screen. -->
   <div class="shell manifesto__type">
+    <h2 id="banner-heading" class="manifesto__title">
+      <span class="mf-line"><span class="mf-line__i">Welcome to the</span></span>
+      <span class="mf-line"><span class="mf-line__i"><b>BIO</b>Lab.</span></span>
+    </h2>
     <p class="manifesto__body">
       <span class="mf-set" data-mf-split>Behind every BIOptimizers formula is a place few people ever see.</span>
       <span class="mf-cue" data-mf-split>Where PhD scientists and formulators have run</span>
@@ -97,10 +125,6 @@
         <span class="mf-q" data-mf-split>could we make this even better?</span>
       </span>
     </p>
-    <h2 id="banner-heading" class="manifesto__title">
-      <span class="mf-line"><span class="mf-line__i">Welcome to the</span></span>
-      <span class="mf-line"><span class="mf-line__i"><b>BIO</b>Lab.</span></span>
-    </h2>
   </div>
 </section>
 <!-- ============ PIECE 02: MANIFESTO — END ============ -->
@@ -168,14 +192,23 @@
           <p class="eyebrow" data-reveal>Phase One</p>
           <h3 id="phase-1-heading" class="phase__title" data-reveal data-reveal-delay="1">The Standard</h3>
         </header>
-        <div class="phase__prose">
-          <p data-reveal>Before a new product idea reaches the BIOLab, it has to clear three hurdles: legitimate science, physiological impact, and a real need — not a passing trend.</p>
-          <ul class="gates" data-reveal data-reveal-delay="1">
+        <!-- WAVE 3 — THE UNIT OF ARRIVAL IS THE BLOCK, NOT THE PARAGRAPH.
+             62 elements were revealing, 51 of them identically. The cure is
+             not a fourth re-cut of the fade, it is fewer things arriving: a
+             paragraph inside a column that has already arrived did not arrive
+             separately. Each phase now makes exactly three statements —
+             eyebrow, title, prose — and the photograph does something else
+             entirely (see .phase__plate in styles.css). Nine reveals removed
+             across the five phases; every remaining one is on a different
+             beat instead of forty-two sharing zero. -->
+        <div class="phase__prose" data-reveal data-reveal-delay="2">
+          <p>Before a new product idea reaches the BIOLab, it has to clear three hurdles: legitimate science, physiological impact, and a real need — not a passing trend.</p>
+          <ul class="gates">
             <li class="gate">Legitimate Science</li>
             <li class="gate">Physiological Impact</li>
             <li class="gate">Real Need</li>
           </ul>
-          <p data-reveal>There are a lot of new ingredients that get big hype but don't have enough scientific validity. Before we commit to a product, we make sure there's strong scientific evidence that an ingredient can support your health.</p>
+          <p>There are a lot of new ingredients that get big hype but don't have enough scientific validity. Before we commit to a product, we make sure there's strong scientific evidence that an ingredient can support your health.</p>
         </div>
         <figure class="phase__plate phase__plate--tall" data-reveal>
           <img src="./laboratory-pipette-drop-test-tubes-d-7fc4d93f0f60fce5c1e908bc899cf7d3.png"
@@ -197,11 +230,11 @@
           <p class="eyebrow" data-reveal>Phase Two</p>
           <h3 id="phase-2-heading" class="phase__title" data-reveal data-reveal-delay="1">The Blueprint</h3>
         </header>
-        <div class="phase__prose">
-          <p class="lead" data-reveal>Your body works as a system. So we start by mapping the entire biological chain.</p>
-          <blockquote class="quote" data-reveal>"Support one step and miss the others, and the system still falls short."</blockquote>
-          <p data-reveal>Take blood sugar — it isn't one event. It's a series of connected steps: how your body responds to glucose, how it transports it, and how it puts it to use.</p>
-          <p data-reveal>That's why Berberine Breakthrough isn't a single ingredient, but a blend of 10 ingredients designed to support multiple aspects of glucose metabolism.</p>
+        <div class="phase__prose" data-reveal data-reveal-delay="2">
+          <p class="lead">Your body works as a system. So we start by mapping the entire biological chain.</p>
+          <blockquote class="quote">"Support one step and miss the others, and the system still falls short."</blockquote>
+          <p>Take blood sugar — it isn't one event. It's a series of connected steps: how your body responds to glucose, how it transports it, and how it puts it to use.</p>
+          <p>That's why Berberine Breakthrough isn't a single ingredient, but a blend of 10 ingredients designed to support multiple aspects of glucose metabolism.</p>
         </div>
         <figure class="phase__plate" data-reveal>
           <img src="./microscopic-plant-cells-chloroplasts-m-5b2cbe44cb7ab2a94076068d9a5066e8.png"
@@ -218,9 +251,9 @@
           <p class="eyebrow" data-reveal>Phase Three</p>
           <h3 id="phase-3-heading" class="phase__title" data-reveal data-reveal-delay="1">The Hunt</h3>
         </header>
-        <div class="phase__prose">
-          <p class="lead" data-reveal>In formulation, everything starts with the raw material. The wrong source, form, or purity, and the rest doesn't matter. Once we know what a formula needs, we look for the best ingredients — not the cheapest or easiest to source. The best.</p>
-          <p data-reveal>Our testing goes through two major stages before any ingredient earns a place in a formula.</p>
+        <div class="phase__prose" data-reveal data-reveal-delay="2">
+          <p class="lead">In formulation, everything starts with the raw material. The wrong source, form, or purity, and the rest doesn't matter. Once we know what a formula needs, we look for the best ingredients — not the cheapest or easiest to source. The best.</p>
+          <p>Our testing goes through two major stages before any ingredient earns a place in a formula.</p>
         </div>
         <figure class="phase__plate phase__plate--tall" data-reveal>
           <img src="./biolab-ingredient-testing-cherry-pour-d-b2fbfdc410f5ce7567de5480a527dbaa.png"
@@ -250,9 +283,9 @@
           <p class="eyebrow" data-reveal>Phase Four — Our Secret Weapon</p>
           <h3 id="phase-4-heading" class="phase__title" data-reveal data-reveal-delay="1">Synergy</h3>
         </header>
-        <div class="phase__prose">
-          <p class="lead" data-reveal>This is where we separate ourselves from every other supplement company. Where most companies formulate with single ingredients, we engineer interactions: we study cofactors — the molecules that may activate or amplify an ingredient's effect — and we test combinations for synergy.</p>
-          <p data-reveal>But synergy doesn't stop inside a single formula. In digestion, stomach acid helps break down food, enzymes help release nutrients, and probiotics help support the gut environment.</p>
+        <div class="phase__prose" data-reveal data-reveal-delay="2">
+          <p class="lead">This is where we separate ourselves from every other supplement company. Where most companies formulate with single ingredients, we engineer interactions: we study cofactors — the molecules that may activate or amplify an ingredient's effect — and we test combinations for synergy.</p>
+          <p>But synergy doesn't stop inside a single formula. In digestion, stomach acid helps break down food, enzymes help release nutrients, and probiotics help support the gut environment.</p>
         </div>
 
         <!-- THE MONEY MOMENT — the one scene on this page that DRAWS a mechanism
@@ -341,13 +374,13 @@
           <p class="eyebrow" data-reveal>Phase Five</p>
           <h3 id="phase-5-heading" class="phase__title" data-reveal data-reveal-delay="1">Never-Ending Evolution</h3>
         </header>
-        <div class="phase__prose">
-          <p class="lead" data-reveal>Even after we launch a product, it doesn't end. We continue evolving. We read all the feedback. We continue testing new raw ingredients. And we level up our formulas.</p>
-          <div class="ledger" data-reveal>
+        <div class="phase__prose" data-reveal data-reveal-delay="2">
+          <p class="lead">Even after we launch a product, it doesn't end. We continue evolving. We read all the feedback. We continue testing new raw ingredients. And we level up our formulas.</p>
+          <div class="ledger">
             <p class="ledger__line">5 — Versions of MassZymes</p>
             <p class="ledger__note">Since 2005 — because better is always possible.</p>
           </div>
-          <p class="creed" data-reveal>Evolution is in our DNA.</p>
+          <p class="creed">Evolution is in our DNA.</p>
         </div>
         <figure class="phase__plate" data-reveal>
           <img src="./female-scientist-micropipette-lab-d-6ad408dab2f339193ef3a4c98e1aef93.png"
@@ -447,10 +480,13 @@
   <div class="proof__type">
     <h2 id="proof-heading" class="proof__title" data-reveal>Living Proof</h2>
     <p class="proof__lede" data-reveal data-reveal-delay="1">The final test doesn't happen in the BIOLab. It's how you move, feel, and perform every day.</p>
-    <ul class="proof__list">
-      <li data-reveal>You enjoy deeper, more restorative sleep. Digestion feels smoother. Stress feels more manageable and focus feels sharper.</li>
-      <li data-reveal data-reveal-delay="1">For over 20 years, we've helped 1.2 million people on their journey to live a stronger, longer, better life.</li>
-      <li data-reveal data-reveal-delay="2">Now we're turning what's possible into what's next.</li>
+    <!-- One list, one arrival. Three ruled claims dealt 0/110/220ms apart was
+         the page's generic move performed on its most important promise; the
+         list is a single ruled object and now behaves like one. -->
+    <ul class="proof__list" data-reveal data-reveal-delay="2">
+      <li>You enjoy deeper, more restorative sleep. Digestion feels smoother. Stress feels more manageable and focus feels sharper.</li>
+      <li>For over 20 years, we've helped 1.2 million people on their journey to live a stronger, longer, better life.</li>
+      <li>Now we're turning what's possible into what's next.</li>
     </ul>
     <a class="btn" href="https://bioptimizers.com/shop" data-reveal>Learn More</a>
   </div>
