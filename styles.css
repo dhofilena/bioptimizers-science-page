@@ -307,23 +307,231 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ============================================================
-   PIECE 02 — MANIFESTO. First dark beat. Sets the page's pulse.
+   PIECE 02 — MANIFESTO. THE FIRST DARK BEAT.
+
+   The page's pivot out of the hero. It was a centred paragraph on a
+   28%-opacity texture; it is now a full-screen tonal shift, and the
+   shift is carried by three things at once:
+
+   GROUND.  --deep owns a whole viewport, so the change of register is
+     a state the reader sits inside rather than a band they pass. The
+     leaf macro is composited into that ground and pushed to the RIGHT of
+     the frame, under a two-axis veil of --deep: the type sits in the
+     dark half, the light lives in the empty half. Same left-type /
+     right-image axis as the hero, inverted in value — that inversion IS
+     the beat.
+   TYPE.  One sentence, re-typeset into five sizes so the claim inside it
+     can be seen. 80,648 is set larger than any heading on this page — it
+     is the most quotable thing here and it now looks like it.
+   MOTION.  Three discrete beats and one continuous one. None of them is
+     the shared 900ms expo fade:
+     · the seam CUTS  — scaleX(0→1) from the left, 780ms
+       cubic-bezier(.62,0,.2,1) — an in-out with real mid-travel speed.
+     · the lines CLIMB — each measured line rises 118% of its own height
+       out of its own mask, 660ms cubic-bezier(.34,.02,.12,1), 60ms
+       apart. Travel is a whole line, not 28px, and the curve keeps most
+       of the distance in the middle of the duration, so the rise is
+       actually seen. No opacity at all: the type is uncovered, not faded.
+     · 80,648 is WIPED clear — a --vital bar sweeps on from the left and
+       off to the right; the number switches on under it at the midpoint.
+       Nothing else on the page does this, which is the point.
+     · plus the ground DRIFTS: the texture is parallaxed against scroll
+       position (transform only), so the dark is never static.
+
+   Contrast on --deep #103608: --cream 12.9:1, --white 13.52:1,
+   --vital 10.99:1. Body copy here is --cream, never below 4.5:1.
+   No --orange: this section has no CTA.
    ============================================================ */
-.manifesto { background: var(--deep); color: var(--white); overflow: hidden; text-align: center; }
+.manifesto {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--deep); color: var(--white);
+  min-height: 100svh;
+  display: grid; align-content: center;
+  padding-block: clamp(4.5rem, 11vh, 8rem);
+}
+
+/* ---- The ground. Light to the right, type in the dark.
+   The texture is composited soft-light rather than laid on at 28% flat:
+   flat opacity washes --deep out to a mid green and the beat stops being
+   dark, while soft-light keeps --deep as the base and lets the leaf show
+   as structure inside it. The veil then does two jobs — it holds the left
+   third at close to pure --deep so the type never sits on a moving
+   surface, and it closes the top and bottom edges so the parallax has
+   nowhere to show a seam. ---- */
+.manifesto__field { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .manifesto__texture {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; opacity: 0.28;
+  object-fit: cover; object-position: 74% 50%;
+  opacity: 0.8; mix-blend-mode: soft-light;
+  transform: translate3d(0, 0, 0) scale(1.18);
 }
-.manifesto .shell { position: relative; z-index: 1; }
-.manifesto__body {
-  font-size: var(--t-h3); font-weight: 400; line-height: 1.45;
-  max-width: 26ch; margin-inline: auto; text-wrap: balance;
+.manifesto__veil {
+  position: absolute; inset: 0; display: block;
+  background:
+    linear-gradient(180deg, rgba(16,54,8,0.96) 0%, rgba(16,54,8,0) 24%,
+                            rgba(16,54,8,0) 72%, rgba(16,54,8,0.96) 100%),
+    linear-gradient(94deg,  rgba(16,54,8,0.975) 0%, rgba(16,54,8,0.94) 38%,
+                            rgba(16,54,8,0.74) 74%, rgba(16,54,8,0.56) 100%);
+}
+
+/* ---- The cut. A hairline of --vital drawn across the seam. ---- */
+.manifesto__seam {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 2;
+  background: var(--vital); transform-origin: 0% 50%;
+}
+
+.manifesto__type { position: relative; z-index: 1; }
+.manifesto__body { display: flex; flex-direction: column; align-items: flex-start; }
+
+/* ---- The sentence, re-typeset. Reading order is the source order. ---- */
+.mf-set {
+  font-size: clamp(1.3rem, 2.35vw, 2.1rem); font-weight: 400; line-height: 1.32;
+  letter-spacing: -0.015em; color: var(--cream); max-width: 27ch; text-wrap: balance;
+}
+.mf-cue {
+  margin-top: clamp(1.6rem, 3.4vh, 2.6rem);
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.2em; line-height: 1.55; color: var(--cream); max-width: 34ch;
+}
+.mf-tally {
+  position: relative; margin-top: clamp(0.5rem, 1.3vh, 0.95rem);
+  font-size: clamp(3.9rem, 12.2vw, 9.8rem); line-height: 0.92;
+}
+.mf-tally__n {
+  display: block; font-weight: 700; letter-spacing: -0.05em;
+  color: var(--vital); font-variant-numeric: tabular-nums;
+}
+.mf-close { display: block; }
+.mf-ask {
+  display: block; margin-top: clamp(0.9rem, 2.2vh, 1.7rem);
+  font-size: clamp(1rem, 1.45vw, 1.25rem); line-height: 1.45;
+  letter-spacing: 0.005em; color: var(--cream); max-width: 34ch;
+}
+.mf-q {
+  display: block; margin-top: 0.3rem;
+  font-size: clamp(1.4rem, 2.55vw, 2.3rem); font-weight: 400;
+  line-height: 1.2; letter-spacing: -0.025em; color: var(--white); max-width: 21ch;
 }
 .manifesto__title {
-  margin-top: 3rem; font-size: var(--t-h1); font-weight: 400;
-  line-height: 1; letter-spacing: -0.03em; color: var(--vital);
+  position: relative;
+  margin-top: clamp(2.5rem, 6.5vh, 4.75rem);
+  padding-top: clamp(2rem, 5vh, 3.5rem);
+  font-size: clamp(2.25rem, 5.3vw, 4.4rem); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.035em; color: var(--white);
 }
-.manifesto__title b { font-weight: 700; }
+.manifesto__title b { font-weight: 700; color: var(--vital); }
+/* The sentence ends and the greeting begins: a second rule is drawn across
+   the frame, the same cut as the seam, one beat before the name lands. */
+.manifesto__title::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: rgba(255, 255, 255, 0.2); transform-origin: 0% 50%;
+}
+
+/* ---- Line masks. The resting state is the finished still: no transform,
+        no transition, nothing hidden. .is-armed is what JS adds. ---- */
+.mf-line { display: block; overflow: hidden; padding-block: 0.1em; margin-block: -0.1em; }
+.mf-line__i { display: block; }
+
+.manifesto.is-armed .mf-line__i { transform: translate3d(0, 118%, 0); }
+.manifesto.is-armed .manifesto__seam,
+.manifesto.is-armed .manifesto__title::before { transform: scaleX(0); }
+.manifesto.is-armed .mf-tally__n { opacity: 0; }
+.manifesto.is-armed:not(.is-settled) .mf-line__i,
+.manifesto.is-armed:not(.is-settled) .manifesto__seam { will-change: transform; }
+
+.manifesto.is-armed.is-in .mf-line__i {
+  transform: none;
+  transition: transform 660ms cubic-bezier(0.34, 0.02, 0.12, 1) var(--mf-d, 0ms);
+}
+.manifesto.is-armed.is-in .manifesto__seam {
+  transform: none;
+  transition: transform 780ms cubic-bezier(0.62, 0, 0.2, 1);
+}
+.manifesto.is-armed.is-in .manifesto__title::before {
+  transform: none;
+  transition: transform 900ms cubic-bezier(0.62, 0, 0.2, 1) var(--mf-d, 0ms);
+}
+.manifesto.is-armed.is-in .mf-tally::after {
+  animation: mf-wipe 860ms cubic-bezier(0.62, 0, 0.24, 1) var(--mf-d, 0ms) both;
+}
+.manifesto.is-armed.is-in .mf-tally__n {
+  animation: mf-uncover 860ms linear var(--mf-d, 0ms) both;
+}
+
+/* The bar that uncovers the number. It exists only while the piece is armed,
+   so the still composition is never sitting under a --vital slab. The inset
+   is negative at the foot because the comma of 80,648 descends past the line
+   box, and a bar that leaves the comma poking out reads as a mistake rather
+   than a wipe. */
+.manifesto.is-armed .mf-tally::after {
+  content: ""; position: absolute; z-index: 1; pointer-events: none;
+  top: -0.04em; bottom: -0.13em; left: -0.05em; right: -0.05em;
+  background: var(--vital); transform: scaleX(0); transform-origin: 0% 50%;
+}
+
+@keyframes mf-wipe {
+  0%   { transform: scaleX(0); transform-origin: 0% 50%; }
+  46%  { transform: scaleX(1); transform-origin: 0% 50%; }
+  54%  { transform: scaleX(1); transform-origin: 100% 50%; }
+  100% { transform: scaleX(0); transform-origin: 100% 50%; }
+}
+/* A switch, not a fade — the number is revealed by the bar passing over it. */
+@keyframes mf-uncover { 0%, 49.9% { opacity: 0; } 50%, 100% { opacity: 1; } }
+
+/* Sequence finished. Everything is returned to the resting composition and
+   all transitions are dropped, so a resize can re-measure the lines without
+   replaying the reveal. Three classes deep on purpose: these have to outrank
+   the .is-armed.is-in rules above. (If reduced motion arrives mid-session JS
+   drops .is-armed entirely, and the base rules — the still — take over.) */
+.manifesto.is-armed.is-settled .mf-line__i,
+.manifesto.is-armed.is-settled .manifesto__seam,
+.manifesto.is-armed.is-settled .manifesto__title::before { transform: none; transition: none; will-change: auto; }
+.manifesto.is-armed.is-settled .mf-tally__n { opacity: 1; animation: none; }
+.manifesto.is-armed.is-settled .mf-tally::after { content: none; animation: none; }
+
+/* PIECE 02 — from tablet up the sentence stops being a column and becomes a
+   composition: the setup and the connective run across the top, then the
+   number takes the left and the question it answers sits on its right,
+   bottom-aligned to it, so "80,648 lab tests to answer one question" reads
+   across the page as one phrase. Everything stays in source order. */
+@media (min-width: 900px) {
+  .manifesto__body {
+    display: grid;
+    grid-template-columns: max-content minmax(17rem, 27rem);
+    column-gap: clamp(2rem, 3.6vw, 3.4rem);
+    justify-content: start; align-items: end;
+    grid-template-areas:
+      "set  set"
+      "cue  cue"
+      "num  close";
+  }
+  .mf-set   { grid-area: set; }
+  .mf-cue   { grid-area: cue; max-width: none; }
+  .mf-tally { grid-area: num; }
+  .mf-close { grid-area: close; }
+  .mf-ask   { margin-top: 0; }
+  .mf-q     { margin-top: 0.45rem; }
+}
+
+/* PIECE 02 — small screens. The type spans the full column here, so the
+   veil goes flat and strong across the whole frame instead of clearing to
+   the right, and the light is pushed to the bottom corner behind nothing. */
+@media (max-width: 899px) {
+  .manifesto__texture { object-position: 62% 66%; }
+  .manifesto__veil {
+    background:
+      linear-gradient(180deg, rgba(16,54,8,0.96) 0%, rgba(16,54,8,0.6) 30%,
+                              rgba(16,54,8,0.24) 78%, rgba(16,54,8,0.62) 100%),
+      linear-gradient(96deg,  rgba(16,54,8,0.92) 0%, rgba(16,54,8,0.72) 100%);
+  }
+  /* The number is this section's display type. On a narrow column that
+     means most of the column, not 190px of it. */
+  .mf-tally { font-size: clamp(4.4rem, 21vw, 7rem); }
+  /* Tracked small caps need the room they ask for: at 0.2em this breaks to
+     three ragged lines on a phone, which is a texture, not a sentence.
+     The tracking gives way before the size does — it is still copy. */
+  .mf-cue { letter-spacing: 0.13em; }
+}
 
 /* ============================================================
    PIECE 03 — PROCESS + STICKY SPINE

@@ -73,6 +73,184 @@
     }, 2500);
   }
 
+  /* ---- PIECE 02: MANIFESTO — the first dark beat -----------------
+     This section does not use the shared reveal. Three reasons, all of
+     them the same reason: a 900ms expo fade over 28px is invisible, and
+     this is the moment the page changes register.
+
+       THE CUT      the seam scales in from the left, 780ms.
+       THE CLIMB    every fragment of the sentence is measured into its
+                    REAL rendered lines, and each line rises 118% of its
+                    own height out of its own mask, 60ms behind the one
+                    above it. Transform only — no opacity anywhere in it.
+                    The lines are re-measured on resize, because a line
+                    break is a fact about the viewport, not about markup.
+       THE WIPE     80,648 is uncovered by a --vital bar that sweeps on
+                    from the left and off to the right (CSS: mf-wipe).
+       THE DRIFT    the leaf ground is parallaxed against scroll position
+                    so the dark is a place, not a band.
+
+     One rAF-throttled scroll listener does the drift AND arms the
+     reveal from geometry — no second observer, and no 2.5s timer that
+     can fire the sequence at a reader who never got here.
+
+     Order of operations matters: .is-armed goes on BEFORE the lines are
+     built, so every line is born already inside its mask. If this
+     function never runs, or reduced motion is on, the CSS resting state
+     is the finished composition — visibility is the floor. ---------- */
+  function initManifesto() {
+    var sec = document.querySelector('[data-manifesto]');
+    if (!sec) return;
+    if (reduceMotion.matches) return;      // the authored still, untouched
+
+    var tex = sec.querySelector('[data-mf="texture"]');
+    var title = sec.querySelector('.manifesto__title');
+    var authored = sec.querySelectorAll('.manifesto__title .mf-line__i');
+    var START = 180, LINE = 60, GROUP = 120, TALLY = 260;
+    var revealed = false, settled = false, lastStart = START;
+
+    /* Split one fragment into the lines the browser actually drew.
+       Words go in as probes, their offsetTop groups them, and the groups
+       come back out as masked lines. The plain text is parked on the
+       element so a resize can start over from the source string. */
+    function linesOf(el) {
+      var text = el.getAttribute('data-mf-text');
+      if (text === null) {
+        text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+        el.setAttribute('data-mf-text', text);
+      }
+      var words = text.split(' ');
+      if (!words[0]) return [];
+
+      var probes = [], i;
+      el.textContent = '';
+      for (i = 0; i < words.length; i++) {
+        var probe = document.createElement('span');
+        probe.textContent = words[i];
+        el.appendChild(probe);
+        if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+        probes.push(probe);
+      }
+
+      var rows = [], top = null;
+      for (i = 0; i < probes.length; i++) {
+        var y = probes[i].offsetTop;                 // one layout, then reads
+        if (top === null || Math.abs(y - top) > 1) { rows.push([]); top = y; }
+        rows[rows.length - 1].push(probes[i].textContent);
+      }
+
+      el.textContent = '';
+      var inners = [];
+      for (i = 0; i < rows.length; i++) {
+        var mask = document.createElement('span');
+        var inner = document.createElement('span');
+        mask.className = 'mf-line';
+        inner.className = 'mf-line__i';
+        inner.textContent = rows[i].join(' ');
+        mask.appendChild(inner);
+        // A whitespace node between two block boxes renders as nothing, but
+        // it keeps the sentence a sentence for anything that reads the DOM
+        // instead of the layout — selection, serialisation, assistive tech.
+        if (i) el.appendChild(document.createTextNode(' '));
+        el.appendChild(mask);
+        inners.push(inner);
+      }
+      return inners;
+    }
+
+    /* Delays are cumulative over whatever the measurement produced, so the
+       sentence always arrives in reading order — two lines on a wide
+       screen or five on a narrow one. */
+    function choreograph() {
+      var t = START;
+      sec.querySelectorAll('[data-mf-split], [data-mf-tally]').forEach(function (unit) {
+        if (unit.hasAttribute('data-mf-tally')) {
+          unit.style.setProperty('--mf-d', t + 'ms');
+          t += TALLY + GROUP;
+          return;
+        }
+        linesOf(unit).forEach(function (inner) {
+          inner.style.setProperty('--mf-d', t + 'ms');
+          t += LINE;
+        });
+        t += GROUP;
+      });
+      // The rule under the sentence is drawn from the title's own --mf-d;
+      // the two authored title lines then override it with their own.
+      if (title) { title.style.setProperty('--mf-d', t + 'ms'); t += 140; }
+      // The title is authored as two lines: it is a composition, not a wrap.
+      authored.forEach(function (inner) {
+        inner.style.setProperty('--mf-d', t + 'ms');
+        t += LINE + 20;
+      });
+      lastStart = t;
+    }
+
+    function reveal() {
+      if (revealed) return;
+      revealed = true;
+      sec.classList.add('is-in');
+      // Drop the transitions once the last line has landed: from here the
+      // composition is just a picture, and a resize may re-measure it
+      // without anything replaying.
+      window.setTimeout(function () {
+        settled = true;
+        sec.classList.add('is-settled');
+      }, lastStart + 900);
+    }
+
+    // If the OS setting flips mid-session, stop everything and leave the
+    // finished composition standing.
+    function disarm() {
+      sec.classList.remove('is-armed', 'is-in', 'is-settled');
+      if (tex) tex.style.transform = 'translate3d(0,0,0) scale(1.18)';
+    }
+
+    var ticking = false;
+    function frame() {
+      ticking = false;
+      if (reduceMotion.matches) { disarm(); return; }
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var r = sec.getBoundingClientRect();
+      if (r.bottom < -240 || r.top > vh + 240) return;
+      // The sentence starts climbing once the dark owns the lower fifth of
+      // the screen — the reader is inside the new register by then.
+      if (!revealed && r.top < vh * 0.8 && r.bottom > vh * 0.2) reveal();
+      if (tex) {
+        var p = (vh - r.top) / (vh + r.height);
+        p = p < 0 ? 0 : p > 1 ? 1 : p;
+        var drift = Math.min(64, r.height * 0.06);
+        tex.style.transform =
+          'translate3d(0,' + ((p - 0.5) * 2 * drift).toFixed(1) + 'px,0) scale(1.18)';
+      }
+    }
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(frame);
+    }
+
+    var resizeTimer = null, lastW = 0;
+    function onResize() {
+      // Mid-sequence is the one moment a re-measure would be felt, so wait.
+      if (revealed && !settled) return;
+      var w = document.documentElement.clientWidth;
+      if (w === lastW) return;
+      lastW = w;
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(choreograph, 180);
+    }
+
+    sec.classList.add('is-armed');     // before the lines exist, never after
+    choreograph();
+    lastW = document.documentElement.clientWidth;
+    frame();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    window.addEventListener('load', function () { onResize(); onScroll(); }, { once: true });
+    reduceMotion.addEventListener('change', function (e) { if (e.matches) disarm(); });
+  }
+
   /* ---- PIECE 03: phase spine (scroll-animated) ------------------
      Two jobs: mark the active step, and grow the rail fill so the
      reader can see how far through the five phases they are. The
@@ -437,6 +615,9 @@
     // PIECE 07 runs either way: under reduced motion it only measures its
     // full-bleed offset and leaves the finished composition standing.
     initSynergy();
+    // PIECE 02 owns its own motion and its own scroll listener; under
+    // reduced motion it returns immediately and the still stands.
+    initManifesto();
     if (reduceMotion.matches) { revealAllImmediately(); return; }
     initReveals();
     initSpine();

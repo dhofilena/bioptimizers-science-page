@@ -57,13 +57,41 @@
 
 
 <!-- ============ PIECE 02: MANIFESTO / BIOLAB — START ============ -->
-<section class="manifesto" id="biolab-banner" aria-labelledby="banner-heading">
-  <img class="manifesto__texture"
-       src="./ae173b73b3bbce85db3224bb257502de1eb17e9a-m-88636705584f5a5233e0ae18df42519e.png"
-       alt="" aria-hidden="true" width="1440" height="400" loading="lazy" decoding="async">
-  <div class="shell">
-    <p class="manifesto__body" data-reveal>Behind every BIOptimizers formula is a place few people ever see. Where PhD scientists and formulators have run 80,648 lab tests to answer one question: could we make this even better?</p>
-    <h2 id="banner-heading" class="manifesto__title" data-reveal data-reveal-delay="2">Welcome to the <b>BIO</b>Lab.</h2>
+<!-- THE FIRST DARK BEAT — the page changes register here, so the section takes
+     a whole screen and nothing in it uses the shared 900ms fade:
+       · the seam CUTS across the top edge (scaleX from the left)
+       · the sentence CLIMBS out of per-line masks, one line at a time
+       · 80,648 is UNCOVERED by a --vital bar that wipes over and off it
+       · the leaf light DRIFTS against the scroll behind all of it
+     One sentence, re-typeset — not reworded. Every fragment below is an
+     inline <span>, so the browser and the copy gate both read the source
+     line back as one continuous sentence.
+     The CSS resting state is the finished composition; JS arms the motion by
+     adding .is-armed. No JS, a dead observer, or prefers-reduced-motion all
+     land on the still — visibility is the floor. -->
+<section class="manifesto" id="biolab-banner" aria-labelledby="banner-heading" data-manifesto>
+  <div class="manifesto__field" aria-hidden="true">
+    <img class="manifesto__texture" data-mf="texture"
+         src="./ae173b73b3bbce85db3224bb257502de1eb17e9a-m-88636705584f5a5233e0ae18df42519e.png"
+         alt="" width="1440" height="400" loading="lazy" decoding="async">
+    <span class="manifesto__veil"></span>
+  </div>
+  <span class="manifesto__seam" aria-hidden="true"></span>
+
+  <div class="shell manifesto__type">
+    <p class="manifesto__body">
+      <span class="mf-set" data-mf-split>Behind every BIOptimizers formula is a place few people ever see.</span>
+      <span class="mf-cue" data-mf-split>Where PhD scientists and formulators have run</span>
+      <span class="mf-tally" data-mf-tally><span class="mf-tally__n">80,648</span></span>
+      <span class="mf-close">
+        <span class="mf-ask" data-mf-split>lab tests to answer one question:</span>
+        <span class="mf-q" data-mf-split>could we make this even better?</span>
+      </span>
+    </p>
+    <h2 id="banner-heading" class="manifesto__title">
+      <span class="mf-line"><span class="mf-line__i">Welcome to the</span></span>
+      <span class="mf-line"><span class="mf-line__i"><b>BIO</b>Lab.</span></span>
+    </h2>
   </div>
 </section>
 <!-- ============ PIECE 02: MANIFESTO — END ============ -->
