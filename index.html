@@ -255,43 +255,79 @@
           <p data-reveal>But synergy doesn't stop inside a single formula. In digestion, stomach acid helps break down food, enzymes help release nutrients, and probiotics help support the gut environment.</p>
         </div>
 
-        <!-- THE MONEY MOMENT — the one scene on this page that demonstrates a
-             mechanism instead of describing one. Full-bleed, pinned for ~1.5
-             viewport heights, scrubbed by scroll POSITION (initSynergy, app.js).
-             Beat 1  two named inputs arrive from opposite edges
-             Beat 2  they converge, overlap, and the intersection resolves a
-                     THIRD form larger than either of them — the claim, drawn
-             Beat 3  only then does the equation land, the "5" late and oversized
-             The Digestion Stack is not stranded below this; it IS this. -->
+        <!-- THE MONEY MOMENT — the one scene on this page that DRAWS a mechanism
+             instead of describing one. Full-bleed, pinned ~1.5 viewport heights,
+             scrubbed by scroll POSITION (initSynergy, app.js).
+
+             WHAT IT IS. A plate from a process paper. Three named vessels in
+             SEQUENCE — acid, then enzymes, then probiotics — with material
+             flowing left to right through conduits, exactly as the paragraph
+             above describes digestion. Under each vessel, on a shared axis, the
+             yield it contributes. At the end of the chain the output column
+             stacks those same three contributions (= the dashed SUM-OF-PARTS
+             level) and then keeps going, in orange, past it.
+
+             WHY NOT A VENN. R2's critique was right: a Venn asserts SET
+             CONTAINMENT ("acid + enzymes ⊃ probiotic delivery"), which is not
+             what the copy claims and not how digestion works. A sequence with
+             named vessels and a measured yield is the actual mechanism.
+
+             HOW THE EQUATION AND THE DIAGRAM AGREE. The apparatus outputs into
+             a read-out panel across a divider rule. "The Formula" is the law;
+             the plate is the instance that confirms it. The "5" sits directly
+             above the surplus it names, tethered by the same dotted leader line
+             that ties every vessel to its column and its label.
+
+             EVERY LABEL IS TETHERED. One dotted leader per column runs from the
+             vessel's bottom edge, through the axis, to the name beneath it.
+             Nothing floats.
+
+             AT p=0 THE APPARATUS IS ALREADY THERE — drawn, ruled, arrowed and
+             fully named, and empty. The scroll runs material through it. That
+             is also exactly what no-JS and prefers-reduced-motion render. -->
         <div class="synergy" data-synergy>
           <div class="synergy__bleed" data-syn="bleed">
             <div class="synergy__stage" data-syn="stage">
-              <div class="synergy__inner" data-syn="inner">
+              <figure class="rig">
 
-                <p class="stack__label" data-syn="eyebrow">The Digestion Stack</p>
+                <p class="rig__title">The Digestion Stack</p>
 
-                <div class="venn" data-syn="venn">
-                  <div class="venn__field" data-syn="field" aria-hidden="true">
-                    <span class="venn__disc venn__disc--a" data-syn="disc-a"></span>
-                    <span class="venn__disc venn__disc--b" data-syn="disc-b"></span>
-                    <span class="venn__disc venn__disc--c" data-syn="disc-c"></span>
-                  </div>
-                  <ol class="stack__list">
-                    <li class="agent agent--a" data-syn="label-a"><b>HCL Breakthrough</b><span>Stomach Acid</span></li>
-                    <li class="agent agent--b" data-syn="label-b"><b>MassZymes</b><span>Enzyme Activation</span></li>
-                    <li class="agent agent--c" data-syn="label-c"><b>Probiotic Breakthrough</b><span>Probiotic Delivery</span></li>
-                  </ol>
+                <!-- CHASSIS. Present from the first frame; never animated. -->
+                <span class="rig__axis" aria-hidden="true"></span>
+                <span class="rig__ref" data-syn="ref" aria-hidden="true"></span>
+                <span class="rig__lead rig__lead--1" aria-hidden="true"></span>
+                <span class="rig__lead rig__lead--2" aria-hidden="true"></span>
+                <span class="rig__lead rig__lead--3" aria-hidden="true"></span>
+                <span class="rig__lead rig__lead--4" aria-hidden="true"></span>
+                <span class="rig__divide" aria-hidden="true"></span>
+
+                <!-- VESSELS. Identical peers; only the bed granularity differs —
+                     coarse (broken down), fine (released), wall-bound (colonised). -->
+                <span class="vessel vessel--1" aria-hidden="true"><span class="vessel__bed" data-syn="bed-1"></span><span class="vessel__pipe"><span data-syn="flow-1"></span></span></span>
+                <span class="vessel vessel--2" aria-hidden="true"><span class="vessel__bed" data-syn="bed-2"></span><span class="vessel__pipe"><span data-syn="flow-2"></span></span></span>
+                <span class="vessel vessel--3" aria-hidden="true"><span class="vessel__bed" data-syn="bed-3"></span><span class="vessel__pipe"><span data-syn="flow-3"></span></span></span>
+
+                <!-- YIELD. Three equal contributions; then the output column:
+                     those same three stacked to the dashed level, plus surplus. -->
+                <span class="col col--1" data-syn="bar-1" aria-hidden="true"></span>
+                <span class="col col--2" data-syn="bar-2" aria-hidden="true"></span>
+                <span class="col col--3" data-syn="bar-3" aria-hidden="true"></span>
+                <span class="col col--out" aria-hidden="true"><span class="col__parts" data-syn="bar-parts"></span><span class="col__surplus" data-syn="bar-surplus"></span></span>
+
+                <p class="rig__name rig__name--1"><b>HCL Breakthrough</b><span>Stomach Acid</span></p>
+                <p class="rig__name rig__name--2"><b>MassZymes</b><span>Enzyme Activation</span></p>
+                <p class="rig__name rig__name--3"><b>Probiotic Breakthrough</b><span>Probiotic Delivery</span></p>
+
+                <div class="ro">
+                  <p class="ro__label">The Formula</p>
+                  <p class="ro__math"><span data-syn-glyph>1</span><span class="ro__op" data-syn-glyph>+</span><span data-syn-glyph>1</span><span class="ro__op" data-syn-glyph>=</span><span class="ro__five" data-syn="five">5</span></p>
                 </div>
+                <p class="ro__gloss" data-syn="gloss">Sometimes the combination is more powerful than the sum of its parts.</p>
 
-                <figure class="equation" data-syn="eq">
-                  <figcaption class="equation__label" data-syn="eq-label">The Formula</figcaption>
-                  <p class="equation__math"><span data-syn-glyph>1</span><span data-syn-glyph>+</span><span data-syn-glyph>1</span><span data-syn-glyph>=</span><span class="equation__five" data-syn="five">5</span></p>
-                  <p class="equation__tail" data-syn="tail">Sometimes the combination is more powerful than the sum of its parts.</p>
-                </figure>
+                <span class="rig__foot" aria-hidden="true"></span>
+                <figcaption class="rig__sum" data-syn="cap">Taken together, they optimize the whole system.</figcaption>
 
-                <p class="stack__sum" data-syn="sum">Taken together, they optimize the whole system.</p>
-
-              </div>
+              </figure>
             </div>
           </div>
         </div>

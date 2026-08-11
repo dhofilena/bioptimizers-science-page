@@ -378,21 +378,33 @@
      timer. A 250vh block holds a 100svh sticky stage, so there are
      ~1.5 viewport heights of travel; p is where you are inside that.
 
-       p 0.00–0.18  BEAT 1  HCL Breakthrough and MassZymes arrive from
-                            opposite edges of the screen.
-       p 0.18–0.38  BEAT 2  they converge until they overlap.
-       p 0.34–0.58          out of the intersection a third form resolves
-                            at 1.85x the diameter of either input, larger
-                            than the two of them put together — the overlap
-                            yields more than the union, which is literally
-                            the claim. It is Probiotic Breakthrough: the
-                            thing acid and enzymes make possible.
-       p 0.50–0.64          the diagram recedes and hands off.
-       p 0.54–0.72  BEAT 3  "The Formula", then 1 + 1 = staggered in.
-       p 0.66–0.82          the "5" lands LATE, OVERSIZED and on a
-                            back-out curve — it overshoots and settles.
-                            The only overshoot anywhere on this page.
-       p 0.86–1.00          hold. ~20vh of stillness before release.
+     WHAT IS ANIMATED, AND WHAT IS NOT. The CHASSIS — the plate rules,
+     the vessels and their arrows, the leader lines, all three names and
+     the words "The Formula" — is never touched. It is drawn by CSS and
+     it is there at p=0, which is the answer to the round-2 note that
+     arriving at the most important section of the page showed a
+     completely empty dark-green viewport. What the scroll moves is the
+     MATERIAL running through the rig, and only that.
+
+       p 0.03–0.22   stage 1 charges: the acid bed fills, its yield
+                     column rises to one unit on the shared axis.
+       p 0.19–0.29   the conduit to stage 2 runs.
+       p 0.27–0.46   stage 2: a finer bed — nutrients released — and a
+                     second column of exactly the same height. Peers.
+       p 0.43–0.53   the conduit to stage 3 runs.
+       p 0.51–0.70   stage 3: the population takes the vessel wall; the
+                     third column, again one unit.
+       p 0.65–0.74   the outlet runs ACROSS the divider into the
+                     read-out. The apparatus hands off to the reading.
+       p 0.70–0.80   the output column stacks those three same units.
+       p 0.76–0.83   the SUM-OF-PARTS level is ruled across the plate —
+                     the stack meets it exactly. Nothing yet exceeds it.
+       p 0.72–0.90   "1 + 1 =" staggers in.
+       p 0.79–0.89   the surplus grows past the ruled level, in orange.
+       p 0.80–0.95   the "5" lands LATE and OVERSIZED on a back-out
+                     curve — the only overshoot anywhere on this page,
+                     directly above the surplus it names.
+       p 0.86–0.98   the note on the ruled level, then the caption.
 
      Rules kept: transform and opacity only, one rAF per scroll event,
      and the CSS resting state is already the finished composition, so a
@@ -418,7 +430,7 @@
       // collapse the canvas to nothing, so keep the last good measurement.
       if (!vw) return false;
       var r = scene.getBoundingClientRect();
-      scene.style.setProperty('--syn-bleed', r.left + 'px');
+      scene.style.setProperty('--syn-pull', (-r.left) + 'px');
       scene.style.setProperty('--syn-vw', vw + 'px');
       return true;
     }
@@ -431,20 +443,19 @@
       return;
     }
 
-    var geo = { vw: 0, d: 0, shift: 0 };
+    // On a narrow stage the chain turns 90° and runs down the page, so the
+    // conduits have to fill on the other axis. THE STYLESHEET OWNS THAT
+    // DECISION — it is a container query on the stage, not a viewport
+    // breakpoint, so there is no number here to keep in sync with it and get
+    // wrong. We read back which way the conduit is actually drawn: horizontal
+    // runs carry a top border, vertical ones carry a left border. One
+    // computed-style read per remeasure, never per frame.
+    var geo = { vw: 0, vertical: false };
     function remeasure() {
       if (!measureBleed()) return;
       geo.vw = document.documentElement.clientWidth;
-      // offsetWidth is the laid-out width and ignores our transforms.
-      geo.d = (E['disc-a'] && E['disc-a'].offsetWidth) || 200;
-      // The equation does not exist yet during beats 1-2, so the diagram
-      // alone would sit high in an off-balance stage. Offset the column by
-      // exactly enough to centre the part that IS visible, then let it
-      // settle back to zero as the equation arrives.
-      var gap = parseFloat(getComputedStyle(E.inner).rowGap) || 0;
-      var head = (E.eyebrow ? E.eyebrow.offsetHeight : 0) + gap +
-                 (E.venn ? E.venn.offsetHeight : 0);
-      geo.shift = Math.max(0, Math.round((E.inner.offsetHeight - head) / 2));
+      var pipe = E['flow-1'] && E['flow-1'].parentElement;
+      geo.vertical = pipe ? parseFloat(getComputedStyle(pipe).borderTopWidth) === 0 : false;
     }
 
     function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
@@ -464,57 +475,68 @@
       var s = 2.2, u = t - 1;
       return 1 + (s + 1) * u * u * u + s * u * u;
     }
-    function put(n, x, y, s, o) {
+
+    // Four verbs, and every one of them is a transform or an opacity.
+    function charge(n, t) {                       // a vessel bed filling
       if (!n) return;
-      n.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0)' +
-                          (s === 1 ? '' : ' scale(' + s.toFixed(4) + ')');
+      n.style.transform = 'scale3d(' + (0.9 + 0.1 * t).toFixed(4) + ',' + (0.9 + 0.1 * t).toFixed(4) + ',1)';
+      n.style.opacity = t.toFixed(3);
+    }
+    function rise(n, t) {                         // a yield column
+      if (!n) return;
+      n.style.transform = 'scale3d(1,' + t.toFixed(4) + ',1)';
+    }
+    function run(n, t) {                          // material along a conduit
+      if (!n) return;
+      n.style.transform = geo.vertical
+        ? 'scale3d(1,' + t.toFixed(4) + ',1)'
+        : 'scale3d(' + t.toFixed(4) + ',1,1)';
+    }
+    function wipe(n, t) {                         // a rule drawn across
+      if (!n) return;
+      n.style.transform = 'scale3d(' + t.toFixed(4) + ',1,1)';
+    }
+    function arrive(n, y, o) {                    // type settling in
+      if (!n) return;
+      n.style.transform = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
       n.style.opacity = o.toFixed(3);
     }
 
     function render(p) {
-      var d = geo.d, vw = geo.vw;
-      var apart = d * 0.62;      // beat 1 rest: clear of each other
-      var conv = d * 0.34;       // beat 2 rest: overlapping by 0.32d
+      var s1 = eo(seg(p, 0.03, 0.16)), y1 = eo(seg(p, 0.09, 0.22));
+      var f1 = eo(seg(p, 0.19, 0.29));
+      var s2 = eo(seg(p, 0.27, 0.40)), y2 = eo(seg(p, 0.33, 0.46));
+      var f2 = eo(seg(p, 0.43, 0.53));
+      var s3 = eo(seg(p, 0.51, 0.64)), y3 = eo(seg(p, 0.57, 0.70));
+      var f3 = eo(seg(p, 0.65, 0.74));
 
-      var tIn = eo(seg(p, 0.00, 0.18));
-      var tSlide = eo(seg(p, 0.03, 0.22));
-      var tCv = eo(seg(p, 0.18, 0.38));
-      var tGrow = eo(seg(p, 0.34, 0.54));
-      var tName = eo(seg(p, 0.46, 0.58));
-      var tHand = eo(seg(p, 0.50, 0.64));
-      var tForm = eo(seg(p, 0.54, 0.63));
-      var tTail = eo(seg(p, 0.74, 0.83));
-      var tSum = eo(seg(p, 0.78, 0.86));
-      var tTop = eo(seg(p, 0.00, 0.12));
+      charge(E['bed-1'], s1); rise(E['bar-1'], y1); run(E['flow-1'], f1);
+      charge(E['bed-2'], s2); rise(E['bar-2'], y2); run(E['flow-2'], f2);
+      charge(E['bed-3'], s3); rise(E['bar-3'], y3); run(E['flow-3'], f3);
 
-      put(E.eyebrow, 0, mix(16, 0, tTop), 1, tTop);
+      // The output column is the same three units, stacked, and it stops
+      // dead on the ruled level. Only then does anything exceed it.
+      rise(E['bar-parts'], eo(seg(p, 0.70, 0.80)));
+      wipe(E.ref, eo(seg(p, 0.76, 0.83)));
+      rise(E['bar-surplus'], eo(seg(p, 0.79, 0.89)));
 
-      // BEAT 1 into BEAT 2, as one continuous journey per input.
-      put(E['disc-a'], mix(-(vw / 2 + d), -apart, tIn) + tCv * (apart - conv), 0, 1, 1);
-      put(E['disc-b'], mix((vw / 2 + d), apart, tIn) - tCv * (apart - conv), 0, 1, 1);
-      put(E['label-a'], mix(-vw * 0.22, 0, tSlide), 0, 1, tSlide);
-      put(E['label-b'], mix(vw * 0.22, 0, tSlide), 0, 1, tSlide);
-
-      // The surplus, born at the centre of the lens.
-      put(E['disc-c'], 0, 0, 0.10 + 0.90 * tGrow, clamp01(tGrow * 1.8));
-      put(E['label-c'], 0, mix(16, 0, tName), 1, tName);
-
-      // Hand-off: the diagram steps back, it does not leave.
-      put(E.venn, 0, -6 * tHand, 1 - 0.10 * tHand, 1);
-      if (E.field) E.field.style.opacity = (1 - 0.40 * tHand).toFixed(3);
-      put(E.inner, 0, geo.shift * (1 - tHand), 1, 1);
-
-      // BEAT 3.
-      put(E['eq-label'], 0, mix(14, 0, tForm), 1, tForm);
       for (var i = 0; i < glyphs.length; i++) {
-        var g = eo(seg(p, 0.58 + i * 0.02, 0.70 + i * 0.02));
-        put(glyphs[i], 0, mix(20, 0, g), 1, g);
+        var g = eo(seg(p, 0.72 + i * 0.025, 0.82 + i * 0.025));
+        arrive(glyphs[i], mix(18, 0, g), g);
       }
-      var b5 = backOut(seg(p, 0.66, 0.82));
-      put(E.five, 0, mix(-34, 0, b5), 0.34 + 0.66 * b5, clamp01(seg(p, 0.66, 0.74) * 1.2));
+      // The "5" is the only glyph on a back-out, and it scales from its own
+      // baseline (transform-origin sits at the foot of its line box) so it
+      // never drifts off the line the "1"s stand on while it settles.
+      var b5 = backOut(seg(p, 0.80, 0.95));
+      if (E.five) {
+        E.five.style.transform =
+          'translate3d(0,' + mix(-26, 0, b5).toFixed(2) + 'px,0) scale(' + (0.34 + 0.66 * b5).toFixed(4) + ')';
+        E.five.style.opacity = clamp01(seg(p, 0.80, 0.87) * 1.3).toFixed(3);
+      }
 
-      put(E.tail, 0, mix(14, 0, tTail), 1, tTail);
-      put(E.sum, 0, mix(14, 0, tSum), 1, tSum);
+      var tG = eo(seg(p, 0.86, 0.94)), tC = eo(seg(p, 0.90, 0.98));
+      arrive(E.gloss, mix(14, 0, tG), tG);
+      arrive(E.cap, mix(14, 0, tC), tC);
     }
 
     var ticking = false, last = -1;
@@ -550,9 +572,9 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
     window.addEventListener('load', onResize, { once: true });
-    // Fonts and lazy images change the equation's height, which is what the
-    // early lift is measured against. ResizeObserver also covers the viewport
-    // changing without a usable resize event.
+    // Fonts and lazy images change the read-out's height, which changes where
+    // the plate sits. ResizeObserver also covers the viewport changing
+    // without a usable resize event.
     if ('ResizeObserver' in window) {
       new ResizeObserver(onResize).observe(document.documentElement);
     }
