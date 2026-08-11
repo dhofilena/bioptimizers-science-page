@@ -610,8 +610,53 @@
     window.addEventListener('pageshow', function (e) { if (e.persisted) sweep(); });
   }
 
+  /* ---- PIECE 11: INSIDE THE BIOLAB -----------------------------
+     Two jobs, both of which the stylesheet genuinely cannot do.
+
+     1. The roster stagger is an index, not a hand-written delay.
+        :nth-child() would hard-code the count; Seed's equivalent
+        board runs nineteen people across four columns, and this
+        one should survive growing to that without a CSS edit.
+
+     2. The poster control is gated on the poster. That image is
+        lazy and full-bleed, so on a slow connection the reveal can
+        fire while the frame is still empty — and the reader gets a
+        dark disc and a green arrow floating on nothing, promising
+        a film that visibly is not there. The gate is opt-in: CSS
+        only hides the control once this function has marked the
+        link, so if the script never runs the control still shows.
+     -------------------------------------------------------------- */
+  function initLab() {
+    var roster = document.querySelector('[data-roster]');
+    if (roster) {
+      Array.prototype.forEach.call(roster.children, function (li, i) {
+        li.style.setProperty('--i', i);
+      });
+    }
+
+    var film = document.querySelector('[data-film]');
+    if (!film) return;
+    var img = film.querySelector('img');
+    if (!img) return;
+
+    film.classList.add('js-film');
+    function ready() { film.classList.add('is-ready'); }
+
+    // An image that failed still resolves the gate. A broken poster is
+    // a bad look; a permanently invisible play control is a dead end.
+    if (img.complete && img.naturalWidth) { ready(); return; }
+    img.addEventListener('load', ready, { once: true });
+    img.addEventListener('error', ready, { once: true });
+    // Floor: decode events can be missed on bfcache restore.
+    window.addEventListener('load', ready, { once: true });
+    setTimeout(ready, 3000);
+  }
+
   /* ---- Boot ----------------------------------------------------- */
   function boot() {
+    // PIECE 11 runs in both motion modes: the stagger indices and the
+    // poster gate are structure, not animation.
+    initLab();
     // PIECE 07 runs either way: under reduced motion it only measures its
     // full-bleed offset and leaves the finished composition standing.
     initSynergy();
