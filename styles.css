@@ -151,15 +151,83 @@ section { padding: var(--space-section-y) var(--space-page-x); position: relativ
 
 /* ---- PIECE 01: HERO ---- */
 .hero { display: grid; gap: 0; padding: 0; background: var(--color-cream); }
-.hero__media img { width: 100%; object-fit: cover; }
-.hero__copy {
-  display: flex; flex-direction: column; align-items: center; gap: 20px;
-  text-align: center; padding: 40px var(--space-page-x);
+
+/* MEDIA — a full-bleed plate. The image is the LCP element, so it paints at
+   full opacity on the first frame; the only motion is a slow scale settle
+   inside the clip, which reads as a breath rather than an entrance. */
+.hero__media { overflow: hidden; background: var(--color-muted-surface); }
+.hero__media img {
+  width: 100%;
+  object-fit: cover;
+  object-position: 55% 40%;   /* protects the face: crop the shoulder, never the eye */
+  transform: scale(1.045);
+  transition: transform 1200ms var(--ease-out);
 }
-.hero__title { font-size: var(--font-size-h1); font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; }
+/* Opt out of the shared fade — we only borrow its .is-in trigger. */
+.hero__media[data-reveal] { opacity: 1; transform: none; transition: none; will-change: auto; }
+.hero__media[data-reveal].is-in img { transform: scale(1); }
+
+/* COPY — one left axis. Flush-left lets the two-colour headline stack as a
+   single statement instead of a centred stagger, and gives the eyebrow a
+   baseline to hang from. */
+.hero__copy {
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-start;
+  text-align: left;
+  padding: 44px clamp(24px, 6.4vw, 40px) 52px;
+}
+.hero__title {
+  font-size: clamp(28px, 8.2vw, var(--font-size-h1));
+  font-weight: 400; line-height: 1.08; letter-spacing: -0.02em;
+}
+/* Each line rides up out of its own mask. The padding/negative-margin pair
+   keeps ascenders and descenders clear of the clip without moving the type. */
+.hero__line {
+  display: block; overflow: hidden;
+  padding: 0.10em 0 0.16em;
+  margin: -0.10em 0 -0.16em;
+}
+.hero__line[data-reveal] { opacity: 1; transform: none; transition: none; will-change: auto; }
+/* No will-change here on purpose: a permanently promoted layer costs the
+   headline its subpixel antialiasing, and the browser promotes for the
+   duration of the transition regardless. */
+.hero__line > span {
+  display: block;
+  transform: translate3d(0, 125%, 0);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.hero__line[data-reveal].is-in > span { transform: translate3d(0, 0, 0); }
+.hero__line:first-child > span { transition-delay: 60ms; }
+.hero__line + .hero__line > span { transition-delay: 190ms; }
 .hero__title-green { color: var(--color-green); display: block; }
 .hero__title-dark { color: var(--color-dark); display: block; }
-.hero__copy .eyebrow { letter-spacing: 1.96px; max-width: 602px; }
+
+/* EYEBROW — the statement's footing. A hairline draws left-to-right as the
+   last beat, closing the sequence instead of starting a new one. */
+.hero__eyebrow {
+  letter-spacing: 1.96px;
+  line-height: 1.65;
+  max-width: 336px;   /* two balanced lines — three reads choppy at this tracking */
+  margin-top: 44px;
+  text-wrap: balance;
+}
+.hero__eyebrow::before {
+  content: "";
+  display: block; width: 72px; height: 1px;
+  margin-bottom: 20px;
+  background: var(--color-chip-border);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-out) 420ms;
+}
+.hero__eyebrow.is-in::before { transform: scaleX(1); }
+
+/* This piece adds motion the shared system does not know about, so this piece
+   gates it. At rest the hero is complete, not half-arrived. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__media img,
+  .hero__line > span { transform: none !important; transition: none !important; }
+  .hero__eyebrow::before { transform: scaleX(1) !important; transition: none !important; }
+}
 
 /* ---- PIECE 02: BIOLAB BANNER ---- */
 .banner { background: var(--color-green); color: var(--color-white); text-align: center; overflow: hidden; }
@@ -270,9 +338,15 @@ section { padding: var(--space-section-y) var(--space-page-x); position: relativ
    ============================================================ */
 @media (min-width: 769px) {
   section { padding: 80px var(--space-page-x); }
-  .hero { grid-template-columns: 1fr 1fr; align-items: center; min-height: 649px; }
-  .hero__media, .hero__media img { height: 100%; }
-  .hero__media img { object-fit: cover; }
+  /* PIECE 01 — the height tracks the width so the media column never becomes
+     so tall-and-narrow that the cover crop eats the subject's face, and is
+     capped at the source's 649px. The image is taken out of flow so its own
+     aspect ratio can't push the row past that cap. */
+  .hero { grid-template-columns: 1fr 1fr; align-items: stretch; min-height: clamp(460px, 50vw, 649px); }
+  .hero__media { position: relative; }
+  .hero__media img { position: absolute; inset: 0; height: 100%; object-fit: cover; }
+  .hero__copy { padding: 64px clamp(32px, 5vw, 112px); }
+  .hero__title { font-size: clamp(30px, 3.75vw, var(--font-size-h1)); }
   .banner { min-height: 248px; display: grid; place-items: center; }
   .phase { grid-template-columns: repeat(2, 1fr); gap: 40px; align-items: start; }
   .phase__num, .phase__eyebrow, .phase__title { grid-column: 1; }
