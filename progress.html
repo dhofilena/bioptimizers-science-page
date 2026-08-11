@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Progress — Breakthrough Science</title>
+<style>
+:root{--green:#32951c;--deep:#103608;--vital:#a7fe75;--dark:#382e2c;--cream:#f8f7f2;--orange:#ff8629;--line:#c0cdbc}
+*{box-sizing:border-box}
+body{margin:0;padding:40px 24px;background:var(--cream);color:var(--dark);
+ font:16px/1.45 "Neue Haas Unica Pro","Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font-size:32px;font-weight:400;color:var(--green);margin:0 0 6px}
+.sub{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.42px;margin:0 0 28px}
+.banner{background:var(--deep);color:#fff;border-radius:16px;padding:20px 24px;margin-bottom:28px}
+.banner b{color:var(--vital);display:block;font-size:14px;text-transform:uppercase;letter-spacing:.42px;margin-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:#fff;border-radius:12px;padding:16px 18px;border-left:4px solid var(--line)}
+.card.done{border-left-color:var(--green)}
+.card.blocked{border-left-color:var(--orange)}
+.card h3{margin:0 0 8px;font-size:15px;font-weight:700}
+.meta{font-size:13px;display:flex;flex-wrap:wrap;gap:8px 14px}
+.pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+ padding:4px 10px;border-radius:9999px;background:#eee}
+.pill.pass{background:var(--vital);color:var(--deep)}
+.pill.wait{background:#e2dfd6}
+.pill.stop{background:var(--orange);color:#273310}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+td{padding:6px 0;border-bottom:1px solid var(--line)}
+td:last-child{text-align:right;font-weight:700}
+.foot{margin-top:28px;font-size:13px;opacity:.75}
+code{background:#fff;padding:2px 6px;border-radius:6px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Breakthrough Science — Build Progress</h1>
+  <p class="sub">Wave 0 complete · 13 pieces pending · updated at foundation commit</p>
+
+  <div class="banner">
+    <b>Blocked — needs you</b>
+    The Browser pane is not displayed, so the page never composites frames and every screenshot
+    times out. The UI/UX critic and Art Director both judge the <em>rendered</em> page against
+    Seed / Ritual / Oura, so the critic loop cannot start until the pane is visible.
+    Reveal the Browser pane and the loop runs.
+  </div>
+
+  <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:.42px;margin:0 0 10px">Gates</h3>
+  <table>
+    <tr><td>Copy fidelity gate</td><td>PASS — 97/97 chunks</td></tr>
+    <tr><td>Images flat in root, 0 broken</td><td>15 / 15</td></tr>
+    <tr><td>Design tokens resolving</td><td>PASS</td></tr>
+    <tr><td>Served over HTTP</td><td>localhost:8137</td></tr>
+    <tr><td>Baseline pushed to main</td><td>e002b58</td></tr>
+    <tr><td>Screenshots available</td><td>NO — blocked</td></tr>
+  </table>
+
+  <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:.42px;margin:28px 0 10px">Pieces</h3>
+  <div class="grid">
+    <div class="card done"><h3>00 · Foundation</h3><div class="meta"><span class="pill pass">Built</span><span>copy gate pass</span><span>main</span></div></div>
+    <div class="card blocked"><h3>01 · Hero</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>02 · BIOLab banner</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>03 · Phase spine <em>(scroll)</em></h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>04 · Phase One — The Standard</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>05 · Phase Two — The Blueprint</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>06 · Phase Three — The Hunt</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>07 · Phase Four — Synergy <em>(money moment)</em></h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>08 · Phase Five — Evolution</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>09 · Every Number Earned</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>10 · Living Proof</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>11 · Inside the BIOLab</h3><div class="meta"><span class="pill wait">Scaffolded</span><span>no Seed counterpart — craft bar only</span></div></div>
+    <div class="card blocked"><h3>12 · Find Your Breakthrough</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+    <div class="card blocked"><h3>13 · Global orchestration</h3><div class="meta"><span class="pill wait">Scaffolded</span><span class="pill stop">critics blocked</span></div></div>
+  </div>
+
+  <p class="foot">
+    Preview: <code>http://localhost:8137</code> · Copy gate: <code>node copycheck.js</code> ·
+    Repo: <code>dhofilena/bioptimizers-science-page</code><br>
+    Note: the site must be served over HTTP — Chrome's file-origin isolation stops
+    <code>file://</code> pages from applying the external stylesheet.
+  </p>
+</div>
+</body>
+</html>
