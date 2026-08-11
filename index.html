@@ -117,22 +117,52 @@
 
   <div class="process__body">
 
-    <!-- STICKY SPINE: the reader always knows where they are -->
-    <aside class="spine" aria-hidden="true" data-spine>
-      <div class="spine__rail"><span class="spine__fill" data-spine-fill></span></div>
+    <!-- THE SPINE IS NAVIGATION. IT WAS A PROGRESS BAR WEARING THE WORD.
+         Round 1 shipped `aside[aria-hidden="true"]` containing zero links. A
+         reader in phase 3 could not reach phase 5, and a screen-reader user
+         was never told which of the five phases they were in — the page's one
+         `aria-current` sat INSIDE the hidden container, where by definition
+         nothing could ever see it. So: a labelled <nav>, five real in-page
+         links, `aria-current="step"` on the anchor itself.
+
+         IT IS ALSO THE KEYBOARD'S ONLY FOOTHOLD IN THE ARGUMENT. Before this
+         there were 9 focusable elements across the document and TAB 3 -> TAB 4
+         moved scrollY 0 -> 12,244: the manifesto, all five phases, the whole
+         1+1=5 mechanism and the stats register were crossed in one keystroke.
+         Now 14, and that leap is TAB 3 -> TAB 4 = 0 -> 2,023, landing on the
+         spine. There is still no interactive element inside the prose itself
+         and inventing one would be worse than the problem — so the five links
+         are not five rests, they are five jumps: from any of them, Enter puts
+         you at the top of any phase, and Shift+Tab from a phase brings the
+         index back.
+
+         Every phase carries tabindex="-1" so the BROWSER'S OWN fragment
+         navigation lands focus on the article it jumped to. That is why this
+         works with JS switched off: the anchors are anchors, and the landing
+         is the platform's, not ours. JS only adds smooth travel and keeps the
+         active step in step with the scroll. The one honest limit of the no-JS
+         path is that `aria-current` stays on 01 — with no script there is
+         nothing that could know otherwise, and 01 is where a reader entering
+         this section actually is.
+
+         Below 1024px this same markup lays out as a ruled index at the head
+         of the section instead of vanishing — see styles.css. -->
+    <nav class="spine" aria-labelledby="spine-label" data-spine>
+      <p class="spine__label" id="spine-label">Jump to phase</p>
+      <div class="spine__rail" aria-hidden="true"><span class="spine__fill" data-spine-fill></span></div>
       <ol class="spine__list">
-        <li class="spine__item is-active" data-spine-step="1"><b>01</b><span>The Standard</span></li>
-        <li class="spine__item" data-spine-step="2"><b>02</b><span>The Blueprint</span></li>
-        <li class="spine__item" data-spine-step="3"><b>03</b><span>The Hunt</span></li>
-        <li class="spine__item" data-spine-step="4"><b>04</b><span>Synergy</span></li>
-        <li class="spine__item" data-spine-step="5"><b>05</b><span>Never-Ending Evolution</span></li>
+        <li class="spine__item is-active" data-spine-step="1"><a class="spine__link" href="#phase-1" data-spine-link="1" aria-current="step"><b class="spine__num">01</b><span class="spine__name">The Standard</span></a></li>
+        <li class="spine__item" data-spine-step="2"><a class="spine__link" href="#phase-2" data-spine-link="2"><b class="spine__num">02</b><span class="spine__name">The Blueprint</span></a></li>
+        <li class="spine__item" data-spine-step="3"><a class="spine__link" href="#phase-3" data-spine-link="3"><b class="spine__num">03</b><span class="spine__name">The Hunt</span></a></li>
+        <li class="spine__item" data-spine-step="4"><a class="spine__link" href="#phase-4" data-spine-link="4"><b class="spine__num">04</b><span class="spine__name">Synergy</span></a></li>
+        <li class="spine__item" data-spine-step="5"><a class="spine__link" href="#phase-5" data-spine-link="5"><b class="spine__num">05</b><span class="spine__name">Never-Ending Evolution</span></a></li>
       </ol>
-    </aside>
+    </nav>
 
     <div class="phases">
 
       <!-- ---------- PIECE 04: PHASE ONE — START ---------- -->
-      <article class="phase" id="phase-1" data-phase="1" aria-labelledby="phase-1-heading">
+      <article class="phase" id="phase-1" data-phase="1" tabindex="-1" aria-labelledby="phase-1-heading">
         <p class="phase__ghost" aria-hidden="true">01</p>
         <header class="phase__head">
           <p class="eyebrow" data-reveal>Phase One</p>
@@ -161,7 +191,7 @@
       <!-- ---------- PIECE 04: PHASE ONE — END ---------- -->
 
       <!-- ---------- PIECE 05: PHASE TWO — START ---------- -->
-      <article class="phase phase--flip" id="phase-2" data-phase="2" aria-labelledby="phase-2-heading">
+      <article class="phase phase--flip" id="phase-2" data-phase="2" tabindex="-1" aria-labelledby="phase-2-heading">
         <p class="phase__ghost" aria-hidden="true">02</p>
         <header class="phase__head">
           <p class="eyebrow" data-reveal>Phase Two</p>
@@ -182,7 +212,7 @@
       <!-- ---------- PIECE 05: PHASE TWO — END ---------- -->
 
       <!-- ---------- PIECE 06: PHASE THREE — START ---------- -->
-      <article class="phase phase--wide" id="phase-3" data-phase="3" aria-labelledby="phase-3-heading">
+      <article class="phase phase--wide" id="phase-3" data-phase="3" tabindex="-1" aria-labelledby="phase-3-heading">
         <p class="phase__ghost" aria-hidden="true">03</p>
         <header class="phase__head">
           <p class="eyebrow" data-reveal>Phase Three</p>
@@ -214,7 +244,7 @@
       <!-- ---------- PIECE 06: PHASE THREE — END ---------- -->
 
       <!-- ---------- PIECE 07: PHASE FOUR — SYNERGY [MONEY MOMENT] — START ---------- -->
-      <article class="phase phase--synergy" id="phase-4" data-phase="4" aria-labelledby="phase-4-heading">
+      <article class="phase phase--synergy" id="phase-4" data-phase="4" tabindex="-1" aria-labelledby="phase-4-heading">
         <p class="phase__ghost" aria-hidden="true">04</p>
         <header class="phase__head">
           <p class="eyebrow" data-reveal>Phase Four — Our Secret Weapon</p>
@@ -269,7 +299,7 @@
       <!-- ---------- PIECE 07: PHASE FOUR — END ---------- -->
 
       <!-- ---------- PIECE 08: PHASE FIVE — START ---------- -->
-      <article class="phase phase--flip" id="phase-5" data-phase="5" aria-labelledby="phase-5-heading">
+      <article class="phase phase--flip" id="phase-5" data-phase="5" tabindex="-1" aria-labelledby="phase-5-heading">
         <p class="phase__ghost" aria-hidden="true">05</p>
         <header class="phase__head">
           <p class="eyebrow" data-reveal>Phase Five</p>
