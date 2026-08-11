@@ -42,8 +42,15 @@
   --t-body: 1.0625rem;
   --t-small: 0.9375rem;
   --t-eyebrow: 0.75rem;
-  --t-figure: clamp(3rem, 6.5vw, 5.5rem);
   --t-ghost: clamp(7rem, 20vw, 17rem);
+
+  /* 80,648 IS ONE OBJECT THAT APPEARS TWICE, so it is one token used twice.
+     PIECE 02 promises the figure; PIECE 09 banks it. The receipt is set a
+     quarter larger than the promise — an escalation the reader feels as
+     "that number came back bigger", not two agents picking two clamps.
+     Anything that shows this figure reads --t-tally; nothing sets it alone. */
+  --t-tally: clamp(3.9rem, 12.2vw, 9.8rem);
+  --tally-bank: 1.25;
 
   /* ---- Rhythm. Free. Generous. ---- */
   --pad-y: clamp(5.5rem, 11vw, 11rem);
@@ -51,11 +58,50 @@
   --shell: 1240px;
   --measure: 34rem;
 
-  /* ---- Motion. Coherence agent owns these. ---- */
+  /* ============================================================
+     MOTION — THE PAGE'S VOCABULARY.
+     Four builders arrived with six curves. A page can carry three
+     gestures; it cannot carry six, because at six nothing rhymes
+     with anything and the reader stops reading motion as language.
+     So every animation on this page is one of four things, and
+     which one it is says what kind of event it is:
+
+       ARRIVE   --ease        expo-out. Something enters and settles:
+                              reveals, buttons, hovers, photographs
+                              easing out of their opening crop.
+       DRAW     --ease-draw   in-out, real speed through the middle.
+                              A line ruled or wiped ACROSS the page:
+                              the manifesto seam, the register rules,
+                              the roster rule, the spine's fill.
+       CLIMB    --ease-climb  slow off the mark, fast through the
+                              middle, soft landing. Type rising out
+                              of a mask, and only that. Used at three
+                              scales — hero 900ms, manifesto 660ms,
+                              register rows 520ms — so the duration
+                              falls as the type gets smaller.
+       SURPLUS  a back-out overshoot. ONCE, in JS, on the "5" of
+                PIECE 07 (see backOut() in app.js). Overshoot is the
+                rarest thing here because it marks the rarest claim:
+                a result larger than its inputs. It used to appear on
+                a play button as well, which spent it on nothing.
+
+     Scroll-SCRUBBED values (the synergy scene, the tally count) run
+     ease-out-cubic in JS instead. An expo-out under a scrub puts 90%
+     of its travel in the first 10% of the gesture, so the rest of
+     the scroll reads as dead — a scrub needs a curve you can push.
+     ============================================================ */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur: 900ms;
+  --ease-draw: cubic-bezier(0.62, 0, 0.2, 1);
+  --ease-climb: cubic-bezier(0.34, 0.02, 0.12, 1);
+
+  /* One arrival, one number. 28px over 900ms was travel below the
+     threshold of noticing stretched over a duration long enough to
+     feel slack; PIECE 11 had already privately re-cut it to 44/520.
+     That correction is now the page's, so the sections that escalate
+     past it (56px poster, 64px roster card) read as escalation. */
+  --dur: 560ms;
   --dur-fast: 420ms;
-  --rise: 28px;
+  --rise: 44px;
 }
 
 /* ---- Reset ---- */
@@ -82,6 +128,15 @@ a { color: inherit; text-decoration: none; }
 }
 .skip-link:focus { left: 0; }
 :focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+/* --green is 3.59:1 on --cream and 3.48:1 on --deep: legible as a ring on the
+   light ground, invisible on the dark one. Every dark section takes --vital
+   (10.99:1) instead. Declared once, here, rather than by each dark piece
+   privately discovering the problem — PIECE 11 already had, alone. */
+.manifesto :focus-visible,
+.synergy :focus-visible,
+.numwall :focus-visible,
+.proof :focus-visible,
+.people :focus-visible { outline-color: var(--vital); }
 
 /* ---- Shared roles ---- */
 .shell { width: 100%; max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter); }
@@ -190,10 +245,14 @@ section { position: relative; padding-block: var(--pad-y); }
   line-height: 0.9; letter-spacing: -0.035em; text-transform: none;
 }
 .hero__title .line { display: block; overflow: hidden; padding-block: 0.06em; margin-block: -0.06em; }
+/* CLIMB, not arrive: this is type rising out of a mask, the same gesture the
+   manifesto answers it with 900px later. Both now run the same curve, which
+   is what turns two reveals into one rhyme. Longest duration on the page's
+   biggest type; the manifesto takes 660ms and the register rows 520ms. */
 .hero__title .line i {
   display: block; font-style: normal; color: var(--green);
   transform: translate3d(0, 110%, 0);
-  transition: transform 1100ms var(--ease);
+  transition: transform 900ms var(--ease-climb);
 }
 .hero__title .line.is-in i { transform: none; }
 .hero__title .line--alt i { color: var(--dark); }
@@ -322,16 +381,20 @@ section { position: relative; padding-block: var(--pad-y); }
      the beat.
    TYPE.  One sentence, re-typeset into five sizes so the claim inside it
      can be seen. 80,648 is set larger than any heading on this page — it
-     is the most quotable thing here and it now looks like it.
-   MOTION.  Three discrete beats and one continuous one. None of them is
-     the shared 900ms expo fade:
-     · the seam CUTS  — scaleX(0→1) from the left, 780ms
-       cubic-bezier(.62,0,.2,1) — an in-out with real mid-travel speed.
+     is the most quotable thing here and it now looks like it, and PIECE 09
+     later banks the same figure a quarter larger again off --t-tally.
+   MOTION.  Three discrete beats and one continuous one. Two of the three
+     are the gestures this section GAVE the page — the vocabulary at the
+     top of this file is named after them:
+     · the seam DRAWS — scaleX(0→1) from the left, 780ms --ease-draw, an
+       in-out with real mid-travel speed. The register rules, the roster
+       rule and the spine's fill are all now ruled with the same stroke.
      · the lines CLIMB — each measured line rises 118% of its own height
-       out of its own mask, 660ms cubic-bezier(.34,.02,.12,1), 60ms
-       apart. Travel is a whole line, not 28px, and the curve keeps most
-       of the distance in the middle of the duration, so the rise is
+       out of its own mask, 660ms --ease-climb, 60ms apart. The curve keeps
+       most of the distance in the middle of the duration, so the rise is
        actually seen. No opacity at all: the type is uncovered, not faded.
+       The hero headline (900ms) and the register rows (520ms) climb out of
+       their masks on this curve too — one gesture at three scales.
      · 80,648 is WIPED clear — a --vital bar sweeps on from the left and
        off to the right; the number switches on under it at the midpoint.
        Nothing else on the page does this, which is the point.
@@ -393,9 +456,10 @@ section { position: relative; padding-block: var(--pad-y); }
   font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.2em; line-height: 1.55; color: var(--cream); max-width: 34ch;
 }
+/* The promise. PIECE 09 banks the same figure at --tally-bank times this. */
 .mf-tally {
   position: relative; margin-top: clamp(0.5rem, 1.3vh, 0.95rem);
-  font-size: clamp(3.9rem, 12.2vw, 9.8rem); line-height: 0.92;
+  font-size: var(--t-tally); line-height: 0.92;
 }
 .mf-tally__n {
   display: block; font-weight: 700; letter-spacing: -0.05em;
@@ -441,18 +505,20 @@ section { position: relative; padding-block: var(--pad-y); }
 
 .manifesto.is-armed.is-in .mf-line__i {
   transform: none;
-  transition: transform 660ms cubic-bezier(0.34, 0.02, 0.12, 1) var(--mf-d, 0ms);
+  transition: transform 660ms var(--ease-climb) var(--mf-d, 0ms);
 }
 .manifesto.is-armed.is-in .manifesto__seam {
   transform: none;
-  transition: transform 780ms cubic-bezier(0.62, 0, 0.2, 1);
+  transition: transform 780ms var(--ease-draw);
 }
 .manifesto.is-armed.is-in .manifesto__title::before {
   transform: none;
-  transition: transform 900ms cubic-bezier(0.62, 0, 0.2, 1) var(--mf-d, 0ms);
+  transition: transform 900ms var(--ease-draw) var(--mf-d, 0ms);
 }
+/* The wipe shipped on (.62,0,.24,1) — a hand-tuned copy of the seam's curve
+   that differs from it by 0.04 and reads as identical. Same job, same token. */
 .manifesto.is-armed.is-in .mf-tally::after {
-  animation: mf-wipe 860ms cubic-bezier(0.62, 0, 0.24, 1) var(--mf-d, 0ms) both;
+  animation: mf-wipe 860ms var(--ease-draw) var(--mf-d, 0ms) both;
 }
 .manifesto.is-armed.is-in .mf-tally__n {
   animation: mf-uncover 860ms linear var(--mf-d, 0ms) both;
@@ -525,8 +591,10 @@ section { position: relative; padding-block: var(--pad-y); }
       linear-gradient(96deg,  rgba(16,54,8,0.92) 0%, rgba(16,54,8,0.72) 100%);
   }
   /* The number is this section's display type. On a narrow column that
-     means most of the column, not 190px of it. */
-  .mf-tally { font-size: clamp(4.4rem, 21vw, 7rem); }
+     means most of the column, not 190px of it. Retuned on the TOKEN, not on
+     .mf-tally, so PIECE 09's receipt is re-cut by the same hand — the two
+     stay a quarter apart at every width instead of only above 900px. */
+  :root { --t-tally: clamp(4.4rem, 21vw, 7rem); }
   /* Tracked small caps need the room they ask for: at 0.2em this breaks to
      three ragged lines on a phone, which is a texture, not a sentence.
      The tracking gives way before the size does — it is still copy. */
@@ -561,7 +629,7 @@ section { position: relative; padding-block: var(--pad-y); }
   letter-spacing: -0.05em; color: var(--green); opacity: 0.10;
   pointer-events: none; user-select: none;
 }
-.phase__head, .phase__prose, .phase__plate, .keynote, .assay, .equation, .stack { position: relative; z-index: 1; }
+.phase__head, .phase__prose, .phase__plate, .keynote, .assay, .equation { position: relative; z-index: 1; }
 .phase__head .eyebrow { color: var(--deep); }
 .phase__title {
   margin-top: 0.75rem; font-size: var(--t-h2); font-weight: 700;
@@ -801,17 +869,22 @@ section { position: relative; padding-block: var(--pad-y); }
    right-hand air is deliberate: a ledger line runs past its last
    word, it does not stretch the word to fill the box.
 
-   THE MOTION. Three gestures, none of them the shared 28px fade:
+   THE MOTION. Three gestures, spoken in the page's vocabulary:
      1. the strike     scaleX 0->1 across the full viewport, driven
                        frame-for-frame by the counter in app.js, so
                        the line finishes ruling exactly as the tally
-                       reaches 80,648. ~1500ms.
-     2. the rules      scaleX 0->1, 620ms, drawn left to right as
-                       each entry arrives.
-     3. the entries    the row wipes up from behind its own rule —
-                       translateY(100%) -> 0 inside an overflow
-                       clip, so travel is the whole row height
-                       (72-96px, not 28px) in 520ms. Perceptible.
+                       reaches 80,648. ~1500ms. Number and line are
+                       one gesture, so the line takes the counter's
+                       ease-out-cubic rather than --ease-draw.
+     2. the rules      DRAW. scaleX 0->1, 620ms --ease-draw, ruled
+                       left to right as each entry arrives — the
+                       same stroke as the manifesto's seam.
+     3. the entries    CLIMB. The row rises out from behind its own
+                       rule, translateY(100%) -> 0 inside an
+                       overflow clip, so travel is the whole row
+                       height (72-96px) in 520ms --ease-climb. Same
+                       gesture as the hero headline and the
+                       manifesto's sentence, at the smallest scale.
 
    THE FLOOR. Every resting state below IS the finished state.
    The armed states are added by JS and only to entries still
@@ -873,8 +946,14 @@ section { position: relative; padding-block: var(--pad-y); }
   line-height: 1; letter-spacing: -0.035em; color: var(--vital);
   font-variant-numeric: tabular-nums;
 }
+/* THE RECEIPT. The manifesto promised this figure at --t-tally; this is the
+   same object returning, a quarter larger, on the same token. The two sizes
+   used to be two unrelated clamps (157px and 192px at 1280) that happened to
+   land near each other — now the ratio is a number in the stylesheet and the
+   escalation survives every width. */
 .tally__val--lead {
-  font-size: clamp(4.25rem, 24vw, 12rem); line-height: 0.86; letter-spacing: -0.055em;
+  font-size: calc(var(--t-tally) * var(--tally-bank));
+  line-height: 0.86; letter-spacing: -0.055em;
   /* "80,648" is 2.73em wide in the shipped face at tabular widths. Reserving
      the finished width means the caption beside it cannot be shoved sideways
      frame by frame while the tally counts — the count is a transform-and-text
@@ -909,15 +988,18 @@ section { position: relative; padding-block: var(--pad-y); }
 .tally__entry.is-armed::before,
 .tally__entry.is-armed:last-child::after { transform: scaleX(0); }
 
+/* CLIMB — a row rising out of a clip is the same gesture as the hero headline
+   and the manifesto's sentence, at the smallest of the three scales. */
 .tally__entry.is-armed.is-in .tally__row,
 .tally__entry.is-armed.is-in .tally__stack {
   transform: none;
-  transition: transform 520ms var(--ease) calc(var(--rd, 0ms) + 120ms);
+  transition: transform 520ms var(--ease-climb) calc(var(--rd, 0ms) + 120ms);
 }
+/* DRAW — these are rules being ruled, the same stroke as the manifesto seam. */
 .tally__entry.is-armed.is-in::before,
 .tally__entry.is-armed.is-in:last-child::after {
   transform: scaleX(1);
-  transition: transform 620ms var(--ease) var(--rd, 0ms);
+  transition: transform 620ms var(--ease-draw) var(--rd, 0ms);
 }
 
 @media (min-width: 700px) {
@@ -944,33 +1026,78 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ============================================================
-   PIECE 10 — LIVING PROOF
-   ============================================================ */
+   PIECE 10 — LIVING PROOF. Reconciled by the COHERENCE pass.
+
+   WHY THIS SECTION CHANGED GROUND. Walk the finished page and the
+   first 60% keeps long, confident runs — a screen of cream, a
+   screen of dark, then a 3,900px cream chapter, then the 2,000px
+   dark of the money moment. The last 40% did not: after PIECE 09
+   went dark and PIECE 11 went dark, this 862px cream section sat
+   between them and the tail strobed dark / light / dark / light,
+   roughly one flip per screen. That is not alternation with
+   intent, it is a flicker; and a 862px light gap does not read as
+   a breath, it reads as a hole punched in the dark.
+
+   So the page now has THREE dark beats and each is longer than the
+   one before it — 800px (the register changes), 2,000px (the
+   mechanism), 4,300px (the evidence: the numbers, the outcomes,
+   the people who did it). Light, dark, light, dark, light, dark,
+   light — seven bands, no band shorter than a screen, and the
+   dark deepens as the argument does. PIECE 12 stays cream on
+   purpose: after the longest dark run on the page, the shop doors
+   are the room the reader is let out into.
+
+   Colour, all measured on --deep #103608:
+     --white          13.51:1  title
+     --cream          12.90:1  the lede
+     --vital          10.99:1  the check marks (they were --green,
+                               3.48:1 here and 3.59:1 on cream —
+                               under AA in both grounds)
+     white @ 0.78      7.80:1  the three claims
+   --orange keeps its one job: the CTA fill, 5.60:1 on this ground
+   and 8.5:1 inside its own pill. ============================================================ */
 .proof {
-  background: var(--cream);
+  background: var(--deep); color: var(--white);
   display: grid; gap: clamp(2.5rem, 5vw, 5rem);
-  width: 100%; max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter);
+  /* The ground has to reach both edges — a --deep band that stopped at 1240px
+     would be a dark card floating on cream. The section is full width and the
+     shell is expressed as padding instead, so the type still lands on exactly
+     the column .shell would have given it. */
+  width: 100%;
+  padding-inline: max(var(--gutter), calc((100% - var(--shell)) / 2 + var(--gutter)));
 }
 .proof__title { font-size: var(--t-h1); font-weight: 700; line-height: 0.95; letter-spacing: -0.035em; }
-.proof__lede { margin-top: 1.5rem; font-size: var(--t-lead); line-height: 1.45; max-width: 34ch; }
+.proof__lede { margin-top: 1.5rem; font-size: var(--t-lead); line-height: 1.45; max-width: 34ch; color: var(--cream); }
 .proof__list { margin-top: 2.5rem; display: flex; flex-direction: column; }
 .proof__list li {
-  padding-block: 1.25rem; border-top: 1px solid var(--dark-12);
-  color: var(--muted); display: flex; gap: 1rem;
+  padding-block: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.78); display: flex; gap: 1rem;
 }
-.proof__list li::before { content: "✓"; color: var(--green); font-weight: 700; }
+.proof__list li::before { content: "✓"; color: var(--vital); font-weight: 700; }
 .proof .btn { margin-top: 2.5rem; }
-.proof__plate { overflow: hidden; }
+/* Same holding tint as the poster and the portrait frames, so a photograph
+   still arriving is a considered panel rather than a hole in the ground. */
+.proof__plate { overflow: hidden; background: rgba(255, 255, 255, 0.06); }
+/* This source ships rounded corners baked in as transparency — measured, the
+   arc runs to 40px of a 1010px-wide plate. On cream that was a light edge on
+   a light ground and nobody saw it; on --deep it is four dark notches out of
+   the photograph. Same answer PIECE 11 gives its poster: crop past the arc.
+   Clearing a radius r by centre-cropping needs 0.293r off each edge; 2.5%
+   here is 25px horizontally and 20px vertically, both clear of the 11.7px
+   the geometry actually asks for. */
+.proof__plate img { transform: scale(1.05); }
 
 /* ============================================================
    PIECE 11 — INSIDE THE BIOLAB
 
    Ground. The Art Director's note: "the last 4,008px, 34% of the
-   page, is one undifferentiated light run." This section is the
-   one dark beat inside that run — cream, then a full-bleed
-   photograph, then --deep. A 13.5:1 luminance step, not the 3%
-   cream/white shrug it replaces. It also gives three real people
-   a gallery wall to hang on.
+   page, is one undifferentiated light run." Going --deep here was
+   the answer to it — a 13.5:1 luminance step, not the 3%
+   cream/white shrug it replaced — and it also gives three real
+   people a gallery wall to hang on. The coherence pass then took
+   PIECE 10 dark with it, so this is no longer a lone dark beat
+   inside a light run: it is the back half of the page's final and
+   longest dark chapter (see PIECE 10 for the whole sequence).
 
    Colour on the dark ground, all measured against --deep:
      --white           13.51:1   names, title
@@ -1004,9 +1131,12 @@ section { position: relative; padding-block: var(--pad-y); }
      a legible control on it, not a hole in the page. */
   width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.06);
 }
+/* ARRIVE. This shipped on an ease-out-cubic of its own, which made it the one
+   photograph on the page that settled to a different curve from the hero plate
+   (1600ms) and the shop doors (1200ms). Same gesture, same token, same family. */
 .film img {
   width: 100%;
-  transition: transform 1200ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 1200ms var(--ease);
 }
 
 .film__cue {
@@ -1058,7 +1188,7 @@ section { position: relative; padding-block: var(--pad-y); }
   width: 100%; height: 100%; object-fit: cover;
   object-position: var(--px, 50%) 50%;
   transform: scale(1.10) translateY(var(--ty, 0));
-  transition: transform 1000ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 1000ms var(--ease);
 }
 /* Per-asset crop correction. These three stills were pulled from
    footage, not shot as a matched set: measured against the frame,
@@ -1083,44 +1213,40 @@ section { position: relative; padding-block: var(--pad-y); }
 .person__role { margin-top: 0.5rem; color: rgba(255, 255, 255, 0.72); }
 .people .btn { margin-top: clamp(2.5rem, 5vw, 4rem); }
 
-/* Focus has to survive the dark ground. --green is 3.48:1 on
-   --deep; --vital is 10.99:1. Over the photograph the same ring
-   would vanish, so the poster takes an inset --deep ring instead
+/* The --vital ring for dark grounds is now declared once for all of
+   them at the top of this file. Over the PHOTOGRAPH even that ring
+   would vanish, so the poster alone takes an inset --deep ring
    (7.3:1 against the frame it sits on). */
-.people :focus-visible { outline-color: var(--vital); }
 .people .film:focus-visible { outline: 4px solid var(--deep); outline-offset: -10px; }
 
 /* ---- PIECE 11 MOTION ----------------------------------------
-   The page-wide reveal is 28px over 900ms on expo-out, which past
-   the first 6px is below the threshold of noticing. This section
-   runs four distinct motions instead of one:
+   This block used to open by re-cutting the shared reveal from
+   28px/900ms to 44px/520ms, privately, for one section. That
+   correction was right and it is now the PAGE's arrival — see
+   --rise and --dur at the top of this file — so the override is
+   gone and this section simply speaks in the shared voice. What
+   survives here is only what is genuinely different about it:
 
-     1  head + note   44px / 520ms / expo-out        (the page's
-                      voice, but with travel you can actually see)
-     2  poster        56px / 560ms / expo-out, and the photograph
-                      inside it settles 1.12 -> 1.06 over 1200ms on
-                      a slow ease-out-cubic, so the image is still
-                      moving after its frame has stopped
-     3  control       scale 0.62 -> 1 / 540ms / back-out, 240ms
-                      late. The only overshoot in the section, and
-                      it rhymes with the "5" in PIECE 07
-     4  rule          scaleX 0 -> 1 / 760ms from the left. A scale,
-                      not a translate — the horizontal answer to
-                      the spine's vertical fill
-     5  roster        64px / 520ms, dealt at 90ms per card, each
-                      portrait easing 1.14 -> 1.07 behind its frame
+     1  poster        56px, one step past the page's 44px
+     2  control       scale 0.62 -> 1, 240ms late, on ARRIVE.
+                      It shipped on a back-out that duplicated the
+                      "5" in PIECE 07. Two overshoots is not a
+                      rhyme, it is a spent effect: the "5" means
+                      "more came out than went in" and a play
+                      button means nothing of the kind. Overshoot
+                      is now used once on this page, where it says
+                      something. The control still has its own
+                      timing and its own late entrance.
+     3  rule          scaleX 0 -> 1 / 760ms on DRAW — the same
+                      stroke as the manifesto seam and the register
+                      rules, and the horizontal answer to the
+                      spine's vertical fill, which now draws with it
+     4  roster        64px, two steps past the page's 44px, dealt
+                      at 90ms per card, each portrait easing
+                      1.17 -> 1.10 behind its frame
 
    Transform and opacity only, throughout. ------------------- */
-.people [data-reveal] {
-  transform: translate3d(0, 44px, 0);
-  transition: opacity 520ms var(--ease), transform 520ms var(--ease);
-}
-.people [data-reveal].is-in { transform: none; }
-
-.people .film[data-reveal] {
-  transform: translate3d(0, 56px, 0);
-  transition: opacity 560ms var(--ease), transform 560ms var(--ease);
-}
+.people .film[data-reveal] { transform: translate3d(0, 56px, 0); }
 .people .film[data-reveal].is-in { transform: none; }
 .film img { transform: scale(1.12); }
 .film.is-in img { transform: scale(1.06); }
@@ -1133,7 +1259,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .film.js-film .film__disc { opacity: 0; transform: scale(0.62); }
 .film.js-film.is-in.is-ready .film__disc {
   opacity: 1; transform: scale(1);
-  transition: transform 540ms cubic-bezier(0.34, 1.56, 0.64, 1) 240ms,
+  transition: transform 540ms var(--ease) 240ms,
               opacity 300ms linear 240ms;
 }
 .film:hover .film__disc,
@@ -1146,13 +1272,12 @@ section { position: relative; padding-block: var(--pad-y); }
 
 .people .roster__rule[data-reveal] {
   opacity: 1; transform: scaleX(0); transform-origin: left center;
-  transition: transform 760ms var(--ease);
+  transition: transform 760ms var(--ease-draw);
 }
 .people .roster__rule[data-reveal].is-in { transform: scaleX(1); }
 
 .people .person[data-reveal] {
   transform: translate3d(0, 64px, 0);
-  transition: opacity 520ms var(--ease), transform 520ms var(--ease);
   transition-delay: calc(var(--i, 0) * 90ms);
 }
 .people .person[data-reveal].is-in { transform: none; }
@@ -1216,26 +1341,27 @@ section { position: relative; padding-block: var(--pad-y); }
    ============================================================ */
 @media (min-width: 700px) {
   .assay { grid-template-columns: repeat(2, 1fr); }
-  .figures { grid-template-columns: repeat(2, 1fr); }
-  .roster { grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
   .finder__grid { grid-template-columns: repeat(3, 1fr); }
+  /* Swept by the coherence pass: `.figures` (both breakpoints) belonged to the
+     3x2 stat grid PIECE 09 replaced with the ruled register, and `.roster` was
+     shadowed at every width by the `.people .roster` rules PIECE 11 wrote. */
 }
 
 /* ============================================================
    DESKTOP
    ============================================================ */
 @media (min-width: 1024px) {
-  /* (PIECE 01's desktop rules moved into the PIECE 01 block above, where
-     they belong — .hero__type no longer exists.) */
-
   /* Sticky spine: the reader always knows where they are. */
   .process__body { display: grid; grid-template-columns: 220px 1fr; gap: clamp(3rem, 6vw, 6rem); align-items: start; }
   .spine { display: block; position: sticky; top: 22vh; }
   .spine__rail { position: absolute; left: 0; top: 0.6rem; bottom: 0.6rem; width: 1px; background: var(--dark-12); }
+  /* DRAW. PIECE 11's roster rule calls itself "the horizontal answer to the
+     spine's vertical fill" — so the two of them had better be drawn by the
+     same hand. Both now run --ease-draw. */
   .spine__fill {
     position: absolute; left: 0; top: 0; width: 1px; height: 100%;
     background: var(--green); transform: scaleY(0); transform-origin: top;
-    transition: transform 620ms var(--ease);
+    transition: transform 620ms var(--ease-draw);
   }
   .spine__list { display: flex; flex-direction: column; gap: 1.5rem; padding-left: 1.5rem; }
   .spine__item {
@@ -1263,8 +1389,6 @@ section { position: relative; padding-block: var(--pad-y); }
   .phase--synergy .phase__prose { grid-column: 2; grid-row: 1; max-width: 40rem; }
   .phase--synergy .synergy { grid-column: 1 / -1; grid-row: 2; }
 
-  .figures { grid-template-columns: repeat(3, 1fr); }
   .proof { grid-template-columns: 1fr 1fr; align-items: center; }
   .proof__plate { order: 2; }
-  .people__grid { display: grid; grid-template-columns: 1fr; }
 }
