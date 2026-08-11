@@ -307,7 +307,11 @@
     }
   }
 
-  /* ---- PIECE 09: stat counters (count once, then rest) ---------- */
+  /* ---- PIECE 09: the tally (count once, ruling its own line) ----
+     The count is the one figure on this page that earns an animation, so
+     it does not run alone: the 2px rule under it is scrubbed by the same
+     frame loop, and finishes ruling at the exact instant the number lands
+     on 80,648. Number and line are one gesture, ~1500ms. ------------- */
   function initCounters() {
     var nums = document.querySelectorAll('[data-count]');
     if (!nums.length || reduceMotion.matches) return;
@@ -320,6 +324,11 @@
     });
     if (!nums.length) return;
 
+    function ruleFor(el) {
+      var id = el.getAttribute('data-count-rule');
+      return id ? document.getElementById(id) : null;
+    }
+
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
@@ -327,24 +336,100 @@
         io.unobserve(el);
         var target = parseInt(el.getAttribute('data-count'), 10);
         var final = el.textContent;
+        var rule = ruleFor(el);
         var start = null;
-        var DUR = 1400;
+        var DUR = 1500;
         function tick(ts) {
           if (start === null) start = ts;
           var p = Math.min((ts - start) / DUR, 1);
           var eased = 1 - Math.pow(1 - p, 3);
           if (p < 1) {
             el.textContent = Math.round(target * eased).toLocaleString('en-US');
+            if (rule) rule.style.transform = 'scaleX(' + eased.toFixed(4) + ')';
             requestAnimationFrame(tick);
           } else {
             el.textContent = final;    // restore the exact source string
+            if (rule) rule.style.transform = '';
           }
         }
         requestAnimationFrame(tick);
       });
-    }, { threshold: 0.4 });
+    }, {
+      // Fire while the figure is still just below the fold. Resetting a
+      // six-digit number to "0" in front of the reader looks like a bug;
+      // this way the tally is already running by the time it is on screen,
+      // and the trigger is close enough to the edge that a figure can never
+      // be left sitting at zero.
+      rootMargin: '0px 0px 8% 0px', threshold: 0
+    });
 
-    Array.prototype.forEach.call(nums, function (n) { io.observe(n); });
+    Array.prototype.forEach.call(nums, function (n) {
+      // Anything already on screen at load keeps its final value: there is
+      // no way to count up to a number the reader is already looking at.
+      var b = n.getBoundingClientRect();
+      if (b.top < (window.innerHeight || document.documentElement.clientHeight)) return;
+      var rule = ruleFor(n);
+      if (rule) rule.style.transform = 'scaleX(0)';
+      io.observe(n);
+    });
+  }
+
+  /* ---- PIECE 09: the register ----------------------------------
+     Five ruled entries, each one written into the wall as you reach it:
+     the rule draws left to right (620ms), then the row wipes up from
+     behind it (520ms, travelling its own full height inside an overflow
+     clip — 72-96px, not the page's shared 28px nudge). Entries that
+     arrive together within one burst are stepped 70ms apart so a fast
+     scroll still cascades instead of firing as one slab.
+
+     Resting CSS is the finished wall. Only entries still below the fold
+     are armed, so nothing the reader can already see ever blinks out. -- */
+  function initNumberWall() {
+    var wall = document.querySelector('[data-tally]');
+    if (!wall || reduceMotion.matches) return;
+    if (!('IntersectionObserver' in window)) return;   // leave it finished
+
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var armed = [];
+    Array.prototype.forEach.call(wall.querySelectorAll('[data-entry]'), function (el) {
+      if (el.getBoundingClientRect().top < vh) return;
+      el.classList.add('is-armed');
+      armed.push(el);
+    });
+    if (!armed.length) return;
+
+    var last = -1e6, burst = 0;
+    function play(el) {
+      if (el.classList.contains('is-in')) return;
+      var now = (window.performance && performance.now) ? performance.now() : Date.now();
+      burst = (now - last < 150) ? burst + 1 : 0;
+      last = now;
+      el.style.setProperty('--rd', (burst * 70) + 'ms');
+      el.classList.add('is-in');
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        play(entry.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+    armed.forEach(function (el) { io.observe(el); });
+
+    // Same floor the shared reveal system keeps: an armed entry is hidden
+    // copy, and hidden copy must never be the final state.
+    function sweep() {
+      var h = window.innerHeight || document.documentElement.clientHeight;
+      armed.forEach(function (el) {
+        if (el.classList.contains('is-in')) return;
+        var b = el.getBoundingClientRect();
+        if (b.top < h && b.bottom > 0) { io.unobserve(el); play(el); }
+      });
+    }
+    window.addEventListener('load', sweep, { once: true });
+    window.addEventListener('hashchange', function () { setTimeout(sweep, 60); });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) sweep(); });
   }
 
   /* ---- Boot ----------------------------------------------------- */
@@ -356,6 +441,7 @@
     initReveals();
     initSpine();
     initCounters();
+    initNumberWall();
   }
 
   if (document.readyState === 'loading') {

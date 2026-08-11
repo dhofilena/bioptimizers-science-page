@@ -437,18 +437,158 @@ section { position: relative; padding-block: var(--pad-y); }
 
 /* ============================================================
    PIECE 09 — EVERY NUMBER EARNED. Second dark beat.
+
+   THE STRUCTURE. Not a 3x2 bordered grid — that block is the
+   default every B2B page ships, and it treats "PhD" as though it
+   were a quantity. This is a REGISTER: one struck tally at the
+   top (80,648, the only figure that counts, the one the manifesto
+   already promised), then five ruled entries beneath it. The
+   rules are full-bleed and the entries sit on them, so the wall
+   reads as a page of ruled paper rather than a set of cards. The
+   right-hand air is deliberate: a ledger line runs past its last
+   word, it does not stretch the word to fill the box.
+
+   THE MOTION. Three gestures, none of them the shared 28px fade:
+     1. the strike     scaleX 0->1 across the full viewport, driven
+                       frame-for-frame by the counter in app.js, so
+                       the line finishes ruling exactly as the tally
+                       reaches 80,648. ~1500ms.
+     2. the rules      scaleX 0->1, 620ms, drawn left to right as
+                       each entry arrives.
+     3. the entries    the row wipes up from behind its own rule —
+                       translateY(100%) -> 0 inside an overflow
+                       clip, so travel is the whole row height
+                       (72-96px, not 28px) in 520ms. Perceptible.
+
+   THE FLOOR. Every resting state below IS the finished state.
+   The armed states are added by JS and only to entries still
+   below the fold, so no-JS, reduced-motion, and a reader who
+   lands mid-wall all get six complete figures and never a flash.
    ============================================================ */
-.ledger-wall { background: var(--deep); color: var(--white); overflow: hidden; }
-.ledger-wall__texture { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.2; }
-.ledger-wall .shell { position: relative; z-index: 1; }
-.ledger-wall__head { max-width: 40ch; }
-.ledger-wall__head .eyebrow { color: var(--vital); }
-.ledger-wall__title { margin-top: 1rem; font-size: var(--t-h1); font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
-.figures { margin-top: clamp(3rem, 6vw, 5rem); display: grid; gap: 1px; background: rgba(255,255,255,0.16); }
-.figure { background: var(--deep); padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2vw, 2rem); }
-.figure__num { font-size: var(--t-figure); font-weight: 700; line-height: 1; letter-spacing: -0.05em; color: var(--vital); }
-.figure__label { margin-top: 1rem; font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; }
-.figure__desc { margin-top: 0.6rem; font-size: var(--t-small); opacity: 0.7; }
+.numwall { background: var(--deep); color: var(--white); overflow: hidden; }
+.numwall__texture {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.22;
+  /* Gone before the first rule, not merely dimmed. The lab ground carries the
+     headline and the tally, then dissolves so the register is ruled on clean
+     --deep — a gradient crossing a bright hairline makes the eye invent a
+     step, and five hairlines over a fading photograph read as banding. It
+     also closes the contrast question: worst case, a pure white texture pixel
+     at this opacity still leaves white body copy at 6.8:1 and --vital at
+     5.5:1, and no register copy sits over the texture at all.
+     The stop is a percentage of a section whose proportions change with the
+     layout, so the wide version pushes it down to clear the same rule. */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 12%, rgba(0,0,0,0.55) 22%, rgba(0,0,0,0.16) 31%, transparent 38%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 12%, rgba(0,0,0,0.55) 22%, rgba(0,0,0,0.16) 31%, transparent 38%);
+}
+.numwall .shell { position: relative; z-index: 1; }
+.numwall__head { max-width: 40ch; }
+.numwall__head .eyebrow { color: var(--vital); }
+.numwall__title { margin-top: 1rem; font-size: var(--t-h1); font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
+
+.tally { margin-top: clamp(2.75rem, 5.5vw, 4.5rem); }
+.tally__entry { position: relative; }
+
+/* The rules. Full-bleed: 100vw pinned to the entry's own centre line, so
+   they run past the shell to both edges of the page. --numwall's overflow
+   clip contains them. */
+.tally__entry::before,
+.tally__entry:last-child::after,
+.tally__strike {
+  content: ""; position: absolute; left: 50%; width: 100vw; margin-left: -50vw;
+  height: 1px; background: rgba(255,255,255,0.18);
+  transform: scaleX(1); transform-origin: left center;
+}
+.tally__entry::before { top: 0; }
+.tally__entry:last-child::after { bottom: 0; }
+/* The lead entry opens the wall, and its strike already rules the top of the
+   entry after it. Two lines 2px apart would read as a mistake. */
+.tally__entry--lead::before,
+.tally__entry--lead + .tally__entry::before { content: none; }
+
+.tally__strike { bottom: 0; height: 2px; background: var(--vital); }
+
+/* The clip is the whole entry and the padding lives on the thing that moves,
+   so translating it 100% of its own height puts it entirely out of sight —
+   which is what makes the travel the full row rather than a token nudge. */
+.tally__mask { overflow: hidden; }
+.tally__lead { padding-block: clamp(1.75rem, 3vw, 2.75rem) clamp(1.5rem, 2.6vw, 2.25rem); }
+
+/* Values. The lead is the hero figure; the five entries support it. */
+.tally__val {
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700;
+  line-height: 1; letter-spacing: -0.035em; color: var(--vital);
+  font-variant-numeric: tabular-nums;
+}
+.tally__val--lead {
+  font-size: clamp(4.25rem, 24vw, 12rem); line-height: 0.86; letter-spacing: -0.055em;
+  /* "80,648" is 2.73em wide in the shipped face at tabular widths. Reserving
+     the finished width means the caption beside it cannot be shoved sideways
+     frame by frame while the tally counts — the count is a transform-and-text
+     effect, never a layout one. */
+  min-width: 2.8em;
+}
+.tally__label {
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.18em; line-height: 1.4; color: var(--white);
+}
+.tally__desc { font-size: var(--t-small); line-height: 1.5; color: rgba(255,255,255,0.72); max-width: 48ch; }
+.tally__entry--lead .tally__label { font-size: 0.8125rem; letter-spacing: 0.2em; }
+.tally__entry--lead .tally__desc {
+  margin-top: 0.9rem; font-size: var(--t-lead); line-height: 1.35;
+  color: rgba(255,255,255,0.82); max-width: 24ch;
+}
+
+/* Mobile register: value beside its label, description under both. */
+.tally__row {
+  padding-block: clamp(1.15rem, 2.2vw, 1.75rem);
+  display: grid; grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 1.1rem; row-gap: 0.5rem; align-items: baseline;
+}
+.tally__row .tally__val { grid-column: 1; }
+.tally__row .tally__label { grid-column: 2; }
+.tally__row .tally__desc { grid-column: 1 / -1; }
+.tally__stack { padding-top: 1.4rem; }
+
+/* ---- Armed states. JS-only, and only below the fold. ---- */
+.tally__entry.is-armed .tally__row,
+.tally__entry.is-armed .tally__stack { transform: translate3d(0, 100%, 0); }
+.tally__entry.is-armed::before,
+.tally__entry.is-armed:last-child::after { transform: scaleX(0); }
+
+.tally__entry.is-armed.is-in .tally__row,
+.tally__entry.is-armed.is-in .tally__stack {
+  transform: none;
+  transition: transform 520ms var(--ease) calc(var(--rd, 0ms) + 120ms);
+}
+.tally__entry.is-armed.is-in::before,
+.tally__entry.is-armed.is-in:last-child::after {
+  transform: scaleX(1);
+  transition: transform 620ms var(--ease) var(--rd, 0ms);
+}
+
+@media (min-width: 700px) {
+  .numwall__texture {
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 14%, rgba(0,0,0,0.55) 28%, rgba(0,0,0,0.16) 40%, transparent 48%);
+            mask-image: linear-gradient(180deg, #000 0%, #000 14%, rgba(0,0,0,0.55) 28%, rgba(0,0,0,0.16) 40%, transparent 48%);
+  }
+  /* value | label | description, aligned on one baseline down the column. */
+  .tally__row {
+    grid-template-columns: minmax(8.5rem, 13%) minmax(0, 1fr) minmax(0, 1.6fr);
+    column-gap: clamp(1.5rem, 3vw, 3.25rem); row-gap: 0;
+  }
+  .tally__row .tally__desc { grid-column: 3; }
+}
+
+@media (min-width: 1100px) {
+  /* The tally gets its own band: the figure takes exactly the width it needs
+     and the caption is set to its foot, the way a plate is captioned. */
+  .tally__lead {
+    display: grid; grid-template-columns: auto minmax(0, 1fr);
+    column-gap: clamp(2rem, 4vw, 4rem); align-items: end;
+  }
+  .tally__stack { padding-top: 0; padding-bottom: 0.75rem; }
+}
 
 /* ============================================================
    PIECE 10 — LIVING PROOF
