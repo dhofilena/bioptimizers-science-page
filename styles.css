@@ -30,6 +30,29 @@
   --dark-22: rgba(56, 46, 44, 0.22);
   --cream-warm: #f2f0e8;
 
+  /* ---- THE DARK CHAPTER HAS THREE MOVEMENTS, SO IT HAS THREE VALUES. ----
+     Wave 2 took PIECE 10 to --deep to stop the tail strobing. It stopped the
+     strobe and created a worse thing: #stats + #living-proof + #inside-biolab
+     became ONE flat run of rgb(16,54,8) — 4,262px at 1280, 5,376 at 1920,
+     5,747 at 2560 — with no rule, no tone shift and nothing between two H2s.
+     Measured at 1920: the register's last hairline, 352px of identical
+     ground, then "Living Proof" at the same size as "Every Number Earned".
+     The boundary had not disappeared by accident; there was nothing there.
+
+     These are --deep SCALED TOWARD BLACK, which is exactly hue- and
+     saturation-preserving: (16,54,8) x 0.72 and x 0.50. Same 109.6 degrees,
+     same 74% saturation, three lightness steps — 12% / 9% / 6%. No new hue,
+     and every contrast ratio on those grounds can only go UP:
+       --deep    #103608   white 13.51:1  --vital 10.99:1  --orange 5.60:1
+       --deep-2  #0c2706   white 15.14:1  --vital 12.32:1  --orange 6.28:1
+       --deep-3  #081b04   white 17.19:1  --vital 13.98:1  --orange 7.13:1
+     The stylesheet already PROMISED this in PIECE 10's block ("the dark
+     deepens as the argument does"); only the lengths deepened. Now the value
+     does too, and the reader feels the chapter descend into the people who
+     did the work before PIECE 12 lets them back out into cream. */
+  --deep-2: #0c2706;
+  --deep-3: #081b04;
+
   /* ---- BRAND. Fixed. ---- */
   --font: "Neue Haas Unica Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
@@ -93,6 +116,28 @@
      ease-out-cubic in JS instead. An expo-out under a scrub puts 90%
      of its travel in the first 10% of the gesture, so the rest of
      the scroll reads as dead — a scrub needs a curve you can push.
+
+     WAVE 3 AUDIT, after three builders landed in parallel: the
+     stylesheet still contains exactly THREE cubic-bezier literals
+     and all three are these tokens. No builder introduced a fourth,
+     and no `ease-out` / `ease-in-out` / `steps()` appears anywhere.
+     `linear` survives twice, both correctly: mf-uncover (an opacity
+     SWITCH at the wipe's midpoint, not a curve) and the poster
+     control's 300ms opacity fade. JS holds one ease-out-cubic for
+     the two scrubs and one backOut, still spent only on the "5".
+
+     AND THE PAGE ANIMATES LESS. The standing complaint was quantity,
+     not quality: 62 [data-reveal] elements, 51 on one identical
+     treatment, 42 at zero delay. It is now 51 elements, 38 on the
+     shared treatment, 16 at zero delay — and each of those 16 is the
+     FIRST thing in its own block, which is what zero delay should
+     mean. What changed is what counts as an arrival:
+       · the unit is the BLOCK, not the paragraph — .phase__prose and
+         .proof__list arrive whole (11 reveals removed)
+       · PHOTOGRAPHS DO NOT SLIDE. The five plates inside the argument
+         stopped fading up 44px and now settle out of a crop like every
+         other photograph here (see below the reveal system)
+     Nothing was re-cut. Things were removed.
      ============================================================ */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-draw: cubic-bezier(0.62, 0, 0.2, 1);
@@ -176,12 +221,39 @@ section { position: relative; padding-block: var(--pad-y); }
 [data-reveal-delay="2"] { transition-delay: 220ms; }
 [data-reveal-delay="3"] { transition-delay: 330ms; }
 
+/* ---- PHOTOGRAPHS DO NOT SLIDE. ------------------------------------------
+   The vocabulary at the top of this file says ARRIVE covers "photographs
+   easing out of their opening crop", and three of the four photographic
+   treatments on this page already do exactly that: the hero plate 1.05 -> 1,
+   the poster 1.12 -> 1.06, the portraits 1.17 -> 1.10. The five plates inside
+   the argument were the odd ones out — they faded up 44px like a paragraph,
+   which is both the most generic gesture on the web and five more entries in
+   the "51 elements, identical treatment" count.
+
+   So they stop fading and stop translating, and settle out of a crop like
+   every other photograph here. Same token, same curve, same family. It also
+   means four large images no longer blink on: they are simply present, and
+   the camera finds focus. Five fewer identical fades, zero fewer arrivals. */
+.phase__plate[data-reveal],
+.proof__plate[data-reveal] { opacity: 1; transform: none; transition: none; }
+.phase__plate[data-reveal] img,
+.proof__plate[data-reveal] img { transition: transform 1200ms var(--ease); }
+.phase__plate[data-reveal] img { transform: scale(1.06); }
+.phase__plate[data-reveal].is-in img { transform: none; }
+/* .proof__plate keeps its permanent 1.05 corner crop (see PIECE 10) as the
+   RESTING value, so the settle runs 1.11 -> 1.05 rather than back to 1. */
+.proof__plate[data-reveal] img { transform: scale(1.11); }
+.proof__plate[data-reveal].is-in img { transform: scale(1.05); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .001ms !important; animation-iteration-count: 1 !important;
     transition-duration: .001ms !important; scroll-behavior: auto !important;
   }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
+  /* The crop settle lives on a descendant, so the rule above cannot reach it. */
+  .phase__plate[data-reveal] img { transform: none !important; }
+  .proof__plate[data-reveal] img { transform: scale(1.05) !important; }
 }
 
 /* ============================================================
@@ -481,18 +553,22 @@ section { position: relative; padding-block: var(--pad-y); }
   font-size: clamp(1.4rem, 2.55vw, 2.3rem); font-weight: 400;
   line-height: 1.2; letter-spacing: -0.025em; color: var(--white); max-width: 21ch;
 }
+/* WAVE 3: the greeting now OPENS the section (see index.html), so its rule
+   turned over with it — it is drawn UNDER the name, between the greeting and
+   the sentence it introduces, instead of above it. Same stroke, same 1px, same
+   --ease-draw; only the edge it hangs on changed. */
 .manifesto__title {
   position: relative;
-  margin-top: clamp(2.5rem, 6.5vh, 4.75rem);
-  padding-top: clamp(2rem, 5vh, 3.5rem);
+  margin-bottom: clamp(2.5rem, 6.5vh, 4.75rem);
+  padding-bottom: clamp(2rem, 5vh, 3.5rem);
   font-size: clamp(2.25rem, 5.3vw, 4.4rem); font-weight: 700;
   line-height: 1.02; letter-spacing: -0.035em; color: var(--white);
 }
 .manifesto__title b { font-weight: 700; color: var(--vital); }
-/* The sentence ends and the greeting begins: a second rule is drawn across
-   the frame, the same cut as the seam, one beat before the name lands. */
+/* The greeting lands and the sentence begins: a second rule is drawn across
+   the frame, the same cut as the seam, one beat after the name. */
 .manifesto__title::before {
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
   background: rgba(255, 255, 255, 0.2); transform-origin: 0% 50%;
 }
 
@@ -705,7 +781,34 @@ section { position: relative; padding-block: var(--pad-y); }
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.24em;
 }
 
-.phases { display: flex; flex-direction: column; gap: clamp(6rem, 12vw, 11rem); }
+/* THE LIGHT RUN IS RULED, THE SAME WAY THE LEDGER IS RULED.
+   With the dark chapter broken into three movements, the longest single-value
+   band left on the page is this one: 3,912px at 1280, 4,768 at 1920 — five
+   viewports of the same two-column card, separated by nothing but air. The
+   phases themselves are scaffold and not mine to redesign, so this is the
+   cheapest intervention that changes how the run READS rather than how it
+   looks: a hairline at each join, on the same --dark-22 the hero's rule is
+   drawn in, so the argument is ruled into five entries exactly as PIECE 09
+   rules the register into six. Four rules; the run stops being one field and
+   becomes ~1,500px movements you can feel yourself crossing.
+
+   It is printed, not animated — deliberately. The page already has 62 things
+   that arrive; structure that is simply THERE is worth more here than a
+   sixty-third fade, and it means the articulation survives with scripts off.
+
+   The rule sits half a gap above each phase. Measured against the ghost
+   numeral's ink (which starts ~0.19em below its own box top): 1280 -77 vs
+   -29, 1920 -88 vs -40, 2560 -88 vs -40, 390 -48 vs -12. It never crosses a
+   numeral at any width. */
+.phases {
+  --phase-gap: clamp(6rem, 12vw, 11rem);
+  display: flex; flex-direction: column; gap: var(--phase-gap);
+}
+.phase + .phase::before {
+  content: ""; position: absolute; left: 0; right: 0;
+  top: calc(var(--phase-gap) / -2); height: 1px;
+  background: var(--dark-22);
+}
 
 /* ---- PIECES 04–08 — shared phase shell ---- */
 /* Each phase is the SPINE'S LANDING PAD, so it owns two things the spine
@@ -1264,9 +1367,25 @@ section { position: relative; padding-block: var(--pad-y); }
           mask-image: linear-gradient(180deg, #000 0%, #000 12%, rgba(0,0,0,0.55) 22%, rgba(0,0,0,0.16) 31%, transparent 38%);
 }
 .numwall .shell { position: relative; z-index: 1; }
-.numwall__head { max-width: 54ch; }
+/* WAVE 3 — A MEASURE CAP HAS TO BE IN THE SAME CURRENCY AS THE THING IT CAPS.
+   This head carried `max-width: 54ch`, and `ch` resolves against the ELEMENT's
+   own font — the head's 17px body size — so the cap computed to 510.5px and
+   stayed there while the scale pass grew --shell 1240 -> 1900 and --t-h1
+   79 -> 112px. Measured: the title's box was 511px at 1280, 1920 AND 2560,
+   which broke "Every Number Earned" onto THREE lines inside a third of a
+   1,900px shell. It is the H2 the Art Director said was reading as one block
+   with "Living Proof" — and "Living Proof" sits on 645/846px and stays on one
+   line, so the pair were also mismatched.
+   The cap now lives on the title and is measured in the title's own em, so it
+   scales with it: two lines at every width, ~700px at 1280 and ~1,010px at
+   1920/2560, with the right-hand air PIECE 09 asks for still intact. */
+.numwall__head { max-width: none; }
 .numwall__head .eyebrow { color: var(--vital); }
-.numwall__title { margin-top: 1rem; font-size: var(--t-h1); font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
+.numwall__title {
+  margin-top: 1rem; font-size: var(--t-h1); font-weight: 700;
+  line-height: 1; letter-spacing: -0.035em;
+  max-width: 9em; text-wrap: balance;
+}
 
 .tally { margin-top: clamp(2.75rem, 5.5vw, 4.5rem); }
 .tally__entry { position: relative; }
@@ -1296,10 +1415,29 @@ section { position: relative; padding-block: var(--pad-y); }
 .tally__mask { overflow: hidden; }
 .tally__lead { padding-block: clamp(1.75rem, 3vw, 2.75rem) clamp(1.5rem, 2.6vw, 2.25rem); }
 
-/* Values. The lead is the hero figure; the five entries support it. */
+/* Values. The lead is the hero figure; the five entries support it.
+
+   WAVE 3 — THE SAME NUMBER IN THE SAME INK IS THE SAME SLIDE. 80,648 is
+   spent twice, ~9,400px apart, and a 1.25 size ratio was applied to it. That
+   ratio is fine and it stays; it just answered the wrong question. What made
+   dark beat 1 and dark beat 3 read as one repeated slide was that both set
+   the figure LARGE, BOLD and --vital on --deep, so the second one looked like
+   the first one scrolling past again.
+
+   PIECE 07 had already written the law this page uses on dark ground:
+     --vital  the apparatus — rules, walls, and the labels that NAME things
+     --white  the MATERIAL — what actually moves through the rig
+     --orange the surplus, and nothing else
+   The register was inverted against it: figures in --vital, labels in white.
+   Turning it the right way up does the differentiation for free —
+     · the PROMISE (PIECE 02) stays --vital: a claim, in the brand's charge
+     · the RECEIPT (here) is --white: a fact, stated in ink, and RULED by a
+       --vital strike that ties it back to the promise
+   Two readings of one number instead of one slide shown twice. Contrast on
+   --deep: white 13.51:1, --vital 10.99:1 at 12px bold. */
 .tally__val {
   font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700;
-  line-height: 1; letter-spacing: -0.035em; color: var(--vital);
+  line-height: 1; letter-spacing: -0.035em; color: var(--white);
   font-variant-numeric: tabular-nums;
 }
 /* THE RECEIPT. The manifesto promised this figure at --t-tally; this is the
@@ -1316,9 +1454,12 @@ section { position: relative; padding-block: var(--pad-y); }
      effect, never a layout one. */
   min-width: 2.8em;
 }
+/* The naming column takes --vital, which is what --vital does everywhere else
+   on a dark ground on this page: .keynote__label, .numwall__head .eyebrow,
+   .rig__name span and .rig__title are all this exact treatment already. */
 .tally__label {
   font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.18em; line-height: 1.4; color: var(--white);
+  letter-spacing: 0.18em; line-height: 1.4; color: var(--vital);
 }
 .tally__desc { font-size: var(--t-small); line-height: 1.5; color: rgba(255,255,255,0.72); max-width: 48ch; }
 .tally__entry--lead .tally__label { font-size: 0.8125rem; letter-spacing: 0.2em; }
@@ -1394,26 +1535,45 @@ section { position: relative; padding-block: var(--pad-y); }
    intent, it is a flicker; and a 862px light gap does not read as
    a breath, it reads as a hole punched in the dark.
 
-   So the page now has THREE dark beats and each is longer than the
-   one before it — 800px (the register changes), 2,000px (the
-   mechanism), 4,300px (the evidence: the numbers, the outcomes,
-   the people who did it). Light, dark, light, dark, light, dark,
-   light — seven bands, no band shorter than a screen, and the
-   dark deepens as the argument does. PIECE 12 stays cream on
-   purpose: after the longest dark run on the page, the shop doors
-   are the room the reader is let out into.
+   So the page has THREE dark beats and each is longer than the
+   one before it — 1,080px (the register changes), 2,700px (the
+   mechanism), 5,376px (the evidence: the numbers, the outcomes,
+   the people who did it). PIECE 12 stays cream on purpose: after
+   the longest dark run on the page, the shop doors are the room
+   the reader is let out into.
 
-   Colour, all measured on --deep #103608:
-     --white          13.51:1  title
-     --cream          12.90:1  the lede
-     --vital          10.99:1  the check marks (they were --green,
+   WAVE 3 FINISHED THE JOB. Moving here fixed the strobe and left a
+   worse problem behind it: three sections at one identical value,
+   5,376px at 1920, with nothing at either join. This section is now
+   MOVEMENT 2 of a three-movement chapter — one value step under the
+   register, ruled at the join, and PIECE 11 one step under again.
+   The comment above promised "the dark deepens as the argument
+   does" while only the LENGTHS deepened; --deep-2 and --deep-3 at
+   the top of this file are that promise kept.
+
+   Colour, measured on this section's actual ground --deep-2 #0c2706
+   (every ratio is 1.1-1.3 points BETTER than it was on --deep):
+     --white          15.14:1  title
+     --cream          14.46:1  the lede
+     --vital          12.32:1  the check marks (they were --green,
                                3.48:1 here and 3.59:1 on cream —
                                under AA in both grounds)
-     white @ 0.78      7.80:1  the three claims
-   --orange keeps its one job: the CTA fill, 5.60:1 on this ground
+     white @ 0.78      8.66:1  the three claims
+   --orange keeps its one job: the CTA fill, 6.28:1 on this ground
    and 8.5:1 inside its own pill. ============================================================ */
+/* MOVEMENT 2 OF 3. One value step under the register, and the step happens ON
+   a ruled line: a hairline at the exact edge where the ground changes. That is
+   how a book separates two chapters that share a paper — you do not change the
+   paper, you rule the join. The rule is the register's own hairline weight
+   (rgba(255,255,255,~.2)), which is the point: the whole chapter is one long
+   register and these are its entries. */
+.proof::before,
+.people::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
 .proof {
-  background: var(--deep); color: var(--white);
+  background: var(--deep-2); color: var(--white);
   display: grid; gap: clamp(2.5rem, 5vw, 5rem);
   /* The ground has to reach both edges — a --deep band that stopped at 1240px
      would be a dark card floating on cream. The section is full width and the
@@ -1425,8 +1585,17 @@ section { position: relative; padding-block: var(--pad-y); }
 .proof__title { font-size: var(--t-h1); font-weight: 700; line-height: 0.95; letter-spacing: -0.035em; }
 .proof__lede { margin-top: 1.5rem; font-size: var(--t-lead); line-height: 1.45; max-width: 52ch; color: var(--cream); }
 .proof__list { margin-top: 2.5rem; display: flex; flex-direction: column; }
+/* WAVE 3 — the second thing the scale pass left uncapped. --shell grew
+   1240 -> 1900 and this list had no measure at all, so at 2560 the three
+   claims ran to 95 characters per line: the widest body copy on the page by
+   25 characters, and 20 past the band everything else was just fixed into.
+   The RULES have to stay the full column width — they are the object, and a
+   rule that stops where the text stops reads as a mistake — so the measure is
+   set as padding on the content box rather than a max-width on the element.
+   Measured: 1280 60cpl · 1920 64cpl · 2560 64cpl. */
 .proof__list li {
   padding-block: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.18);
+  padding-right: max(0px, calc(100% - 38rem));
   color: rgba(255, 255, 255, 0.78); display: flex; gap: 1rem;
 }
 .proof__list li::before { content: "✓"; color: var(--vital); font-weight: 700; }
@@ -1455,16 +1624,26 @@ section { position: relative; padding-block: var(--pad-y); }
    inside a light run: it is the back half of the page's final and
    longest dark chapter (see PIECE 10 for the whole sequence).
 
-   Colour on the dark ground, all measured against --deep:
-     --white           13.51:1   names, title
-     --vital           10.99:1   the BIO accent, the play glyph
-     white @ 0.78      ~7.8:1    lede and note
-     white @ 0.62      ~6.13:1   the uppercase specialism labels
+   WAVE 3: this is MOVEMENT 3 of that chapter and sits on --deep-3,
+   two value steps under the register, ruled at its own join. It is
+   the floor of the page — the deepest ground anywhere on it — and
+   the portraits gain 3.7 points of contrast against it.
+
+   Colour on the dark ground, all measured against --deep-3 #081b04:
+     --white           17.19:1   names, title
+     --vital           13.98:1   the BIO accent, the play glyph
+     white @ 0.78      ~9.8:1    lede and note
+     white @ 0.72      ~8.4:1    the uppercase specialism labels
    Nothing here drops below AA for its size. --orange stays what
    the brand doc says it is: CTA fill, and nothing else — which is
    why the play control is deep + vital, not a fourth orange mark.
    ============================================================ */
-.people { background: var(--deep); color: var(--white); }
+/* MOVEMENT 3 OF 3, and the floor of the page: two steps under the register,
+   ruled at the join like the one before it. The portraits gain 3.7 points of
+   contrast against their ground here, which is the argument for descending
+   rather than lifting — the people are the last and darkest thing before
+   PIECE 12 opens the doors back into cream. */
+.people { background: var(--deep-3); color: var(--white); }
 .people__title { font-size: var(--t-h1); font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
 .people__title b { font-weight: 700; color: var(--vital); }
 .people__lede {

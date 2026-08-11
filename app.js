@@ -161,8 +161,21 @@
     /* Delays are cumulative over whatever the measurement produced, so the
        sentence always arrives in reading order — two lines on a wide
        screen or five on a narrow one. */
+    /* WAVE 3 — TIME NOW RUNS IN READING ORDER. The h2 moved to the head of
+       the section, so it also moved to the head of the sequence: the greeting
+       climbs first (~180ms in, not ~1.45s), the rule under it is drawn next,
+       and only then does the sentence start. Previously the section's own
+       title was the last thing to arrive in it. */
     function choreograph() {
       var t = START;
+      // The title is authored as two lines: it is a composition, not a wrap.
+      authored.forEach(function (inner) {
+        inner.style.setProperty('--mf-d', t + 'ms');
+        t += LINE + 20;
+      });
+      // The rule under the greeting is drawn from the title's own --mf-d; the
+      // two authored lines above carry their own, so nothing inherits this.
+      if (title) { title.style.setProperty('--mf-d', t + 'ms'); t += 140; }
       sec.querySelectorAll('[data-mf-split], [data-mf-tally]').forEach(function (unit) {
         if (unit.hasAttribute('data-mf-tally')) {
           unit.style.setProperty('--mf-d', t + 'ms');
@@ -174,14 +187,6 @@
           t += LINE;
         });
         t += GROUP;
-      });
-      // The rule under the sentence is drawn from the title's own --mf-d;
-      // the two authored title lines then override it with their own.
-      if (title) { title.style.setProperty('--mf-d', t + 'ms'); t += 140; }
-      // The title is authored as two lines: it is a composition, not a wrap.
-      authored.forEach(function (inner) {
-        inner.style.setProperty('--mf-d', t + 'ms');
-        t += LINE + 20;
       });
       lastStart = t;
     }
