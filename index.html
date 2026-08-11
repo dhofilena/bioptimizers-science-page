@@ -282,38 +282,58 @@
 
 <!-- ============ PIECE 11: INSIDE THE BIOLAB — START ============ -->
 <section class="people" id="inside-biolab" aria-labelledby="lab-heading">
-  <div class="shell">
+  <div class="shell people__head">
     <h2 id="lab-heading" class="people__title" data-reveal>Inside the <b>BIO</b>Lab</h2>
     <p class="people__lede" data-reveal data-reveal-delay="1">BIOptimizers started with two personal trainers who loved helping people change their lives and became obsessed with the science behind it.</p>
   </div>
 
-  <a class="film" href="https://www.youtube.com/watch?v=-cBSiiRNbUs" data-reveal>
+  <!-- The poster PNG ships with a play glyph already burned into it at dead
+       centre (a solid #dfdfdb triangle, 59x73px of the 1200x667 source). The
+       old build stacked a CSS triangle on top of it, so the page showed two.
+       One control now survives: an opaque disc, centred on the same point and
+       sized as a fixed 11.5% of the frame, which swallows the baked glyph
+       whole at every viewport. alt text is the source's, verbatim; the LINK
+       carries the action, which is what a reader actually needs announced. -->
+  <a class="film" href="https://www.youtube.com/watch?v=-cBSiiRNbUs"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="Watch the film from inside the BIOLab (opens on YouTube in a new tab)"
+     data-reveal data-film>
     <img src="./scientist-lab-video-thumbnail-d-386dca75e4bd669d36331d57fbd9da26.png"
          alt="Video thumbnail of a scientist in the BIOLab"
          width="1285" height="715" loading="lazy" decoding="async">
-    <span class="film__cue" aria-hidden="true"></span>
+    <span class="film__cue" aria-hidden="true"><span class="film__disc"></span></span>
   </a>
 
   <div class="shell people__grid">
     <p class="people__note" data-reveal>Their obsession built the <b>BIO</b>Lab: based in Bosnia, in partnership with the International Birch University, where we now invest over a million dollars a year in research and development.</p>
-    <ul class="roster">
+    <span class="roster__rule" aria-hidden="true" data-reveal></span>
+    <!-- Name above specialism: the names are one line every time, so every
+         baseline in the row lands on the same pixel no matter how long a
+         specialism runs. -->
+    <ul class="roster" data-roster>
       <li class="person" data-reveal>
-        <img src="./blonde-woman-olive-blazer-portrait-d-a2f91f49a7228156fb99ae2259fc0746.png"
-             alt="Monia Avdic, PhD" width="640" height="628" loading="lazy" decoding="async">
-        <p class="eyebrow person__role">Probiotics Phd &amp; Expert</p>
+        <span class="person__frame">
+          <img src="./blonde-woman-olive-blazer-portrait-d-a2f91f49a7228156fb99ae2259fc0746.png"
+               alt="Monia Avdic, PhD" width="640" height="628" loading="lazy" decoding="async">
+        </span>
         <p class="person__name">Monia Avdic, PhD</p>
+        <p class="eyebrow person__role">Probiotics Phd &amp; Expert</p>
       </li>
-      <li class="person" data-reveal data-reveal-delay="1">
-        <img src="./bearded-man-blazer-portrait-d-d39a0c36df8be529b799851021793819.png"
-             alt="Dženan Kovačić" width="640" height="628" loading="lazy" decoding="async">
-        <p class="eyebrow person__role">Molecular Docking Expert</p>
+      <li class="person" data-reveal>
+        <span class="person__frame">
+          <img src="./bearded-man-blazer-portrait-d-d39a0c36df8be529b799851021793819.png"
+               alt="Dženan Kovačić" width="640" height="628" loading="lazy" decoding="async">
+        </span>
         <p class="person__name">Dženan Kovačić</p>
+        <p class="eyebrow person__role">Molecular Docking Expert</p>
       </li>
-      <li class="person" data-reveal data-reveal-delay="2">
-        <img src="./man-glasses-blazer-portrait-d-d2852660e4589d4e2ce2852cf7cc40f5.png"
-             alt="Muamer Dizdar, PhD" width="640" height="628" loading="lazy" decoding="async">
-        <p class="eyebrow person__role">Engineering Chemistry Expert</p>
+      <li class="person" data-reveal>
+        <span class="person__frame">
+          <img src="./man-glasses-blazer-portrait-d-d2852660e4589d4e2ce2852cf7cc40f5.png"
+               alt="Muamer Dizdar, PhD" width="640" height="628" loading="lazy" decoding="async">
+        </span>
         <p class="person__name">Muamer Dizdar, PhD</p>
+        <p class="eyebrow person__role">Engineering Chemistry Expert</p>
       </li>
     </ul>
     <a class="btn" href="https://bioptimizers.com/shop" data-reveal>Shop best sellers</a>

@@ -471,37 +471,235 @@ section { position: relative; padding-block: var(--pad-y); }
 
 /* ============================================================
    PIECE 11 — INSIDE THE BIOLAB
+
+   Ground. The Art Director's note: "the last 4,008px, 34% of the
+   page, is one undifferentiated light run." This section is the
+   one dark beat inside that run — cream, then a full-bleed
+   photograph, then --deep. A 13.5:1 luminance step, not the 3%
+   cream/white shrug it replaces. It also gives three real people
+   a gallery wall to hang on.
+
+   Colour on the dark ground, all measured against --deep:
+     --white           13.51:1   names, title
+     --vital           10.99:1   the BIO accent, the play glyph
+     white @ 0.78      ~7.8:1    lede and note
+     white @ 0.62      ~6.13:1   the uppercase specialism labels
+   Nothing here drops below AA for its size. --orange stays what
+   the brand doc says it is: CTA fill, and nothing else — which is
+   why the play control is deep + vital, not a fourth orange mark.
    ============================================================ */
-.people { background: var(--white); }
-.people__title { font-size: var(--t-h1); font-weight: 700; line-height: 1; letter-spacing: -0.035em; color: var(--green); }
-.people__title b { font-weight: 700; }
-.people__lede { margin-top: 1.75rem; max-width: 46ch; font-size: var(--t-lead); line-height: 1.45; }
+.people { background: var(--deep); color: var(--white); }
+.people__title { font-size: var(--t-h1); font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
+.people__title b { font-weight: 700; color: var(--vital); }
+.people__lede {
+  margin-top: 1.75rem; max-width: 42ch;
+  font-size: var(--t-lead); line-height: 1.45; color: rgba(255, 255, 255, 0.78);
+}
+
+/* ---- The poster --------------------------------------------
+   Full bleed, and the strongest scale moment on the page — so it
+   gets the page's only cropped-and-settling photograph.
+   scale(1.06) at rest is not decoration: the source PNG has
+   rounded corners baked in as transparency (r = 17px of 1200),
+   which on a full-bleed element read as a stray notch against the
+   ground. 3% off every edge is 36px horizontally and 20px
+   vertically — both clear of the arc. ------------------------ */
 .film {
   position: relative; display: block; margin-block: clamp(3rem, 6vw, 6rem);
-  width: 100%; overflow: hidden;
+  /* Same tint as the portrait frames, so a poster that is still
+     loading — or never arrives — is a considered empty panel with
+     a legible control on it, not a hole in the page. */
+  width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.06);
 }
-.film img { width: 100%; transition: transform 1400ms var(--ease); }
-.film:hover img { transform: scale(1.03); }
+.film img {
+  width: 100%;
+  transition: transform 1200ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
 .film__cue {
-  position: absolute; inset: 0; margin: auto;
-  width: clamp(64px, 8vw, 104px); height: clamp(64px, 8vw, 104px);
-  border-radius: 999px; background: var(--orange);
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center; pointer-events: none;
+}
+/* 11.5% of the frame. The size is geometry, not taste: the glyph
+   burned into the PNG reaches 53px from the source centre, which
+   after the 1.06 crop is 4.68% of the frame — so the disc has to
+   be at least 9.36% of the frame wide or a triangle shows. 11.5%
+   leaves 17px of clearance at 1280 and 10px at 390; the 56px
+   floor is the touch target, and never costs more than 5px of it. */
+.film__disc {
+  position: relative; width: max(56px, 11.5%); aspect-ratio: 1;
+  border-radius: 999px; background: var(--deep);
+  box-shadow: 0 22px 48px -20px rgba(16, 54, 8, 0.92);
   transition: transform var(--dur-fast) var(--ease);
 }
-.film__cue::after {
+.film__disc::after {
   content: ""; position: absolute; inset: 0; margin: auto;
-  width: 0; height: 0; border-style: solid;
-  border-width: 0.6em 0 0.6em 1em; border-color: transparent transparent transparent var(--orange-label);
-  font-size: clamp(14px, 1.4vw, 20px);
+  width: 32%; height: 36%; background: var(--vital);
+  /* A clip-path triangle, not the border hack: the hypotenuse stays
+     clean at every size, and 15% of its own width to the right puts
+     the centroid — not the bounding box — on the disc's centre. */
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform: translateX(15%);
 }
-.film:hover .film__cue { transform: scale(1.08); }
-.people__note { max-width: 40ch; font-size: var(--t-lead); line-height: 1.45; color: var(--muted); }
-.people__note b { font-weight: 700; color: var(--dark); }
-.roster { margin-top: clamp(2.5rem, 5vw, 4rem); display: grid; gap: 2rem; }
-.person img { width: 100%; aspect-ratio: 1 / 1.08; object-fit: cover; margin-bottom: 1.25rem; }
-.person__role { color: var(--deep); }
-.person__name { margin-top: 0.4rem; font-size: var(--t-lead); font-weight: 700; letter-spacing: -0.01em; }
+
+/* ---- The board ---------------------------------------------- */
+.people__note {
+  max-width: 52ch; font-size: var(--t-lead); line-height: 1.45;
+  color: rgba(255, 255, 255, 0.78);
+}
+.people__note b { font-weight: 700; color: var(--vital); }
+.roster__rule {
+  display: block; height: 1px; width: 100%;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  background: rgba(255, 255, 255, 0.22);
+}
+.roster { margin-top: clamp(2rem, 4vw, 3rem); display: grid; gap: 2rem; }
+/* Uniformity is the whole point of a board: one ratio, one crop
+   rule, one baseline. The frame owns the ratio so no portrait can
+   ever set its own height again. */
+.person__frame {
+  display: block; overflow: hidden; aspect-ratio: 4 / 5;
+  background: rgba(255, 255, 255, 0.06);
+}
+.person__frame img {
+  width: 100%; height: 100%; object-fit: cover;
+  object-position: var(--px, 50%) 50%;
+  transform: scale(1.10) translateY(var(--ty, 0));
+  transition: transform 1000ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+/* Per-asset crop correction. These three stills were pulled from
+   footage, not shot as a matched set: measured against the frame,
+   the eye-lines sat at 29.0% / 25.9% / 29.0% and the heads at
+   8.6% / 3.6% / 4.3% left of centre. The frames were already
+   identical; this puts the FACES on the same lines too, which is
+   what actually makes a board of people read as one board. The
+   10% rest zoom exists to give these nudges somewhere to move.
+   Head SIZE still varies — Dzenan was simply filmed closer, and
+   matching that would mean upscaling a 431px still past the point
+   where it holds together. Left alone on purpose. */
+.person:nth-child(1) .person__frame img { --px: 43%; }
+.person:nth-child(2) .person__frame img { --px: 50%; --ty: 3.4%; }
+.person:nth-child(3) .person__frame img { --px: 48%; }
+.person__name {
+  margin-top: 1.25rem; font-size: var(--t-lead); font-weight: 700;
+  line-height: 1.2; letter-spacing: -0.01em; color: var(--white);
+}
+/* 7.8:1 at 12px bold. Recessive enough that the name leads, and
+   still nearly double the 4.5:1 floor — this label was a 3.85:1
+   failure two rounds ago and does not get to be marginal again. */
+.person__role { margin-top: 0.5rem; color: rgba(255, 255, 255, 0.72); }
 .people .btn { margin-top: clamp(2.5rem, 5vw, 4rem); }
+
+/* Focus has to survive the dark ground. --green is 3.48:1 on
+   --deep; --vital is 10.99:1. Over the photograph the same ring
+   would vanish, so the poster takes an inset --deep ring instead
+   (7.3:1 against the frame it sits on). */
+.people :focus-visible { outline-color: var(--vital); }
+.people .film:focus-visible { outline: 4px solid var(--deep); outline-offset: -10px; }
+
+/* ---- PIECE 11 MOTION ----------------------------------------
+   The page-wide reveal is 28px over 900ms on expo-out, which past
+   the first 6px is below the threshold of noticing. This section
+   runs four distinct motions instead of one:
+
+     1  head + note   44px / 520ms / expo-out        (the page's
+                      voice, but with travel you can actually see)
+     2  poster        56px / 560ms / expo-out, and the photograph
+                      inside it settles 1.12 -> 1.06 over 1200ms on
+                      a slow ease-out-cubic, so the image is still
+                      moving after its frame has stopped
+     3  control       scale 0.62 -> 1 / 540ms / back-out, 240ms
+                      late. The only overshoot in the section, and
+                      it rhymes with the "5" in PIECE 07
+     4  rule          scaleX 0 -> 1 / 760ms from the left. A scale,
+                      not a translate — the horizontal answer to
+                      the spine's vertical fill
+     5  roster        64px / 520ms, dealt at 90ms per card, each
+                      portrait easing 1.14 -> 1.07 behind its frame
+
+   Transform and opacity only, throughout. ------------------- */
+.people [data-reveal] {
+  transform: translate3d(0, 44px, 0);
+  transition: opacity 520ms var(--ease), transform 520ms var(--ease);
+}
+.people [data-reveal].is-in { transform: none; }
+
+.people .film[data-reveal] {
+  transform: translate3d(0, 56px, 0);
+  transition: opacity 560ms var(--ease), transform 560ms var(--ease);
+}
+.people .film[data-reveal].is-in { transform: none; }
+.film img { transform: scale(1.12); }
+.film.is-in img { transform: scale(1.06); }
+.film.is-in:hover img { transform: scale(1.10); }
+
+/* The control waits for the poster to exist. Without the gate a
+   lazy poster leaves a dark disc floating on an empty box. The
+   gate is opt-in via .js-film, so a page whose script never ran
+   still shows the control — visibility is the floor. */
+.film.js-film .film__disc { opacity: 0; transform: scale(0.62); }
+.film.js-film.is-in.is-ready .film__disc {
+  opacity: 1; transform: scale(1);
+  transition: transform 540ms cubic-bezier(0.34, 1.56, 0.64, 1) 240ms,
+              opacity 300ms linear 240ms;
+}
+.film:hover .film__disc,
+.film.js-film.is-in.is-ready:hover .film__disc {
+  transform: scale(1.06);
+  transition: transform var(--dur-fast) var(--ease);
+}
+.film:active .film__disc,
+.film.js-film.is-in.is-ready:active .film__disc { transform: scale(0.97); }
+
+.people .roster__rule[data-reveal] {
+  opacity: 1; transform: scaleX(0); transform-origin: left center;
+  transition: transform 760ms var(--ease);
+}
+.people .roster__rule[data-reveal].is-in { transform: scaleX(1); }
+
+.people .person[data-reveal] {
+  transform: translate3d(0, 64px, 0);
+  transition: opacity 520ms var(--ease), transform 520ms var(--ease);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.people .person[data-reveal].is-in { transform: none; }
+.person[data-reveal] .person__frame img { transform: scale(1.17) translateY(var(--ty, 0)); }
+.person[data-reveal].is-in .person__frame img { transform: scale(1.10) translateY(var(--ty, 0)); }
+
+/* A complete, finished still. Every crop, every colour, every
+   baseline is already correct with nothing left to animate. */
+@media (prefers-reduced-motion: reduce) {
+  .film img, .film.is-in img { transform: scale(1.06) !important; }
+  .person__frame img,
+  .person[data-reveal] .person__frame img,
+  .person[data-reveal].is-in .person__frame img {
+    transform: scale(1.10) translateY(var(--ty, 0)) !important;
+  }
+  .film.js-film .film__disc,
+  .film.js-film.is-in.is-ready .film__disc { opacity: 1 !important; transform: none !important; }
+  .people .roster__rule[data-reveal] { opacity: 1 !important; transform: none !important; }
+}
+
+/* ---- PIECE 11 RESPONSIVE (scoped; the shared blocks below are
+   not mine to edit, so every rule here outranks them by one
+   class rather than by source order) ------------------------- */
+@media (min-width: 700px) {
+  .people .roster {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(1.5rem, 3vw, 3rem);
+  }
+}
+@media (min-width: 1024px) {
+  /* Title and lede share one row, bottom-aligned, so the lede sits
+     on the headline's last baseline instead of under its own weight. */
+  .people .people__head {
+    display: grid; grid-template-columns: 1.15fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem); align-items: end;
+  }
+  .people .people__head .people__lede { margin-top: 0; padding-bottom: 0.4em; }
+  .people .people__grid { display: block; }
+  .people .roster { grid-template-columns: repeat(3, 1fr); }
+}
 
 /* ============================================================
    PIECE 12 — FIND YOUR BREAKTHROUGH
