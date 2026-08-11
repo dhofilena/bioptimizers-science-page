@@ -38,20 +38,36 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---- PIECE 03: phase spine (scroll-animated) ------------------ */
+  /* ---- PIECE 03: phase spine (scroll-animated) ------------------
+     Two jobs: mark the active step, and grow the rail fill so the
+     reader can see how far through the five phases they are. The
+     fill is driven off the active index rather than raw scroll
+     position — it stays in lockstep with the labels that way, and
+     costs no scroll listener. ------------------------------------ */
   function initSpine() {
     var spine = document.querySelector('[data-spine]');
     var phases = document.querySelectorAll('.phase[data-phase]');
     if (!spine || !phases.length) return;
 
     var steps = spine.querySelectorAll('[data-spine-step]');
+    var fill = spine.querySelector('[data-spine-fill]');
+
+    function setActive(n) {
+      var idx = 0;
+      steps.forEach(function (s, i) {
+        var on = s.getAttribute('data-spine-step') === n;
+        s.classList.toggle('is-active', on);
+        if (on) idx = i;
+      });
+      if (fill && steps.length > 1) {
+        fill.style.height = (idx / (steps.length - 1) * 100) + '%';
+      }
+    }
+
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
-        var n = entry.target.getAttribute('data-phase');
-        steps.forEach(function (s) {
-          s.classList.toggle('is-active', s.getAttribute('data-spine-step') === n);
-        });
+        setActive(entry.target.getAttribute('data-phase'));
       });
     }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
 
