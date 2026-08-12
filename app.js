@@ -926,6 +926,76 @@
     setTimeout(ready, 3000);
   }
 
+  /* ---- PLATE MOTION: the phase photographs, alive on arrival ------
+     Three of the phase plates are the first frame of a clip. The clip
+     plays ONCE when the reader arrives at it and settles on its last
+     frame; leaving the plate rewinds it, so coming back plays it again
+     rather than presenting a corpse.
+
+     Deliberately NOT the same rule as PIECE 07. There the footage is
+     scrubbed by scroll position because the sequence IS the argument.
+     Here the footage is atmosphere: it runs at its own speed, once, and
+     then gets out of the way of the prose beside it.
+
+     Every failure path lands on the photograph, which is never removed:
+       - reduced motion   -> returns below, before preload is ever set,
+                             so not one byte of video is requested
+       - scripts off      -> preload="none" and no autoplay attribute
+       - autoplay refused -> play() rejects, 'playing' never fires, and
+                             .is-on is never added
+     `.is-on` is added on the PLAYING event rather than next to the
+     play() call, so the layer cannot become visible while it is still a
+     black rectangle waiting on the first frame. */
+  function initPlateMotion() {
+    var vids = [].slice.call(document.querySelectorAll('[data-plate-motion]'));
+    if (!vids.length || !('IntersectionObserver' in window)) return;
+    if (reduceMotion.matches) return;
+
+    function stop(v) {
+      if (!v.paused) v.pause();
+      v.classList.remove('is-on');
+      try { v.currentTime = 0; } catch (e) {}
+    }
+
+    vids.forEach(function (v) {
+      v.addEventListener('playing', function () { v.classList.add('is-on'); });
+    });
+
+    // Fetch a little before the plate arrives so the first frame is ready
+    // when it does, but never on a page the reader does not scroll.
+    var plateWarm = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var v = e.target;
+        if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
+      });
+    }, { rootMargin: '400px 0px' });
+    vids.forEach(function (v) { plateWarm.observe(v); });
+
+    // Play when the plate is properly on screen, not when one pixel of it is.
+    var platePlay = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) {
+          if (v.ended || !v.paused) return;
+          try { v.currentTime = 0; } catch (err) {}
+          var q = v.play();
+          // A refusal is not an error worth surfacing - the photograph is
+          // already the finished picture.
+          if (q && q.catch) q.catch(function () {});
+        } else {
+          stop(v);
+        }
+      });
+    }, { threshold: 0.4 });
+    vids.forEach(function (v) { platePlay.observe(v); });
+
+    // The setting can flip mid-session. Drop back to the photograph.
+    var onFlip = function () { if (reduceMotion.matches) vids.forEach(stop); };
+    if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', onFlip);
+    else if (reduceMotion.addListener) reduceMotion.addListener(onFlip);
+  }
+
   /* ---- Boot ----------------------------------------------------- */
   function boot() {
     // PIECE 11 runs in both motion modes: the stagger indices and the
@@ -947,6 +1017,8 @@
     // Its own motion is already neutral here: the fill's transition is zeroed
     // by the global reduced-motion rule, and the jump asks for 'auto'.
     initSpine();
+    // Returns immediately under reduced motion, before any preload is set.
+    initPlateMotion();
     if (reduceMotion.matches) { revealAllImmediately(); return; }
     initReveals();
     initCounters();

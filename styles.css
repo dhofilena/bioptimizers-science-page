@@ -321,10 +321,10 @@ section { position: relative; padding-block: var(--pad-y); }
    the camera finds focus. Five fewer identical fades, zero fewer arrivals. */
 .phase__plate[data-reveal],
 .proof__plate[data-reveal] { opacity: 1; transform: none; transition: none; }
-.phase__plate[data-reveal] img,
+.phase__plate[data-reveal] :is(img, video),
 .proof__plate[data-reveal] img { transition: transform 1200ms var(--ease); }
-.phase__plate[data-reveal] img { transform: scale(1.06); }
-.phase__plate[data-reveal].is-in img { transform: none; }
+.phase__plate[data-reveal] :is(img, video) { transform: scale(1.06); }
+.phase__plate[data-reveal].is-in :is(img, video) { transform: none; }
 /* .proof__plate keeps its permanent 1.05 corner crop (see PIECE 10) as the
    RESTING value, so the settle runs 1.11 -> 1.05 rather than back to 1. */
 .proof__plate[data-reveal] img { transform: scale(1.11); }
@@ -337,7 +337,7 @@ section { position: relative; padding-block: var(--pad-y); }
   }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
   /* The crop settle lives on a descendant, so the rule above cannot reach it. */
-  .phase__plate[data-reveal] img { transform: none !important; }
+  .phase__plate[data-reveal] :is(img, video) { transform: none !important; }
   .proof__plate[data-reveal] img { transform: scale(1.05) !important; }
 }
 
@@ -1042,7 +1042,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .phase__prose p { color: var(--muted); }
 .phase__prose .lead { color: var(--dark); }
 .phase__plate { overflow: hidden; border-radius: 2px; background: var(--cream-warm); }
-.phase__plate img { width: 100%; }
+.phase__plate :is(img, video) { width: 100%; }
 
 /* The `.gates` / `.gate` pill defaults that used to sit here were the
    component PIECE 04 replaced — a row of uppercase lozenges — and `.gates`
@@ -1188,7 +1188,7 @@ section { position: relative; padding-block: var(--pad-y); }
   aspect-ratio: 25 / 13;                      /* A = 0.52 */
   width: calc(100% + var(--hunt-bleed));
 }
-.phase--wide .phase__plate img {
+.phase--wide .phase__plate :is(img, video) {
   width: 100%; height: 100%;
   object-fit: cover; object-position: 50% 92.5%;
 }
@@ -1620,7 +1620,7 @@ section { position: relative; padding-block: var(--pad-y); }
    only event in the picture) and graded a little off the wash. No
    animation change: it still settles out of its 1.06 crop like every
    other photograph here. */
-#phase-1 .phase__plate img { filter: contrast(1.07) saturate(1.08); }
+#phase-1 .phase__plate :is(img, video) { filter: contrast(1.07) saturate(1.08); }
 
 /* ---- PIECE 04 responsive. Kept inside this block, never in the shared
    media queries, so the six merges stay clean. Both breakpoints are ones
@@ -1650,7 +1650,7 @@ section { position: relative; padding-block: var(--pad-y); }
    breaks the handoff into Phase Two — so it goes above it instead. */
 @media (max-width: 1023.98px) {
   #phase-1 .phase__plate { aspect-ratio: 3 / 2; order: 4; }
-  #phase-1 .phase__plate img { height: 100%; object-fit: cover; object-position: 60% 44%; }
+  #phase-1 .phase__plate :is(img, video) { height: 100%; object-fit: cover; object-position: 60% 44%; }
   #phase-1 .phase__coda { order: 5; }
 }
 @media (min-width: 1024px) {
@@ -1667,7 +1667,7 @@ section { position: relative; padding-block: var(--pad-y); }
   #phase-1 .phase__plate { grid-row: 4; align-self: stretch; margin-top: clamp(0.5rem, 1.2vw, 1.25rem); }
   #phase-1 .phase__coda  { grid-column: 1; }
   #phase-1 .phase__plate { grid-column: 2; }
-  #phase-1 .phase__plate img { height: 100%; object-fit: cover; object-position: 60% 44%; }
+  #phase-1 .phase__plate :is(img, video) { height: 100%; object-fit: cover; object-position: 60% 44%; }
 }
 
 /* The rail is a transform on a descendant that waits on .is-in, so the
@@ -2603,6 +2603,36 @@ section { position: relative; padding-block: var(--pad-y); }
 .plate--breathe-b { --pb-dur: 47s; animation-direction: reverse; }
 .plate--breathe-c { --pb-dur: 41s; animation-delay: -12s; }
 
+/* ------------------------------------------------------------------
+   PLATE MOTION. Three of the phase photographs are the first frame of a
+   clip, so the plate can come alive when the reader arrives at it.
+
+   The photograph is never removed. It carries the alt text, it is what a
+   reader sees with scripts off, with reduced motion on, or when autoplay
+   is refused - and it is the poster, which is why the footage ships with
+   no poster attribute and costs no duplicate bytes.
+
+   The video only becomes visible once it is genuinely playing, so a clip
+   that fails to start can never leave a black rectangle where a
+   photograph used to be. Both layers carry the same breathe class and
+   both are in the DOM from parse, so their drift animations stay in
+   phase and the cross-fade has nothing to jump over.
+   ------------------------------------------------------------------ */
+.plate__motion {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+  pointer-events: none;
+}
+.plate__motion.is-on { opacity: 1; }
+/* A reader who asked for less motion never sees the layer and, because
+   initPlateMotion returns before touching preload, never downloads it. */
+@media (prefers-reduced-motion: reduce) {
+  .plate__motion { display: none; }
+}
+
 /* The drift is smaller than the crop it lives inside: 1.9% of headroom on each
    side against 1.1% of travel, so the plate can never expose its own edge. */
 @keyframes plate-breathe {
@@ -2889,7 +2919,7 @@ section { position: relative; padding-block: var(--pad-y); }
   /* Her hands and the pipette are the subject and they sit high in the
      frame; a portrait crop taken from the centre would cut the top of the
      gesture off. */
-  .phase--evo .phase__plate img { object-position: 52% 28%; }
+  .phase--evo .phase__plate :is(img, video) { object-position: 52% 28%; }
 }
 
 /* ============================================================
@@ -3885,7 +3915,7 @@ section { position: relative; padding-block: var(--pad-y); }
   .phase__head { grid-column: 1; }
   .phase__prose { grid-column: 1; }
   .phase__plate { grid-column: 2; grid-row: 1 / span 2; align-self: stretch; }
-  .phase__plate img { height: 100%; object-fit: cover; }
+  .phase__plate :is(img, video) { height: 100%; object-fit: cover; }
   .keynote { grid-column: 1; }
   /* Swept by the wave 4 coherence pass, all four dead: `.phase--flip` is on
      no element in the document (PIECE 05 un-flipped phase two and nothing
@@ -4248,6 +4278,6 @@ section { position: relative; padding-block: var(--pad-y); }
     grid-column: 2; grid-row: 3; position: relative;
     align-self: stretch; min-height: clamp(230px, 15vw, 310px);
   }
-  #phase-2 .bp__plate img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  #phase-2 .bp__plate :is(img, video) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 }
 
