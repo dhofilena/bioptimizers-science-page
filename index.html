@@ -28,6 +28,10 @@
   .person__frame img { transform: scale(1.10) translateY(var(--ty, 0)) !important; }
   .phase__plate img { transform: none !important; }
   .proof__plate img { transform: scale(1.05) !important; }
+  /* PIECE 04 — the gate's rail is DRAWN out of a scaleX(0) on a pseudo-element
+     of .gates, which waits on .is-in like everything else. Same hole, same
+     patch: with no script the rail is simply already ruled. */
+  .gates::before { transform: none !important; }
   /* PIECE 12. Two transforms in the finale wait on .is-in and both live on a
      DESCENDANT of the element carrying [data-reveal], so the rule above misses
      them: the three doors' hairlines are drawn with scaleX(0 -> 1), and each
@@ -193,40 +197,116 @@
     <div class="phases">
 
       <!-- ---------- PIECE 04: PHASE ONE — START ---------- -->
+      <!-- PHASE ONE IS A GATE. IT IS NOW BUILT AS ONE.
+           The standing verdict on this stretch was that phases 1/2/3/5 render
+           as five near-identical two-column text+image cards. This one stops
+           being a card. It is three BANDS, each spanning the full content
+           width, in the order a paper makes its case:
+
+             1. MASTHEAD  rule, "Phase One", then 01 + The Standard set on one
+                          line at the same size — the stage marker is TYPE now,
+                          at full contrast, not a 272px 10%-opacity smudge
+                          floating behind the prose.
+             2. THE GATE  the three hurdles, given the whole width and a
+                          bespoke plate each. They were plain pills; they are
+                          the substance of this phase.
+             3. THE CODA  why the standard exists, beside the photograph, and
+                          the question that hands off to Phase Two.
+
+           WHAT THE THREE PLATES SHOW. Three different figure types, one shared
+           grammar: GREEN IS WHAT CLEARS THE GATE.
+             · Legitimate Science  — a forest plot. Independent estimates, all
+               landing on the same side of the null, and a pooled summary
+               diamond. That is what "strong scientific evidence" looks like
+               when you actually go and check.
+             · Physiological Impact — a dose-response curve crossing an effect
+               threshold. The marker is the crossing.
+             · Real Need — two traces on one axis: a spike that collapses
+               (dashed, receding) against a level that holds. "A real need —
+               not a passing trend", drawn.
+           They are SCHEMATIC, deliberately: no axis values, no counts, nothing
+           that could be read as a dataset we do not have. Each sits under the
+           test it belongs to and is aria-hidden — the label already says it.
+
+           ARRIVAL IS STILL FOUR BLOCKS, not four more paragraphs: masthead,
+           lead, gate, coda. The photograph settles out of its crop as before.
+           The gate's rail is DRAWN (--ease-draw), the same gesture as the
+           spine fill and the manifesto seam — a rule ruled across the page is
+           the one thing on this page allowed to draw itself. Its resting value
+           is in the <noscript> block and in the reduced-motion block below. -->
       <article class="phase" id="phase-1" data-phase="1" tabindex="-1" aria-labelledby="phase-1-heading">
-        <p class="phase__ghost" aria-hidden="true">01</p>
-        <header class="phase__head">
-          <p class="eyebrow" data-reveal>Phase One</p>
-          <h3 id="phase-1-heading" class="phase__title" data-reveal data-reveal-delay="1">The Standard</h3>
+
+        <header class="phase__head" data-reveal>
+          <p class="eyebrow">Phase One</p>
+          <div class="phase__mast">
+            <p class="phase__ghost" aria-hidden="true">01</p>
+            <h3 id="phase-1-heading" class="phase__title">The Standard</h3>
+          </div>
         </header>
-        <!-- WAVE 3 — THE UNIT OF ARRIVAL IS THE BLOCK, NOT THE PARAGRAPH.
-             62 elements were revealing, 51 of them identically. The cure is
-             not a fourth re-cut of the fade, it is fewer things arriving: a
-             paragraph inside a column that has already arrived did not arrive
-             separately. Each phase now makes exactly three statements —
-             eyebrow, title, prose — and the photograph does something else
-             entirely (see .phase__plate in styles.css). Nine reveals removed
-             across the five phases; every remaining one is on a different
-             beat instead of forty-two sharing zero. -->
-        <div class="phase__prose" data-reveal data-reveal-delay="2">
-          <p>Before a new product idea reaches the BIOLab, it has to clear three hurdles: legitimate science, physiological impact, and a real need — not a passing trend.</p>
-          <ul class="gates">
-            <li class="gate">Legitimate Science</li>
-            <li class="gate">Physiological Impact</li>
-            <li class="gate">Real Need</li>
-          </ul>
-          <p>There are a lot of new ingredients that get big hype but don't have enough scientific validity. Before we commit to a product, we make sure there's strong scientific evidence that an ingredient can support your health.</p>
+
+        <p class="lead phase__lead" data-reveal data-reveal-delay="1">Before a new product idea reaches the BIOLab, it has to clear three hurdles: legitimate science, physiological impact, and a real need — not a passing trend.</p>
+
+        <ol class="gates" data-reveal>
+          <li class="gate">
+            <p class="gate__name">Legitimate Science</p>
+            <svg class="gate__fig" viewBox="0 0 168 104" aria-hidden="true" focusable="false">
+              <g class="gf-rule">
+                <path d="M10 92H158"/>
+                <path d="M46 12V92" stroke-dasharray="3 4"/>
+              </g>
+              <g class="gf-ink">
+                <path d="M70 24H136"/>
+                <path d="M62 44H122"/>
+                <path d="M78 64H150"/>
+              </g>
+              <g class="gf-dot">
+                <rect x="100" y="21" width="6" height="6"/>
+                <rect x="89" y="41" width="6" height="6"/>
+                <rect x="111" y="61" width="6" height="6"/>
+              </g>
+              <path class="gf-mark" d="M78 81 100 74 122 81 100 88Z"/>
+            </svg>
+          </li>
+          <li class="gate">
+            <p class="gate__name">Physiological Impact</p>
+            <svg class="gate__fig" viewBox="0 0 168 104" aria-hidden="true" focusable="false">
+              <g class="gf-rule">
+                <path d="M16 12V92"/>
+                <path d="M16 92H158"/>
+                <path d="M16 40H158" stroke-dasharray="3 4"/>
+              </g>
+              <path class="gf-ink" d="M16 86C42 86 58 80 76 58C94 36 118 22 156 20"/>
+              <circle class="gf-mark" cx="94.7" cy="40" r="4.5"/>
+            </svg>
+          </li>
+          <li class="gate">
+            <p class="gate__name">Real Need</p>
+            <svg class="gate__fig" viewBox="0 0 168 104" aria-hidden="true" focusable="false">
+              <g class="gf-rule">
+                <path d="M12 92H158"/>
+              </g>
+              <path class="gf-soft" d="M16 84C28 82 36 22 50 20C64 18 76 56 98 70C120 82 132 82 154 84" stroke-dasharray="4 3"/>
+              <path class="gf-trace" d="M16 54C42 52 60 51 86 50C114 49 132 49 152 48"/>
+              <circle class="gf-mark" cx="152" cy="48" r="4"/>
+            </svg>
+          </li>
+        </ol>
+
+        <div class="phase__coda" data-reveal>
+          <p class="phase__note">There are a lot of new ingredients that get big hype but don't have enough scientific validity. Before we commit to a product, we make sure there's strong scientific evidence that an ingredient can support your health.</p>
+          <aside class="keynote">
+            <p class="keynote__label">The Key Question</p>
+            <p class="keynote__ask">Can We Build Something Superior?</p>
+            <p class="keynote__tail">This leads us to…</p>
+          </aside>
         </div>
-        <figure class="phase__plate phase__plate--tall" data-reveal>
+
+        <figure class="phase__plate" data-reveal>
           <img src="./laboratory-pipette-drop-test-tubes-d-7fc4d93f0f60fce5c1e908bc899cf7d3.png"
                alt="Laboratory pipette dropping liquid into test tubes"
                width="1014" height="902" loading="lazy" decoding="async">
         </figure>
-        <aside class="keynote" data-reveal>
-          <p class="keynote__label">The Key Question</p>
-          <p class="keynote__ask">Can We Build Something Superior?</p>
-          <p class="keynote__tail">This leads us to…</p>
-        </aside>
+
       </article>
       <!-- ---------- PIECE 04: PHASE ONE — END ---------- -->
 

@@ -868,6 +868,194 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ============================================================
+   ---- PIECE 04 ---- PHASE ONE, "THE STANDARD".
+
+   THE READER'S FIRST ENCOUNTER WITH THE PROCESS, SO IT IS THE
+   ONE THAT HAS TO STOP LOOKING LIKE A CARD. Everything here is
+   scoped to #phase-1 on purpose: the shared shell above is not
+   touched, and none of this can leak into 02/03/04/05.
+
+   THREE BANDS, EACH SPANNING THE FULL CONTENT WIDTH:
+     masthead -> lead -> THE GATE -> coda (prose + photograph).
+   The two-column split now happens ONCE, in the last band, and
+   only because a photograph and a closing question genuinely
+   want to sit side by side. MEASURED, as the largest all-cream
+   rectangle that fits inside the article: 2560 went from
+   708x400px to 404x368, and the hole MOVED — it used to sit
+   under the photograph, below content that had run out, and it
+   is now beside the opening paragraph, which is a measure doing
+   its job. At 1920 there is no hole inside the article at all
+   (largest is 956x84 and that is the margin below it); at 1280,
+   444x144, again beside the lead.
+
+   THE GHOST NUMERAL IS NO LONGER A GHOST.
+   It shipped as 272-368px of --green at opacity 0.10 pinned to
+   the top-right of the article, which means (a) it rendered at
+   1.11:1 against cream — information at a ratio no one can read
+   — and (b) at 1920/2560 it sat straight across the opening
+   lines of the lead. It is now TYPE: the same --t-h2 as the
+   title, set beside it on one line, in --green at full opacity.
+   Rendered ratio 3.59:1 at 30-76px, which is LARGE text at every
+   width this page supports, so it is the one place --green is
+   allowed to carry letterforms. Nothing is positioned absolutely
+   any more, so a collision is not merely fixed, it is impossible.
+   ============================================================ */
+
+/* ---- BAND 1 — THE MASTHEAD ------------------------------------------
+   A hairline, the stage name, then 01 + the title on one line. The rule
+   is the same --dark-22 hairline PIECE 03 uses at every phase join, so
+   the run of five is ruled at the top as well as between. */
+#phase-1 { gap: clamp(1.6rem, 2.6vw, 2.5rem); }
+#phase-1 .phase__head {
+  border-top: 1px solid var(--dark-22);
+  padding-top: clamp(1rem, 1.5vw, 1.6rem);
+}
+#phase-1 .phase__mast {
+  display: flex; align-items: baseline; flex-wrap: wrap;
+  column-gap: clamp(0.65rem, 1.3vw, 1.4rem);
+  margin-top: clamp(0.8rem, 1.4vw, 1.35rem);
+}
+#phase-1 .phase__ghost {
+  position: static; opacity: 1; z-index: auto;
+  font-size: var(--t-h2); line-height: 1; letter-spacing: -0.045em;
+  color: var(--green); font-variant-numeric: tabular-nums;
+}
+#phase-1 .phase__title { margin-top: 0; }
+
+/* The measure is set in EM OF ITS OWN TYPE, not rem. --t-lead is 21px at
+   1280 and 31px at 1920/2560; a rem cap cannot serve both, which is how
+   phases 3 and 5 ended up at 39-40cpl at one width and fine at another.
+   31em measures 68cpl at 1280, 1920 AND 2560 — the same line, three times. */
+#phase-1 .phase__lead { max-width: 31em; color: var(--dark); }
+
+/* ---- BAND 2 — THE GATE ----------------------------------------------
+   Three stations under one rail. The rail is the bed-and-fill idiom the
+   spine already uses: a --dark-22 hairline that is always there, and a
+   --green rule DRAWN across it (3.59:1, a graphic, needs 3:1). The posts
+   are the vertical hairlines; an idea enters at the left and the right
+   end is open, because what clears the third gate goes to the BIOLab. */
+#phase-1 .gates {
+  position: relative;
+  display: grid; grid-template-columns: 1fr; gap: 0;
+  border-top: 1px solid var(--dark-22);
+  border-bottom: 1px solid var(--dark-22);
+  margin-top: clamp(0.5rem, 1.2vw, 1.25rem);
+}
+#phase-1 .gates::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px;
+  background: var(--green); transform: scaleX(0); transform-origin: left;
+  transition: transform 760ms var(--ease-draw) 200ms;
+}
+#phase-1 .gates.is-in::before { transform: scaleX(1); }
+
+#phase-1 .gate {
+  position: relative;
+  display: flex; flex-direction: column; gap: clamp(0.9rem, 1.5vw, 1.35rem);
+  border: 0; border-radius: 0; border-left: 1px solid var(--dark-22);
+  padding: clamp(1.05rem, 1.7vw, 1.6rem) clamp(1rem, 1.5vw, 1.6rem) clamp(1.35rem, 2vw, 2rem);
+  font-size: inherit; letter-spacing: normal; text-transform: none; color: inherit;
+}
+#phase-1 .gate + .gate { border-top: 1px solid var(--dark-22); }
+#phase-1 .gate__name {
+  font-size: clamp(1.0625rem, 1.1vw, 1.375rem);
+  font-weight: 700; line-height: 1.2; letter-spacing: -0.012em;
+  color: var(--deep); text-transform: none;
+}
+/* margin-top:auto floors the three plates on one line even when a name
+   wraps to two — the figures are a row, so they read as a row. */
+#phase-1 .gate__fig { width: 100%; max-width: 21rem; height: auto; margin-top: auto; }
+
+/* THE FIGURES. One grammar across three different plate types:
+     --muted  5.23:1  axes, reference lines, the trend that fades
+     --deep  12.60:1  the measurement itself
+     --green  3.59:1  WHAT CLEARS THE GATE — pooled estimate, threshold
+                      crossing, the level that holds
+   No value is set through opacity, so every ratio above is what the
+   pixel actually is. Strokes are given in viewBox units and render
+   1.7-2.9x larger than stated at the sizes this figure is used. */
+#phase-1 .gf-rule path { fill: none; stroke: var(--muted); stroke-width: 1; }
+#phase-1 .gf-ink,
+#phase-1 .gf-ink path  { fill: none; stroke: var(--deep); stroke-width: 1.7; }
+#phase-1 .gf-dot rect  { fill: var(--deep); }
+#phase-1 .gf-soft      { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+#phase-1 .gf-trace     { fill: none; stroke: var(--green); stroke-width: 2.6; stroke-linecap: round; }
+#phase-1 .gf-mark      { fill: var(--green); }
+
+/* ---- BAND 3 — THE CODA ----------------------------------------------
+   Why the standard exists, the question that opens Phase Two, and the
+   photograph. The keynote GROWS to the height of the plate beside it
+   (flex:1) instead of leaving the column half empty, which is what used
+   to strand the bottom-right corner at 2560. */
+#phase-1 .phase__coda {
+  display: flex; flex-direction: column;
+  gap: clamp(1.35rem, 2.2vw, 2rem);
+}
+#phase-1 .phase__note { color: var(--muted); max-width: 32em; }
+#phase-1 .keynote { flex: 1 1 auto; justify-content: center; }
+
+/* The plate was the weakest thing in the phase — a pale, low-contrast
+   frame of glassware. It is cropped to the pipette and the drop (the
+   only event in the picture) and graded a little off the wash. No
+   animation change: it still settles out of its 1.06 crop like every
+   other photograph here. */
+#phase-1 .phase__plate img { filter: contrast(1.07) saturate(1.08); }
+
+/* ---- PIECE 04 responsive. Kept inside this block, never in the shared
+   media queries, so the six merges stay clean. Both breakpoints are ones
+   the page already uses (700, 1024) — no new one is introduced. ---- */
+
+/* Under 700 the three stations stack, so each one turns on its side —
+   name beside its plate rather than above it. Stacked full-size figures
+   cost 750px of phone scroll for three pictures; this costs 430. */
+@media (max-width: 699.98px) {
+  #phase-1 .gate {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 9.5rem);
+    align-items: center; column-gap: 1rem;
+    /* Flush with the text column: an inset post here would put the station
+       names 17px right of every other line in the phase. */
+    border-left: 0; padding-left: 0; padding-right: 0;
+  }
+  #phase-1 .gate__fig { margin-top: 0; }
+}
+@media (min-width: 700px) {
+  #phase-1 .gates { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #phase-1 .gate + .gate { border-top: 0; }
+}
+/* Below 1024 the phase is a single column, and two things follow from that.
+   (1) An uncropped plate becomes 837px of glassware at 1023 and 311 on a
+   phone, so it takes the same deliberate crop the desktop band uses.
+   (2) DOM order would put the photograph AFTER the closing question, which
+   breaks the handoff into Phase Two — so it goes above it instead. */
+@media (max-width: 1023.98px) {
+  #phase-1 .phase__plate { aspect-ratio: 3 / 2; order: 4; }
+  #phase-1 .phase__plate img { height: 100%; object-fit: cover; object-position: 60% 44%; }
+  #phase-1 .phase__coda { order: 5; }
+}
+@media (min-width: 1024px) {
+  /* Explicit rows, not auto-placement: the bands are a fixed score and
+     the last one must put the coda and the plate on the SAME row. */
+  #phase-1 {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+    gap: clamp(1.75rem, 2.6vw, 2.5rem) clamp(2.5rem, 5vw, 5rem);
+  }
+  #phase-1 .phase__head  { grid-column: 1 / -1; grid-row: 1; }
+  #phase-1 .phase__lead  { grid-column: 1 / -1; grid-row: 2; }
+  #phase-1 .gates        { grid-column: 1 / -1; grid-row: 3; }
+  #phase-1 .phase__coda,
+  #phase-1 .phase__plate { grid-row: 4; align-self: stretch; margin-top: clamp(0.5rem, 1.2vw, 1.25rem); }
+  #phase-1 .phase__coda  { grid-column: 1; }
+  #phase-1 .phase__plate { grid-column: 2; }
+  #phase-1 .phase__plate img { height: 100%; object-fit: cover; object-position: 60% 44%; }
+}
+
+/* The rail is a transform on a descendant that waits on .is-in, so the
+   global reduced-motion rule (which only reaches [data-reveal] itself)
+   cannot see it. Its resting state is stated here and in <noscript>. */
+@media (prefers-reduced-motion: reduce) {
+  #phase-1 .gates::before { transform: none !important; }
+}
+
+/* ============================================================
    PIECE 07 — SYNERGY. THE MECHANISM, DRAWN.
 
    THE FIGURE. A plate from a process paper, not a mood. Three
