@@ -26,8 +26,25 @@
        --green      3.59:1  passes 3:1 for LARGE text only (>=24px bold /
                             >=30px regular). Never use it below that size. */
   --muted: #6e6663;
+  /* THE FOURTH SHIPPING OF ONE TRAP, ENDED HERE.
+     `--dark-22` is rgba(56,46,44,0.22): it COMPUTES 12.27:1 from its token
+     and RENDERS rgb(205,202,199) on cream = 1.52:1. Three pieces found that
+     independently and each corrected it privately, at a different value —
+     PIECE 01's hero rule at 0.58, PIECE 12's door rules at 0.58, PIECE 06's
+     record at 0.55 — while the four PHASE JOINS, phase one's opening rule
+     and the whole gate frame were still drawn at 0.22. Those are not
+     decoration: they are how a 10,000px argument is articulated into five
+     entries, and at 1.52:1 they are under the 3:1 graphics floor.
+     So there is now ONE structural hairline on cream, stated once, and the
+     three private corrections read it instead of restating it:
+       --rule    rgba(56,46,44,0.58)  renders rgb(148,142,139)  3.52:1
+     --dark-22 is deleted: after the swap nothing referenced it. --dark-12
+     stays, for the one job that is genuinely NOT information — the spine's
+     unfilled rail bed and its mobile cell gaps. A track drawn at the same
+     weight as the --green fill running down it says nothing; the fill and
+     the marker are what carry "you are here". */
+  --rule: rgba(56, 46, 44, 0.58);
   --dark-12: rgba(56, 46, 44, 0.12);
-  --dark-22: rgba(56, 46, 44, 0.22);
   --cream-warm: #f2f0e8;
 
   /* ---- THE DARK CHAPTER HAS THREE MOVEMENTS, SO IT HAS THREE VALUES. ----
@@ -65,7 +82,9 @@
   --t-body: 1.0625rem;
   --t-small: 0.9375rem;
   --t-eyebrow: 0.75rem;
-  --t-ghost: clamp(7rem, 20vw, 23rem);   /* 272->368px */
+  /* --t-ghost (clamp(7rem, 20vw, 23rem), 272->368px) is GONE. It sized a
+     watermark that no longer exists — see .phase__mast below. Three separate
+     pieces were each carrying arithmetic to hold space for it. */
 
   /* 80,648 IS ONE OBJECT THAT APPEARS TWICE, so it is one token used twice.
      PIECE 02 promises the figure; PIECE 09 banks it. The receipt is set a
@@ -301,12 +320,29 @@ section { position: relative; padding-block: var(--pad-y); }
      Arial and .line clips its overflow, so a floor any higher shaves the
      last glyph off "Breakthrough". Measured slack at 320px: 15px. */
   --t-display: clamp(2.7rem, 13.2vw, 13rem);   /* ceiling 144->208px; 2.7rem floor kept, see above */
+  /* WAVE 4 — THE HERO JOINS THE PAGE'S WIDTH SYSTEM.
+     Every rule on this page is one of three widths and each says something:
+     FULL-BLEED (chapter edges and register lines — the manifesto seam, the
+     two dark joins, .tally__entry::before, .proof__claim::before), SHELL
+     (a section's own content column — the manifesto's title rule, the roster
+     rule), or COLUMN (a phase's own row — every phase join, .chain__mark).
+     .hero__rule belonged to none of them: it was frozen at 1856px off a
+     hard-coded `max-width: 1920px`, so at 2560 the page opened 10px out of
+     true with every section under it and its rule was NARROWER than the
+     1900px shell it sat above.
+     The hero now takes the shell like everything else, and the rule and the
+     plate bleed from the shell's own text edge to the page edge — which is
+     the construction .proof__claim::before and .phase--wide's plate already
+     use, stated once here as a token instead of a third time by hand.
+     Below 1240 (the shell's floor) this resolves to exactly --gutter, so
+     nothing about the phone or tablet hero changes. */
+  --hero-bleed: calc((100vw - min(100vw, var(--shell))) / 2 + var(--gutter));
   min-height: 100svh; padding-block: 0;
   display: grid; grid-template-rows: 1fr;
   background: var(--cream); overflow: hidden;
 }
 .hero__grid {
-  width: 100%; max-width: 1920px; margin-inline: auto;
+  width: 100%; max-width: var(--shell); margin-inline: auto;
   padding: clamp(1.25rem, 5svh, 3.75rem) var(--gutter) 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -338,8 +374,8 @@ section { position: relative; padding-block: var(--pad-y); }
 /* The rule the whole composition hangs from. It runs from the type's
    gutter to the same edge the plate is locked to. */
 .hero__rule {
-  grid-area: rule; height: 1px; background: rgba(56, 46, 44, 0.58);   /* rendered 3.52:1; was --dark-22 = 1.51:1 */
-  margin-right: calc(var(--gutter) * -1);
+  grid-area: rule; height: 1px; background: var(--rule);   /* 3.52:1 rendered; see --rule */
+  margin-right: calc(var(--hero-bleed) * -1);
 }
 
 .hero__say {
@@ -376,7 +412,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .hero__plate {
   grid-area: plate; align-self: end;
   position: relative; overflow: hidden;
-  margin-inline: calc(var(--gutter) * -1);
+  margin-inline: calc(var(--hero-bleed) * -1);
   height: 100%; min-height: 15rem; max-height: 30rem;
   background: var(--cream-warm);
 }
@@ -429,7 +465,7 @@ section { position: relative; padding-block: var(--pad-y); }
      bottom-right corner; max-height stops a 1440-tall viewport from asking
      a 528px-tall source to be 900px tall. Measured worst case is 1.14x. */
   .hero__plate {
-    margin-inline: 0; margin-right: calc(var(--gutter) * -1);
+    margin-inline: 0; margin-right: calc(var(--hero-bleed) * -1);
     max-height: 37.5rem;
   }
   .hero__plate img { object-position: 52% 36%; }
@@ -526,9 +562,17 @@ section { position: relative; padding-block: var(--pad-y); }
 .manifesto__body { display: flex; flex-direction: column; align-items: flex-start; }
 
 /* ---- The sentence, re-typeset. Reading order is the source order. ---- */
+/* WAVE 4 — THE CAPS WERE IN THE WRONG CURRENCY, AND THEY FROZE.
+   `38ch` resolves against .mf-set's OWN font, which clamps out at 2.1rem, so
+   this box stopped growing at 1430px and stayed 710px wide while the shell
+   went 1240 -> 1900. That is what put the section's ink at 919px against a
+   full-bleed seam — 48% at 1920, 36% at 2560, the round-3 complaint. The cap
+   is now in the element's own em (the currency PIECES 04/06/08/10 all settled
+   on) and set to the measure it should have had: 26em is 60cpl at every step
+   from 900px up, against 48cpl before. Ink 919 -> 1026. */
 .mf-set {
   font-size: clamp(1.3rem, 2.35vw, 2.1rem); font-weight: 400; line-height: 1.32;
-  letter-spacing: -0.015em; color: var(--cream); max-width: 38ch; text-wrap: balance;
+  letter-spacing: -0.015em; color: var(--cream); max-width: 26em; text-wrap: balance;
 }
 .mf-cue {
   margin-top: clamp(1.6rem, 3.4vh, 2.6rem);
@@ -553,7 +597,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .mf-q {
   display: block; margin-top: 0.3rem;
   font-size: clamp(1.4rem, 2.55vw, 2.3rem); font-weight: 400;
-  line-height: 1.2; letter-spacing: -0.025em; color: var(--white); max-width: 21ch;
+  line-height: 1.2; letter-spacing: -0.025em; color: var(--white); max-width: 17em;
 }
 /* WAVE 3: the greeting now OPENS the section (see index.html), so its rule
    turned over with it — it is drawn UNDER the name, between the greeting and
@@ -646,7 +690,11 @@ section { position: relative; padding-block: var(--pad-y); }
 @media (min-width: 900px) {
   .manifesto__body {
     display: grid;
-    grid-template-columns: max-content minmax(17rem, 27rem);
+    /* 34rem, not 27: the question is the section's payoff and a 432px column
+       broke "could we make this even better?" onto two lines at every width
+       above 900. At 34rem it clears one line and the bottom row grows with
+       the shell instead of stopping 480px short of it. */
+    grid-template-columns: max-content minmax(17rem, 34rem);
     column-gap: clamp(2rem, 3.6vw, 3.4rem);
     justify-content: start; align-items: end;
     grid-template-areas:
@@ -789,7 +837,7 @@ section { position: relative; padding-block: var(--pad-y); }
    viewports of the same two-column card, separated by nothing but air. The
    phases themselves are scaffold and not mine to redesign, so this is the
    cheapest intervention that changes how the run READS rather than how it
-   looks: a hairline at each join, on the same --dark-22 the hero's rule is
+   looks: a hairline at each join, on the same --rule the hero's rule is
    drawn in, so the argument is ruled into five entries exactly as PIECE 09
    rules the register into six. Four rules; the run stops being one field and
    becomes ~1,500px movements you can feel yourself crossing.
@@ -809,8 +857,15 @@ section { position: relative; padding-block: var(--pad-y); }
 .phase + .phase::before {
   content: ""; position: absolute; left: 0; right: 0;
   top: calc(var(--phase-gap) / -2); height: 1px;
-  background: var(--dark-22);
+  background: var(--rule);
 }
+/* WAVE 4 — THE RUN DOES NOT NEED TO BE TOLD TWICE. Phase three ends ON a
+   rule: PIECE 06's record sheet closes with its own hairline, and once wave 4
+   put both on the same --rule the join 88px below it was a second line of
+   identical weight and identical length with nothing between them — a doubled
+   rule, straight out of two pieces that could not see each other. The
+   record's closing rule IS this join; the four remaining joins are unchanged. */
+#phase-4::before { content: none; }
 
 /* ---- PIECES 04–08 — shared phase shell ---- */
 /* Each phase is the SPINE'S LANDING PAD, so it owns two things the spine
@@ -821,11 +876,43 @@ section { position: relative; padding-block: var(--pad-y); }
    arrival itself plus the spine row that just went bold. */
 .phase { position: relative; display: grid; gap: 2rem; scroll-margin-top: clamp(2.5rem, 9vh, 6.5rem); }
 .phase:focus { outline: none; }
+
+/* ============================================================
+   WAVE 4 — THE GHOST NUMERAL, SOLVED ONCE FOR ALL FIVE PHASES.
+
+   Six builders working in parallel arrived at FOUR different
+   answers to the same object. PIECE 04 made it real type at full
+   opacity beside the title; PIECE 05 re-cut its absolute position
+   to clear a 41rem standfirst; PIECE 06 gave the masthead the
+   numeral's height so the lead stopped starting inside the "03";
+   PIECE 08 reserved it a lane to the right of the head. Phases
+   2/3/4/5 still carried the original watermark underneath all of
+   that: 240-368px of --green at opacity 0.10, which MEASURES
+   1.12:1 on cream — information at a ratio nobody can read — and
+   which at 1920 sat straight across the title of phase 2 and the
+   title of phase 3 (both verified overlapping, not "nearly").
+
+   PIECE 04's is the strongest argument and it is now the page's:
+   the stage marker is TYPE, set on the title's own baseline at
+   the title's own size, in --green at full opacity — 3.59:1 at
+   30-76px, which is LARGE text at every width this page supports
+   and the one place --green is allowed to carry letterforms.
+   Nothing is positioned absolutely any more, so a collision is
+   not merely fixed at the widths somebody measured, it is
+   impossible at every width. Three blocks of reservation
+   arithmetic (--t-ghost * 0.46, --t-ghost * 0.60, a re-cut clamp)
+   and the token itself all go with it.
+   ============================================================ */
+.phase__mast {
+  display: flex; align-items: baseline; flex-wrap: wrap;
+  column-gap: clamp(0.65rem, 1.3vw, 1.4rem);
+  margin-top: clamp(0.8rem, 1.4vw, 1.35rem);
+}
 .phase__ghost {
-  position: absolute; top: -0.30em; right: 0; left: auto; z-index: 0;
-  font-size: var(--t-ghost); font-weight: 700; line-height: 1;
-  letter-spacing: -0.05em; color: var(--green); opacity: 0.10;
-  pointer-events: none; user-select: none;
+  font-size: var(--t-h2); font-weight: 700; line-height: 1;
+  letter-spacing: -0.045em; color: var(--green);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
 }
 .phase__head, .phase__prose, .phase__plate, .keynote, .assay { position: relative; z-index: 1; }
 .phase__head .eyebrow { color: var(--deep); }
@@ -833,18 +920,56 @@ section { position: relative; padding-block: var(--pad-y); }
   margin-top: 0.75rem; font-size: var(--t-h2); font-weight: 700;
   line-height: 1; letter-spacing: -0.03em;
 }
+/* Inside the masthead the numeral supplies the space above the title. */
+.phase__mast .phase__title { margin-top: 0; }
+
+/* ============================================================
+   WAVE 4 — THE PLATE MARKER. ONE FIGURE GRAMMAR, NOT FIVE.
+
+   The page shipped five plates and four different ways of naming
+   them: "Fig. 1" (phase 2), "Fig. 05 — Revision History" (phase
+   5), "The Digestion Stack" (phase 4, named but unnumbered), and
+   two plates — the gate triptych and the testing record — with no
+   marker at all. Two of those are also two different NUMBER
+   FORMATS for the same idea.
+
+   The convention, applied to all five: `Fig. 0N — Name`, where N
+   is the PHASE the plate belongs to. That is what makes the five
+   plates index against the same 01-05 the spine, the mastheads
+   and the phase ids already run on, instead of against an
+   invisible figure counter the reader would have to keep. Every
+   name is a phrase this page's own copy already contains: "three
+   hurdles" (phase 1's lead), "the entire biological chain"
+   (phase 2's standfirst), "two major stages" (phase 3's bridge
+   line), "The Digestion Stack" and "Revision History".
+
+   ONE CONSTRUCTION, TOO: 12px caps at 0.22em, the marker first
+   and a 1px rule drawn under it. .chain__mark and .rig__title
+   were already built this way; .revs__cap was the outlier, ruled
+   2px ABOVE itself, and is brought onto the same line here.
+   ============================================================ */
+.fig__mark {
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.22em; line-height: 1.4; color: var(--deep);
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--deep);
+  /* ONE distance from a marker to the plate it marks. The three pieces that
+     shipped a marker each picked their own (2.75 / 2.1 / 1.75rem ceilings),
+     which at 390 put the gate's rule 18px off the rail below it and read as a
+     doubled line. 22px at 390, 31 at 1280, 40 from 1667 up, everywhere. */
+  margin-bottom: clamp(1.4rem, 2.4vw, 2.5rem);
+}
 .phase__prose { display: flex; flex-direction: column; gap: 1.5rem; max-width: var(--measure); }
 .phase__prose p { color: var(--muted); }
 .phase__prose .lead { color: var(--dark); }
 .phase__plate { overflow: hidden; border-radius: 2px; background: var(--cream-warm); }
 .phase__plate img { width: 100%; }
 
-.gates { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.gate {
-  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.14em; color: var(--deep);
-  padding: 0.7em 1.15em; border: 1px solid var(--deep); border-radius: 999px;
-}
+/* The `.gates` / `.gate` pill defaults that used to sit here were the
+   component PIECE 04 replaced — a row of uppercase lozenges — and `.gates`
+   exists in phase one and nowhere else, so every one of their declarations
+   was already being undone one selector later. Swept by the wave 4
+   coherence pass along with `.figures` and the old `.roster` rules. */
 
 .keynote {
   background: var(--deep); color: var(--white);
@@ -852,7 +977,12 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 .keynote__label { font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--vital); }
 .keynote__ask { font-size: var(--t-h3); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
-.keynote__tail { font-size: var(--t-small); opacity: 0.65; }
+/* The page's last un-stated composite. `opacity: 0.65` over --white on --deep
+   renders rgb(171,185,169) = 6.60:1 — it passes, but it passed by accident:
+   nothing in the declaration said so, and an ancestor opacity is the exact
+   shape of the bug this page has shipped three times. Stated as the alpha it
+   actually is, the way .tally__desc and .person__role already state theirs. */
+.keynote__tail { font-size: var(--t-small); color: rgba(255, 255, 255, 0.65); }
 
 .quote {
   font-size: var(--t-h3); font-weight: 400; line-height: 1.3; letter-spacing: -0.02em;
@@ -876,7 +1006,7 @@ section { position: relative; padding-block: var(--pad-y); }
 
    WHAT IT IS NOW. A record sheet. The structure IS the design:
      · a 2px --deep rule opens each stage
-     · a 1px --dark-22 hairline closes every entry, and one
+     · a 1px --rule hairline closes every entry, and one
        closes the sheet
      · a --green tick is DRAWN in the margin of each entry — the
        same mark .spine__link::before makes for the step you are
@@ -912,7 +1042,7 @@ section { position: relative; padding-block: var(--pad-y); }
                   this stylesheet sets for --green
      tick         --green as a 2px graphic          3.59:1
      stage rule   --deep as a 2px graphic          12.60:1
-     entry rule   --hunt-rule as a 1px graphic      3.25:1
+     entry rule   --rule as a 1px graphic          3.52:1
    ============================================================ */
 .phase.phase--wide {
   /* The phase is four full-width bands, not a two-column card:
@@ -922,15 +1052,13 @@ section { position: relative; padding-block: var(--pad-y); }
   --hunt-bleed: 0px;
   --hunt-indent: clamp(1.35rem, 2.6vw, 3rem);
   --hunt-measure: 31em;   /* 31em / 0.448em-per-char ~= 69cpl at every step */
-  /* THE RULE COLOUR IS MEASURED, NOT INHERITED. --dark-22 is the token
-     this page reaches for on hairlines, and screenshot-sampled at 1px on
-     --cream it renders rgb(205,202,199) = 1.52:1 — the same rgba(...,0.22)
-     that was already caught computing 12.27:1 and rendering 1.51:1. On a
-     phase whose structure IS its rules, they are not decoration, so they
-     are stepped to a third derivation of the SAME --dark hue (no new hue,
-     no :root change, declared here) and re-sampled: rgb(142,136,133),
-     3.24:1, past the 3:1 graphics floor. */
-  --hunt-rule: rgba(56, 46, 44, 0.55);
+  /* THE RULE COLOUR IS MEASURED, NOT INHERITED. This phase found the
+     --dark-22 trap first and corrected it privately at 0.55 (3.25:1). Wave
+     4 promoted that correction to the page's one structural hairline, so
+     the alias below is all that is left of it — the record's rules are now
+     drawn by the same declaration as the phase joins, the hero rule and the
+     shop doors. Rendered rgb(148,142,139) on cream, 3.52:1. */
+  --hunt-rule: var(--rule);
 }
 /* Two rules in the shared desktop block still address this phase
    (.phase--wide .phase__plate / .phase--wide .assay, both written for the
@@ -943,17 +1071,10 @@ section { position: relative; padding-block: var(--pad-y); }
 .phase.phase--wide .hunt__sheet,
 .phase.phase--wide .assay { grid-column: 1; grid-row: auto; }
 
-/* THE GHOST GETS ITS OWN ROOM INSTEAD OF SITTING ON THE PROSE.
-   --t-ghost is 256px at 1280 and 368px from 1920 up; at top:-0.30em with
-   line-height 1 the numeral's baseline lands 0.5465em below the phase's
-   top edge — 201px at 1920 — while the head band is only 105px tall. The
-   lead was therefore starting inside the "03". Rather than shrink a
-   numeral the other four phases share, the masthead is given the height
-   the numeral actually occupies. Measured glyph-bottom to lead-top after
-   this: +26 at 390, +16 at 768, +18 at 1024, +19 at 1280, +21 at 1440,
-   +24 at 1600, +30 at 1920, +33 at 2560. The band is not empty — the
-   ghost is what is in it. */
-.phase--wide .phase__head { min-height: calc(var(--t-ghost) * 0.46); }
+/* PIECE 06's ghost reservation — `min-height: calc(var(--t-ghost) * 0.46)`,
+   the masthead given the height the watermark actually occupied — is gone
+   with the watermark. The numeral is type on the title's baseline now, so
+   it takes exactly the room it needs and the head has nothing to reserve. */
 
 /* ---- PROSE. THE MEASURE IS EM-RELATIVE. --t-lead runs 18.4 -> 31.2px
    across the range while the content column runs 660 -> 1346, so any px
@@ -995,6 +1116,9 @@ section { position: relative; padding-block: var(--pad-y); }
 
 /* ---- THE RECORD ---- */
 .hunt__sheet { display: block; }
+/* The record is a plate too, so it is marked like one (wave 4): its rule is
+   the sheet's opening line, the bridge sentence sits under it, and the first
+   STAGE rule follows at 2px — marker, what the record is, then the record. */
 /* The sentence that announces the structure, set as the sheet's opening
    line rather than as the tail of the prose. --deep, 12.60:1. */
 .hunt__bridge {
@@ -1137,39 +1261,22 @@ section { position: relative; padding-block: var(--pad-y); }
    (largest is 956x84 and that is the margin below it); at 1280,
    444x144, again beside the lead.
 
-   THE GHOST NUMERAL IS NO LONGER A GHOST.
-   It shipped as 272-368px of --green at opacity 0.10 pinned to
-   the top-right of the article, which means (a) it rendered at
-   1.11:1 against cream — information at a ratio no one can read
-   — and (b) at 1920/2560 it sat straight across the opening
-   lines of the lead. It is now TYPE: the same --t-h2 as the
-   title, set beside it on one line, in --green at full opacity.
-   Rendered ratio 3.59:1 at 30-76px, which is LARGE text at every
-   width this page supports, so it is the one place --green is
-   allowed to carry letterforms. Nothing is positioned absolutely
-   any more, so a collision is not merely fixed, it is impossible.
+   THE GHOST NUMERAL IS NO LONGER A GHOST — and as of wave 4 that
+   is true of all five phases, not just this one. The rules that
+   made it type have moved up into the shared shell (see
+   .phase__mast); what stays here is only what belongs to phase
+   one: its opening hairline.
    ============================================================ */
 
 /* ---- BAND 1 — THE MASTHEAD ------------------------------------------
    A hairline, the stage name, then 01 + the title on one line. The rule
-   is the same --dark-22 hairline PIECE 03 uses at every phase join, so
+   is the same --rule hairline PIECE 03 uses at every phase join, so
    the run of five is ruled at the top as well as between. */
 #phase-1 { gap: clamp(1.6rem, 2.6vw, 2.5rem); }
 #phase-1 .phase__head {
-  border-top: 1px solid var(--dark-22);
+  border-top: 1px solid var(--rule);
   padding-top: clamp(1rem, 1.5vw, 1.6rem);
 }
-#phase-1 .phase__mast {
-  display: flex; align-items: baseline; flex-wrap: wrap;
-  column-gap: clamp(0.65rem, 1.3vw, 1.4rem);
-  margin-top: clamp(0.8rem, 1.4vw, 1.35rem);
-}
-#phase-1 .phase__ghost {
-  position: static; opacity: 1; z-index: auto;
-  font-size: var(--t-h2); line-height: 1; letter-spacing: -0.045em;
-  color: var(--green); font-variant-numeric: tabular-nums;
-}
-#phase-1 .phase__title { margin-top: 0; }
 
 /* The measure is set in EM OF ITS OWN TYPE, not rem. --t-lead is 21px at
    1280 and 31px at 1920/2560; a rem cap cannot serve both, which is how
@@ -1179,32 +1286,35 @@ section { position: relative; padding-block: var(--pad-y); }
 
 /* ---- BAND 2 — THE GATE ----------------------------------------------
    Three stations under one rail. The rail is the bed-and-fill idiom the
-   spine already uses: a --dark-22 hairline that is always there, and a
+   spine already uses: a --rule hairline that is always there, and a
    --green rule DRAWN across it (3.59:1, a graphic, needs 3:1). The posts
    are the vertical hairlines; an idea enters at the left and the right
    end is open, because what clears the third gate goes to the BIOLab. */
+/* WAVE 4: the triptych is now a marked plate like the other four — the
+   Fig. 01 line and its rule sit above the rail, and the whole figure is
+   the one arrival, exactly as .chain and .revs are. */
+#phase-1 .fig--gate { margin-top: clamp(0.5rem, 1.2vw, 1.25rem); }
 #phase-1 .gates {
   position: relative;
   display: grid; grid-template-columns: 1fr; gap: 0;
-  border-top: 1px solid var(--dark-22);
-  border-bottom: 1px solid var(--dark-22);
-  margin-top: clamp(0.5rem, 1.2vw, 1.25rem);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
 }
 #phase-1 .gates::before {
   content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px;
   background: var(--green); transform: scaleX(0); transform-origin: left;
   transition: transform 760ms var(--ease-draw) 200ms;
 }
-#phase-1 .gates.is-in::before { transform: scaleX(1); }
+#phase-1 .fig--gate.is-in .gates::before { transform: scaleX(1); }
 
 #phase-1 .gate {
   position: relative;
   display: flex; flex-direction: column; gap: clamp(0.9rem, 1.5vw, 1.35rem);
-  border: 0; border-radius: 0; border-left: 1px solid var(--dark-22);
+  border: 0; border-radius: 0; border-left: 1px solid var(--rule);
   padding: clamp(1.05rem, 1.7vw, 1.6rem) clamp(1rem, 1.5vw, 1.6rem) clamp(1.35rem, 2vw, 2rem);
   font-size: inherit; letter-spacing: normal; text-transform: none; color: inherit;
 }
-#phase-1 .gate + .gate { border-top: 1px solid var(--dark-22); }
+#phase-1 .gate + .gate { border-top: 1px solid var(--rule); }
 #phase-1 .gate__name {
   font-size: clamp(1.0625rem, 1.1vw, 1.375rem);
   font-weight: 700; line-height: 1.2; letter-spacing: -0.012em;
@@ -1289,7 +1399,7 @@ section { position: relative; padding-block: var(--pad-y); }
   }
   #phase-1 .phase__head  { grid-column: 1 / -1; grid-row: 1; }
   #phase-1 .phase__lead  { grid-column: 1 / -1; grid-row: 2; }
-  #phase-1 .gates        { grid-column: 1 / -1; grid-row: 3; }
+  #phase-1 .fig--gate    { grid-column: 1 / -1; grid-row: 3; }
   #phase-1 .phase__coda,
   #phase-1 .phase__plate { grid-row: 4; align-self: stretch; margin-top: clamp(0.5rem, 1.2vw, 1.25rem); }
   #phase-1 .phase__coda  { grid-column: 1; }
@@ -1448,13 +1558,15 @@ section { position: relative; padding-block: var(--pad-y); }
   color: var(--white);
 }
 
-/* ---- plate head and foot: the figure is bracketed, top and bottom ---- */
+/* ---- plate head and foot: the figure is bracketed, top and bottom ----
+   The marker's type and rule are the shared .fig__mark (wave 4); this is
+   the same plate marker the other four figures carry, re-inked for a dark
+   ground — --vital at 10.99:1 on --deep, and the rule at --ink-2 (5.72:1
+   sampled as a rendered 1px), because a --deep rule on --deep is nothing. */
 .rig__title {
   grid-area: 1 / 1 / 2 / -1;
-  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.22em; color: var(--vital);
-  padding-bottom: 0.7rem; margin-bottom: var(--band);
-  border-bottom: 1px solid var(--ink-2);
+  color: var(--vital); margin-bottom: var(--band);
+  border-bottom-color: var(--ink-2);
 }
 /* THE CAPTION, not the conclusion. Round 2: two slogans were stacked in
    the payoff doing the same job. This one is the plate's caption — set on
@@ -1472,7 +1584,9 @@ section { position: relative; padding-block: var(--pad-y); }
   grid-area: 6 / 1 / 7 / -1;
   margin-top: calc(var(--band) + 0.85rem);
   font-size: clamp(0.9375rem, 1.02vw, 1.3rem); line-height: 1.45;
-  max-width: 62ch; color: var(--cream);
+  /* 34em, not 62ch: `ch` measured 76cpl at all three widths — one over the
+     ceiling — because Arial's zero is narrower than its average advance. */
+  max-width: 34em; color: var(--cream);
 }
 
 /* ---- chassis: axis, sum-of-parts level, leaders, divider ---- */
@@ -1666,7 +1780,7 @@ section { position: relative; padding-block: var(--pad-y); }
    parts" — so it reads as an annotation, not as a second conclusion. */
 .ro__gloss {
   grid-row: 5; grid-column: 4; padding-top: 0.6rem;
-  max-width: 36ch; margin-inline: auto; text-align: center;
+  max-width: 26em; margin-inline: auto; text-align: center;   /* 36ch measured 44cpl, one under the floor */
   font-size: max(0.875rem, 0.78vw); line-height: 1.5;
   color: var(--cream);
 }
@@ -1786,9 +1900,9 @@ section { position: relative; padding-block: var(--pad-y); }
    its full em box below, so the numeral cannot reach type at any
    width. The masthead's rule then closes under both.
 
-   CONTRAST, MEASURED AS PIXELS. --dark-22 is rgba(56,46,44,0.22)
-   and renders 1.52:1 on cream. It is the exact trap this page has
-   already shipped twice, so nothing load-bearing here uses it:
+   CONTRAST, MEASURED AS PIXELS. --dark-22 was rgba(56,46,44,0.22)
+   and rendered 1.52:1 on cream. It was the exact trap this page had
+   already shipped twice, so nothing load-bearing here used it:
    the axis and the leaders are --muted (5.23:1), every tread and
    riser is --deep (12.60:1), the read-out is --dark (12.28:1).
    The only sub-3:1 ink in the plate is the tail of the open run,
@@ -1805,17 +1919,17 @@ section { position: relative; padding-block: var(--pad-y); }
    ============================================================ */
 
 /* ---- THE MASTHEAD -------------------------------------------------
-   A stage marker, not a card header: the eyebrow and the title over a
-   2px --deep rule that runs the full row, with the ghost numeral
-   standing in the air to its right. min-height is the ghost's own em
-   box (top:-0.30em + 1em = 0.70em, minus the numeral's bearing), so
-   the reservation scales with --t-ghost and never has to be re-guessed
-   at a new width. padding-right is the numeral's advance plus air. */
+   A stage marker, not a card header: the eyebrow and 05 + the title over
+   a 2px --deep rule that runs the full row.
+
+   WAVE 4: the lane this head used to reserve to its right — padding-right
+   of --t-ghost * 1.08, min-height of --t-ghost * 0.60 — is gone with the
+   watermark it was reserving for. The numeral sits on the title's own
+   baseline now, which is the same thing the other four phases do, so
+   there is nothing left standing in the air beside this head. */
 .phase--evo .phase__head {
   border-bottom: 2px solid var(--deep);
   padding-bottom: clamp(1rem, 1.6vw, 1.9rem);
-  padding-right: calc(var(--t-ghost) * 1.08 + clamp(1rem, 1.6vw, 2rem));
-  min-height: calc(var(--t-ghost) * 0.60);
   display: flex; flex-direction: column; align-items: flex-start;
   justify-content: flex-start;
 }
@@ -1828,18 +1942,16 @@ section { position: relative; padding-block: var(--pad-y); }
 .phase--evo .phase__prose .lead { max-width: 31em; }
 
 /* ---- FIG. 05 — THE REVISION HISTORY ------------------------------- */
+/* WAVE 4: this plate used to be ruled 2px ABOVE its marker while the other
+   four are ruled 1px BELOW theirs — the same object drawn two ways inside
+   one paper. It joins the shared construction: marker first, rule under it
+   (.fig__mark). Nothing moved; the line changed sides. */
 .revs {
   position: relative;
-  border-top: 2px solid var(--deep);
-  padding-top: clamp(0.8rem, 1vw, 1.25rem);
   /* one revision = one step up */
   --u: clamp(21px, 1.85vw, 50px);
   /* the band under the axis that carries the ordinals */
   --lab: 2.15rem;
-}
-.revs__cap {
-  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.22em; color: var(--deep);
 }
 
 /* THE FIGURE DOES NOT FADE. It is drawn. A diagram that arrives on the
@@ -1850,7 +1962,7 @@ section { position: relative; padding-block: var(--pad-y); }
 
 .revs__plot {
   position: relative;
-  margin-top: clamp(1.4rem, 2.4vw, 2.6rem);
+  /* the marker's own margin sets this distance now — see .fig__mark */
   height: calc(var(--u) * 6 + var(--lab));
   display: grid;
   /* The sixth column is wider than a revision, not narrower: what has not
@@ -1858,7 +1970,7 @@ section { position: relative; padding-block: var(--pad-y); }
      clipped fifth step instead of an unfinished sixth. */
   grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(0, 1.3fr);
 }
-/* The axis. --muted, not --dark-22: this line is the figure's ground and
+/* The axis. --muted, not a hairline: this line is the figure's ground and
    has to be seen, and 0.22 alpha renders at 1.52:1 on cream. */
 .revs__axis {
   position: absolute; left: 0; right: 0; bottom: var(--lab);
@@ -2727,8 +2839,13 @@ section { position: relative; padding-block: var(--pad-y); }
 @media (min-width: 1024px) {
   /* Title and lede share one row, bottom-aligned, so the lede sits
      on the headline's last baseline instead of under its own weight. */
+  /* An even split, not 1.15 : 1. The lede's column was 499 / 600 / 787px at
+     1280 / 1920 / 2560 and its 31px type measured 43cpl at 1920 — under the
+     45 floor at exactly one width, which is how a fractional split fails.
+     Even halves put it at 57 / 46 / 60 and the title still clears two lines
+     at every width. */
   .people .people__head {
-    display: grid; grid-template-columns: 1.15fr 1fr;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(2rem, 5vw, 5rem); align-items: end;
   }
   .people .people__head .people__lede { margin-top: 0; padding-bottom: 0.4em; }
@@ -2848,12 +2965,12 @@ section { position: relative; padding-block: var(--pad-y); }
   content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
   transform-origin: left;
 }
-/* Not --dark-22. That token computes 12.27:1 and RENDERS 1.51:1 over cream —
-   the trap the hero's rule already fell into and climbed out of at line 341.
-   This is that same corrected literal, so the page's first rule and its last
-   rule are one line: --dark at 0.58, rendered 3.52:1. */
+/* Not the old --dark-22. That token computed 12.27:1 and RENDERED 1.51:1
+   over cream — the trap the hero's rule fell into and climbed out of first.
+   Wave 4 made that correction the page's --rule, so the page's first rule
+   and its last rule are now literally one declaration: 3.52:1 rendered. */
 .door__row::before {
-  background: rgba(56, 46, 44, 0.58);
+  background: var(--rule);
   transform: scaleX(0);
   transition: transform 620ms var(--ease-draw);   /* DRAW, same 620 as .spine__fill */
 }
@@ -2931,11 +3048,13 @@ section { position: relative; padding-block: var(--pad-y); }
    TABLET AND UP
    ============================================================ */
 @media (min-width: 700px) {
-  .assay { grid-template-columns: repeat(2, 1fr); }
   .finder__grid { grid-template-columns: repeat(3, 1fr); }
-  /* Swept by the coherence pass: `.figures` (both breakpoints) belonged to the
-     3x2 stat grid PIECE 09 replaced with the ruled register, and `.roster` was
-     shadowed at every width by the `.people .roster` rules PIECE 11 wrote. */
+  /* Swept by the coherence passes: `.figures` (both breakpoints) belonged to
+     the 3x2 stat grid PIECE 09 replaced with the ruled register; `.roster`
+     was shadowed at every width by the `.people .roster` rules PIECE 11
+     wrote; and `.assay { grid-template-columns: repeat(2,1fr) }` — the two
+     side-by-side cards — has been inert since PIECE 06 set `.assay` to
+     `display: block` and stacked the two stages. */
 }
 
 /* ============================================================
@@ -3009,32 +3128,35 @@ section { position: relative; padding-block: var(--pad-y); }
   .phase__plate { grid-column: 2; grid-row: 1 / span 2; align-self: stretch; }
   .phase__plate img { height: 100%; object-fit: cover; }
   .keynote { grid-column: 1; }
-  .phase--flip .phase__plate { grid-column: 1; }
-  .phase--flip .phase__head, .phase--flip .phase__prose { grid-column: 2; }
-  .phase--wide .phase__plate { grid-column: 2; grid-row: 1 / span 2; }
-  .phase--wide .assay { grid-column: 1 / -1; }
-  /* PIECE 07 — the intro pair sits on one row; the scene takes the next row
-     whole, then breaks the grid entirely. */
-  .phase--synergy .phase__head { grid-column: 1; grid-row: 1; }
-  .phase--synergy .phase__prose { grid-column: 2; grid-row: 1; max-width: 40rem; }
-  .phase--synergy .synergy { grid-column: 1 / -1; grid-row: 2; }
-  /* PIECE 07. An even 1fr 1fr split gave the opener a half-width column
-     holding one word ("Synergy") and put the two explaining paragraphs at
-     19-31 characters per line beside it — measured at 1440/1920/2560. The
-     head only ever needs room for a --t-h2 word, so above 1440 it takes
-     0.36 of the row and the prose takes the rest, floored at a real
-     measure. 1440 -> 39cpl, 1920 -> 40cpl, 2560 -> 49cpl.
-     NOT two prose columns: the phase sits to the right of the spine, so the
-     row is ~800-1350px wide, not the full shell, and splitting it drops
-     straight back to 21cpl. */
-  @media (min-width: 1440px) {
-    .phase--synergy { grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr); }
-    .phase--synergy .phase__prose { max-width: 48rem; }
-    /* The lead is set larger, so it can carry the wider column; the body
-       paragraph behind it cannot — 48rem of 17px type is a 90-character
-       line. It stops at 38rem, which is 55-71cpl across the range. */
-    .phase--synergy .phase__prose p:not(.lead) { max-width: 38rem; }
-  }
+  /* Swept by the wave 4 coherence pass, all four dead: `.phase--flip` is on
+     no element in the document (PIECE 05 un-flipped phase two and nothing
+     else ever carried it), and the two `.phase--wide` rules were written for
+     the two-column card PIECE 06 replaced — they have been outranked at
+     every viewport since by `.phase.phase--wide` (0-3-0 against 0-2-0), and
+     `.assay` is no longer a grid child of the phase at all. */
+  /* PIECE 07 / WAVE 4 — THE MASTHEAD TAKES THE ROW, LIKE THE OTHER FOUR.
+     This phase was the last one still setting its head in a half column:
+     phases 1, 2, 3 and 5 all run head and lead full width. That was
+     survivable while the stage marker was a watermark floating behind the
+     article; with the numeral set on the title's own baseline it is not —
+     measured at 1920 the 319px head column broke "04 Synergy" onto two
+     lines, which is the one thing a masthead may not do.
+     Giving the head and the prose the whole row fixes the wrap and the
+     measure in the same move. The lead was 41 / 40 / 54 cpl at 1280 /
+     1920 / 2560 — below the 45 floor at two of three widths, the narrow
+     twin of the 81cpl the body paragraph was carrying at 2560 — because a
+     31px lead cannot reach 45 characters in a 388-558px column. It now
+     reads 69 / 69 / 69, the same line as every other phase lead.
+     The scene still breaks the grid entirely on the row beneath. */
+  .phase--synergy .phase__head { grid-column: 1 / -1; grid-row: 1; }
+  .phase--synergy .phase__prose { grid-column: 1 / -1; grid-row: 2; max-width: none; }
+  .phase--synergy .synergy { grid-column: 1 / -1; grid-row: 3; }
+  /* Both paragraphs cap in their OWN em, at the 31em this page settled on
+     (--hunt-measure, #phase-1 .phase__lead, .phase--evo .lead all use it):
+     the lead lands at 69cpl and the 17px body paragraph at 70, instead of
+     the 38rem ROOT-relative cap that measured 81cpl at 2560. */
+  .phase--synergy .phase__prose .lead { max-width: 31em; }
+  .phase--synergy .phase__prose p:not(.lead) { max-width: 31em; }
 
   /* PIECE 10's two-column rules used to live here (`1fr 1fr` + `order: 2`).
      They moved into the PIECE 10 block with the rest of that section's
@@ -3109,16 +3231,11 @@ section { position: relative; padding-block: var(--pad-y); }
    69.3 / 47.0 / 47.0 cpl at 1280 / 1920 / 2560. */
 #phase-2 .bp__lede { margin-top: clamp(1.1rem, 1.9vw, 2.1rem); max-width: 41rem; }
 
-/* THE GHOST STOPS BEING A SMUDGE BEHIND THE COPY. At 272-368px and
-   right-aligned it landed ON the heading and standfirst of the two
-   FLIPPED phases, where the prose sits in the right-hand column — in
-   the unflipped ones it hides behind the photograph and is never seen
-   over text at all. This phase is no longer flipped, but its head now
-   runs the full width, so the numeral is re-cut to clear the 41rem
-   standfirst at every width instead: it starts at 674 / 717 / 1106px
-   against text that ends at 656. It stays 0.10 --green, the same
-   decoration the other four carry. */
-#phase-2 .phase__ghost { font-size: clamp(6rem, 13vw, 15rem); }
+/* PIECE 05's re-cut ghost clamp — `clamp(6rem, 13vw, 15rem)`, chosen so a
+   240px watermark would start just past a 41rem standfirst — is gone. It
+   was the third of four different answers to one object, and it did not
+   work: measured at 1920 the numeral's box still overlapped this phase's
+   own title. The numeral is on the title's baseline now (.phase__mast). */
 
 /* ---- Fig. 1 ---- */
 .chain {
@@ -3127,14 +3244,9 @@ section { position: relative; padding-block: var(--pad-y); }
   --chain-gap: clamp(1.15rem, 3.2vw, 4.25rem);
   --chain-drop: clamp(1.4rem, 2.6vw, 2.75rem);
 }
-/* The plate marker, on its rule. Same construction as .rig__title, because
-   the two figures on this page are two plates in one paper. */
-.chain__mark {
-  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.22em; color: var(--deep);
-  padding-bottom: 0.7rem; margin-bottom: clamp(1.4rem, 3vw, 2.75rem);
-  border-bottom: 1px solid var(--deep);
-}
+/* The plate marker, on its rule — type, rule and the distance to the figure
+   all come from the shared .fig__mark now (wave 4). All five plates in this
+   paper are marked by one declaration. */
 
 /* ONE GRID, THREE ROWS, FOUR COLUMNS — and the whole point of it is that a
    station, its leader and its name are the same grid column, so they cannot
