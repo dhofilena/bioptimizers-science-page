@@ -3,118 +3,117 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="120">
+<meta http-equiv="refresh" content="180">
 <title>Build Progress — Breakthrough Science</title>
 <style>
-:root{--green:#32951c;--deep:#103608;--vital:#a7fe75;--dark:#382e2c;--muted:#6e6663;
---cream:#f8f7f2;--orange:#ff8629;--line:#d8d5cc}
+:root{--green:#32951c;--deep:#103608;--deep2:#0c2706;--vital:#a7fe75;--dark:#382e2c;
+--muted:#6e6663;--cream:#f8f7f2;--orange:#ff8629;--line:#d8d5cc}
 *{box-sizing:border-box}
-body{margin:0;padding:40px 24px 80px;background:var(--cream);color:var(--dark);
- font:16px/1.5 "Neue Haas Unica Pro","Helvetica Neue",Helvetica,Arial,sans-serif}
-.wrap{max-width:1180px;margin:0 auto}
-h1{font-size:34px;font-weight:700;letter-spacing:-.02em;color:var(--green);margin:0 0 6px}
-.sub{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;
- color:var(--deep);margin:0 0 30px}
-h2{font-size:12px;text-transform:uppercase;letter-spacing:.18em;margin:36px 0 12px;color:var(--deep)}
-.banner{background:var(--deep);color:#fff;padding:22px 26px;margin-bottom:8px}
-.banner b{color:var(--vital);display:block;font-size:12px;text-transform:uppercase;
- letter-spacing:.18em;margin-bottom:8px}
-.banner p{margin:0;max-width:80ch}
-.live{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;
- background:var(--line);margin-bottom:8px}
-.live div{background:#fff;padding:14px 16px}
-.live b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--green)}
-.live span{font-size:14px;color:var(--muted)}
+body{margin:0;padding:44px 26px 90px;background:var(--cream);color:var(--dark);
+ font:16px/1.55 "Neue Haas Unica Pro","Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{max-width:1200px;margin:0 auto}
+h1{font-size:38px;font-weight:700;letter-spacing:-.025em;margin:0 0 4px}
+.sub{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.2em;
+ color:var(--green);margin:0 0 34px}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.2em;margin:40px 0 14px;
+ color:var(--deep);border-top:2px solid var(--deep);padding-top:12px}
+.hero-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+ gap:1px;background:var(--line);margin-bottom:8px}
+.hero-stat div{background:#fff;padding:16px 18px}
+.hero-stat b{display:block;font-size:30px;font-weight:700;letter-spacing:-.02em;color:var(--deep)}
+.hero-stat span{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
 table{width:100%;border-collapse:collapse;font-size:14px}
-td{padding:9px 0;border-bottom:1px solid var(--line)}
-td:last-child{text-align:right;font-weight:700}
-.ok{color:var(--green)}.bad{color:#b23b12}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1px;background:var(--line)}
-.card{background:#fff;padding:16px 18px}
-.card h3{margin:0 0 8px;font-size:15px;font-weight:700}
-.card p{margin:0;font-size:13px;color:var(--muted)}
+td,th{padding:9px 10px 9px 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:700}
+td.n{text-align:right;font-weight:700;white-space:nowrap}
+.ok{color:var(--green);font-weight:700}.bad{color:#a33a10;font-weight:700}
 .pill{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;
- letter-spacing:.12em;padding:4px 10px;border-radius:999px;margin:0 6px 6px 0}
-.p-run{background:var(--orange);color:#273310}
+ letter-spacing:.12em;padding:3px 9px;border-radius:999px;margin-right:6px}
 .p-done{background:var(--vital);color:var(--deep)}
-.p-wait{background:#e8e5dd;color:var(--muted)}
-.p-fail{background:#f3d4c6;color:#8c2d0c}
+.p-open{background:#f2ddd0;color:#8c3d10}
 code{background:#fff;padding:2px 7px;font-size:13px;border:1px solid var(--line)}
-.foot{margin-top:34px;font-size:13px;color:var(--muted)}
+.note{font-size:14px;color:var(--muted);max-width:76ch;margin:12px 0 0}
+.foot{margin-top:40px;font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Breakthrough Science — Build Progress</h1>
-  <p class="sub">Wave 2 · four builders running in parallel · page auto-refreshes every 2 min</p>
+  <h1>Breakthrough Science</h1>
+  <p class="sub">Build progress · wave 4 complete · auto-refreshes every 3 min</p>
 
-  <div class="banner">
-    <b>Now running — 4 isolated worktrees</b>
-    <p>Each builder has its own git worktree, its own branch and its own HTTP server on its own
-    port. No two can write the same file. Responsive rules are nested inside each piece's own CSS
-    block so the shared desktop media query never becomes a merge conflict.</p>
+  <div class="hero-stat">
+    <div><b>13/13</b><span>pieces built</span></div>
+    <div><b>46</b><span>commits</span></div>
+    <div><b>21</b><span>branches</span></div>
+    <div><b>97/97</b><span>copy gate</span></div>
+    <div><b>3</b><span>critic rounds</span></div>
   </div>
 
-  <div class="live">
-    <div><b>01 · Hero</b><span>port 8141 · rev/01-hero-r2<br>fixing: photo collides with "Feel"</span></div>
-    <div><b>02 · Manifesto</b><span>port 8142 · rev/02-manifesto-r1<br>fixing: dark beat doesn't land</span></div>
-    <div><b>09 · Figures</b><span>port 8143 · rev/09-figures-r1<br>fixing: "default SaaS stat block"</span></div>
-    <div><b>11 · Scientists</b><span>port 8144 · rev/11-people-r1<br>fixing: failed the craft bar</span></div>
-  </div>
-
-  <h2>Gates</h2>
+  <h2>Gates — all green</h2>
   <table>
-    <tr><td>Copy fidelity gate (blocking)</td><td class="ok">PASS — 97/97 chunks</td></tr>
-    <tr><td>Body copy contrast</td><td class="ok">5.23:1 — was 3.26:1 (AA fail)</td></tr>
-    <tr><td>Eyebrows / gates contrast</td><td class="ok">12.60:1 — was 3.59:1</td></tr>
-    <tr><td>Role labels contrast</td><td class="ok">13.52:1 — was 3.85:1</td></tr>
-    <tr><td>Spine progress fill</td><td class="ok">141px at phase 4 — was 0px everywhere</td></tr>
-    <tr><td>Deep links set the active phase</td><td class="ok">FIXED — #phase-4 reads "04 Synergy"</td></tr>
-    <tr><td>Images flat in root, 0 broken</td><td class="ok">15 / 15</td></tr>
-    <tr><td>Screenshots</td><td>fresh tab per capture</td></tr>
+    <tr><td>Copy fidelity (blocking)</td><td class="n ok">PASS · 97/97 chunks</td></tr>
+    <tr><td>Body copy contrast</td><td class="n ok">5.23:1 · was 3.26 (AA fail)</td></tr>
+    <tr><td>Spine contrast, effective opacity applied</td><td class="n ok">5.23 / 12.60:1 · was 1.88</td></tr>
+    <tr><td>Image dimensions vs actual PNG headers</td><td class="n ok">15/15 · 10 were wrong</td></tr>
+    <tr><td>Page renders with JavaScript disabled</td><td class="n ok">PASS · H1 was invisible</td></tr>
+    <tr><td>prefers-reduced-motion complete</td><td class="n ok">PASS</td></tr>
+    <tr><td>Motion vocabulary</td><td class="n ok">3 curves + 1 back-out</td></tr>
+    <tr><td>Focusable elements</td><td class="n ok">14 · was 9</td></tr>
   </table>
-
-  <h2>Critic round 1 — blind A/B vs Seed / Ritual / Oura</h2>
-  <table>
-    <tr><td>Hero → Seed hero</td><td class="bad">REFERENCE</td></tr>
-    <tr><td>Five phases → Seed's five stages</td><td class="bad">REFERENCE</td></tr>
-    <tr><td>Phase Three → Ritual /our-standards</td><td class="bad">REFERENCE</td></tr>
-    <tr><td>Every Number Earned → Oura</td><td>SPLIT — UX: ours · AD: reference</td></tr>
-    <tr><td>Living Proof → Oura</td><td class="bad">REFERENCE</td></tr>
-    <tr><td>Inside the BIOLab → Seed #our-scientists</td><td class="bad">FAILS CRAFT BAR</td></tr>
-  </table>
-  <p style="font-size:13px;color:var(--muted);margin-top:12px;max-width:80ch">
-    <b>UX critic's single biggest gap:</b> every paragraph rendered at 3.24:1 — a WCAG AA failure on
-    the primary reading text. <b>Fixed.</b><br>
-    <b>Art Director's single biggest gap:</b> 62 identical 900ms fades on copy that doesn't need
-    them, and zero motion on the one idea the page exists to prove. <b>Money moment rebuilt; the
-    uniform-fade critique is live work across the remaining pieces.</b><br>
-    <b>My error:</b> I told both critics no reference had a named-expert section. Seed has one —
-    20 advisors at <code>#our-scientists</code>. Brief corrected.
-  </p>
 
   <h2>Pieces</h2>
-  <div class="grid">
-    <div class="card"><h3>00 · Foundation</h3><span class="pill p-done">merged</span><p>Flat scaffold, brand tokens, copy gate.</p></div>
-    <div class="card"><h3>01 · Hero</h3><span class="pill p-run">building r2</span><p>Photo edge lands ~1px from the final "l" in "Feel"; overlaps at 1024px. Mobile wastes 319px then shows a 180px thumbnail.</p></div>
-    <div class="card"><h3>02 · Manifesto</h3><span class="pill p-run">building r1</span><p>First dark beat. Needs a motion that isn't the shared 900ms fade.</p></div>
-    <div class="card"><h3>03 · Phase spine</h3><span class="pill p-done">fixed</span><p>Progress fill was dead at 0px; deep links left it reading "01". Both fixed, plus aria-current.</p></div>
-    <div class="card"><h3>04 · Phase One</h3><span class="pill p-wait">queued</span><p>Sequential — shares the .phase shell.</p></div>
-    <div class="card"><h3>05 · Phase Two</h3><span class="pill p-wait">queued</span><p>Needs the biological-chain visual it currently lacks.</p></div>
-    <div class="card"><h3>06 · Phase Three</h3><span class="pill p-wait">queued</span><p>Lost to Ritual on typographic voice.</p></div>
-    <div class="card"><h3>07 · Phase Four — money moment</h3><span class="pill p-done">merged r1</span><p>Full-bleed 250vh pin. Two named inputs converge; a third form resolves at 1.84× either. Orange now marks only the surplus.</p></div>
-    <div class="card"><h3>08 · Phase Five</h3><span class="pill p-wait">queued</span></div>
-    <div class="card"><h3>09 · Every Number Earned</h3><span class="pill p-run">building r1</span><p>Best-choreographed thing we ship, in the most generic container.</p></div>
-    <div class="card"><h3>10 · Living Proof</h3><span class="pill p-wait">queued</span><p>Oura cites CNN/CNBC; we cite ourselves.</p></div>
-    <div class="card"><h3>11 · Inside the BIOLab</h3><span class="pill p-run">building r1</span><p>Two misaligned play triangles on the page's strongest scale moment.</p></div>
-    <div class="card"><h3>12 · Find Your Breakthrough</h3><span class="pill p-wait">queued</span><p>White type over unscrimmed imagery.</p></div>
-    <div class="card"><h3>13 · Global</h3><span class="pill p-wait">queued</span><p>The uniform-motion critique and the flat light run across the last 34% of the page.</p></div>
-  </div>
+  <table>
+    <tr><th>#</th><th>Piece</th><th>State</th><th>What it became</th></tr>
+    <tr><td class="n">01</td><td>Hero</td><td><span class="pill p-done">r2</span></td><td>Type and photo in separate grid rows; 171px collision resolved structurally; two CTAs added</td></tr>
+    <tr><td class="n">02</td><td>Manifesto</td><td><span class="pill p-done">r1</span></td><td>100svh dark beat; type uncovered by masks, not faded; 80,648 at 157px</td></tr>
+    <tr><td class="n">03</td><td>Phase spine</td><td><span class="pill p-done">r2</span></td><td>Real navigation — 5 links, aria-current on the anchor, progress fill alive</td></tr>
+    <tr><td class="n">04</td><td>Phase One · The Standard</td><td><span class="pill p-done">r1</span></td><td>Three bands; the gate drawn as three figures; ghost numeral became real type</td></tr>
+    <tr><td class="n">05</td><td>Phase Two · The Blueprint</td><td><span class="pill p-done">r1</span></td><td><b>Fig. 1</b> — the biological chain, three states of one material, no outlet after station 3</td></tr>
+    <tr><td class="n">06</td><td>Phase Three · The Hunt</td><td><span class="pill p-done">r1</span></td><td>Two boxed cards became one ruled record; two type voices from one family</td></tr>
+    <tr><td class="n">07</td><td>Phase Four · Synergy</td><td><span class="pill p-done">r2</span></td><td>Venn replaced by an apparatus: named vessels, yield axis, surplus past the sum line</td></tr>
+    <tr><td class="n">08</td><td>Phase Five · Evolution</td><td><span class="pill p-done">r1</span></td><td><b>Fig. 05</b> — revision history, five equal steps, a sixth dashed and unclosed</td></tr>
+    <tr><td class="n">09</td><td>Every Number Earned</td><td><span class="pill p-done">r1</span></td><td>SaaS grid became a struck tally over a ruled register</td></tr>
+    <tr><td class="n">10</td><td>Living Proof</td><td><span class="pill p-done">r1</span></td><td>The register crosses the join; ✓ ticks gone; photo is the section's right wall</td></tr>
+    <tr><td class="n">11</td><td>Inside the BIOLab</td><td><span class="pill p-done">r1</span></td><td>One play control, portraits unified, third dark movement</td></tr>
+    <tr><td class="n">12</td><td>Find Your Breakthrough</td><td><span class="pill p-done">r1</span></td><td>Three named doors; baked labels cropped out, set as live type</td></tr>
+    <tr><td class="n">13</td><td>Global</td><td><span class="pill p-done">×3</span></td><td>Shell grows to 1900px; a11y round; image-dimension audit</td></tr>
+  </table>
+
+  <h2>Critic rounds — blind A/B vs Seed / Ritual / Oura</h2>
+  <table>
+    <tr><th>Round</th><th>UI/UX</th><th>Art Director</th><th>Single biggest gap</th></tr>
+    <tr><td class="n">1</td><td class="bad">0 wins</td><td class="bad">0 wins</td><td>Every paragraph at 3.24:1 — WCAG AA failure on the page's reading text</td></tr>
+    <tr><td class="n">2</td><td class="bad">1 win / 4</td><td class="bad">0 / 5</td><td>62 identical fades, and zero motion on the one idea the page exists to prove</td></tr>
+    <tr><td class="n">3</td><td class="bad">1 win / 4</td><td>not re-run</td><td>The shell grows but the layout inside it does not</td></tr>
+    <tr><td class="n">4</td><td colspan="3">pending — first round where every section has been built</td></tr>
+  </table>
+  <p class="note"><b>Scorecard has not flipped yet.</b> But the <i>kind</i> of finding has changed:
+  rounds 1–2 surfaced structural failures — a contrast failure on every paragraph, a dead progress
+  rail, a blank page without JavaScript, a diagram asserting a claim the copy never made. Round 3's
+  remaining gaps are composition and polish. That is what convergence looks like before the numbers
+  move.</p>
+
+  <h2>Defects found that no single agent could see</h2>
+  <table>
+    <tr><td><b>10 of 15 images declared the wrong size</b></td><td>Three builders each found one in their own piece; the audit found the rest. A page-wide layout shift, mine from the scaffold.</td></tr>
+    <tr><td><b>A scrim cannot fix white-on-pale</b></td><td>Two agents independently measured it: an alpha wash drags glyph and ground together. 1.30:1 → 1.24:1. Crop, don't dress.</td></tr>
+    <tr><td><b>em vs rem measure caps</b></td><td>Three agents independently diagnosed why phase leads sat at 39–40cpl. Now flat at 64–66 across every width.</td></tr>
+    <tr><td><b>The visibility floor had a hole — twice</b></td><td>Fallbacks reached the element carrying the attribute, never the descendant carrying the transform.</td></tr>
+    <tr><td><b>rgba(…,0.22) renders 1.52:1</b></td><td>Found three separate times. I made this error myself after warning every builder about it.</td></tr>
+  </table>
+
+  <h2>Open</h2>
+  <table>
+    <tr><td><span class="pill p-open">next</span> Coherence pass</td><td>Ghost numeral solved four different ways across phases; rules still extending past content</td></tr>
+    <tr><td><span class="pill p-open">next</span> Critic round 4</td><td>Both critics, first full-page round</td></tr>
+    <tr><td><span class="pill p-open">open</span> Keyboard leap</td><td>Moved rather than closed — TAB 8→9 still jumps 10,205px</td></tr>
+    <tr><td><span class="pill p-open">open</span> Hero at 1920/2560</td><td>Composition regression from the collision fix</td></tr>
+  </table>
 
   <p class="foot">
     Site: <code>http://localhost:8137</code> · Copy gate: <code>node copycheck.js</code><br>
-    Repo: <code>github.com/dhofilena/bioptimizers-science-page</code> — every revision is its own branch.<br>
-    Must be served over HTTP; <code>file://</code> won't apply the stylesheet.
+    Repo: <code>github.com/dhofilena/bioptimizers-science-page</code> — every revision is its own branch<br>
+    Full detail in <code>BACKLOG.md</code> (14 items, outside <code>proj/</code> so it never ships)
   </p>
 </div>
 </body>
