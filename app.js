@@ -60,6 +60,43 @@
     window.addEventListener('hashchange', function () { setTimeout(sweepVisible, 60); });
     window.addEventListener('pageshow', function (e) { if (e.persisted) sweepVisible(); });
 
+    // Path 2b: THE SWEEP HAS TO RUN WHILE THE READER SCROLLS, and until this
+    // was added it only ran at init, load, hashchange and bfcache restore.
+    //
+    // That gap had teeth. An element parked outside its own overflow:hidden
+    // mask — which is exactly what a masked "climb" reveal is at rest — has a
+    // permanently ZERO intersection rect, because IntersectionObserver
+    // intersects against ancestor clip rects. It can never satisfy any
+    // threshold, so the observer alone will never reveal it. The floor below
+    // only reaches down 1.5 viewports, so anything further into the page than
+    // that stayed hidden forever on a normal visit. Living Proof's lede — two
+    // sentences, the page's persuasion payoff, ~13,000px down — rendered as a
+    // blank band. Deep-linking fired sweepVisible and masked it, which is why
+    // every fragment-based capture looked correct.
+    //
+    // sweepVisible measures the UNCLIPPED rect, so it sees what the observer
+    // structurally cannot. One rAF-throttled listener, and it takes itself off
+    // the moment nothing is left hidden.
+    // Throttled on a TIMESTAMP, not on requestAnimationFrame. rAF was the
+    // obvious choice and it was wrong: rAF is driven by the rendering
+    // lifecycle, which is the very thing that stops in a backgrounded or
+    // non-compositing tab — the same condition that silences
+    // IntersectionObserver. A floor whose trigger fails under exactly the
+    // conditions it exists to survive is not a floor. Measured with rAF
+    // throttling in a non-compositing tab: 38 of 44 elements stayed hidden
+    // through a full scroll of the page.
+    var lastSweep = 0;
+    function onScrollSweep() {
+      var now = Date.now();
+      if (now - lastSweep < 100) return;
+      lastSweep = now;
+      sweepVisible();
+      if (!document.querySelector('[data-reveal]:not(.is-in)')) {
+        window.removeEventListener('scroll', onScrollSweep);
+      }
+    }
+    window.addEventListener('scroll', onScrollSweep, { passive: true });
+
     // Path 3: the floor. If anything is still hidden after 2.5s, the
     // observer is not doing its job and copy must not stay invisible.
     setTimeout(function () {

@@ -2432,7 +2432,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .tally__entry--lead .tally__label { font-size: 0.8125rem; letter-spacing: 0.2em; }
 .tally__entry--lead .tally__desc {
   margin-top: 0.9rem; font-size: var(--t-lead); line-height: 1.35;
-  color: rgba(255,255,255,0.82); max-width: 24ch;
+  color: rgba(255,255,255,0.82); max-width: 34em;   /* was 24ch = 32cpl frozen at 416px from 1920 up */
 }
 
 /* Mobile register: value beside its label, description under both. */
@@ -2537,7 +2537,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .proof::before,
 .people::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.42);
 }
 /* R1 — THE SHELL IS EXPRESSED AS A GRID TRACK, NOT AS PADDING.
    It used to be padding-inline, which is correct for type and useless for
@@ -2835,7 +2835,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .roster__rule {
   display: block; height: 1px; width: 100%;
   margin-top: clamp(2.5rem, 5vw, 4rem);
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.42);
 }
 .roster { margin-top: clamp(2rem, 4vw, 3rem); display: grid; gap: 2rem; }
 /* Uniformity is the whole point of a board: one ratio, one crop
