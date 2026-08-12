@@ -868,6 +868,334 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ============================================================
+   ---- PIECE 05 ---- PHASE TWO. THE CHAIN, DRAWN.
+
+   THE GAP THIS CLOSES. The copy promised a map — "we start by
+   mapping the entire biological chain" — and the page answered
+   with a stock micrograph of chloroplasts. Fig. 1 is the map:
+   the three steps the blood-sugar sentence names, drawn as one
+   pathway with one material travelling through it.
+
+   HOW IT SAYS respond -> transport -> use. Not with three
+   different icons, but with three STATES OF THE SAME MATERIAL,
+   which is what makes it one chain rather than three pictures:
+     01  loose. Glucose arrives through the wall and lands in
+         the sites waiting for it — two of four occupied.
+     02  ordered. The same dots, no longer scattered: single
+         file on a carriage, one direction, one chevron.
+     03  spent. The same dots again, funnelled to one node and
+         consumed. The chain has NO OUTLET after it, because
+         nothing leaves — that is what "puts it to use" means.
+   Under all three, one bracket: they are one system. The
+   pull-quote is the caption on that bracket.
+
+   WHY IT IS NOT PIECE 07's RIG. The rig is a dark full-bleed
+   apparatus that measures a QUANTITY: three yields on an axis,
+   a sum-of-parts level, a surplus, an equation. This is a
+   cream-ground plate that measures nothing — it is topological.
+   No axis, no bars, no arithmetic. Different ground, different
+   claim, same page: bracketed by rules, tethered by leaders,
+   named in the copy's own words.
+
+   COLOUR, TWO TIERS. The rig's law inverted for a light ground:
+     --deep   the apparatus — walls, sites, rails, node, spokes,
+              conduits, bracket, and every label that names a
+              part. 12.60:1 on cream.
+     --green  the MATERIAL and only the material — the glucose
+              dots, the conduit fills that carry it, and the
+              stage numerals. 3.59:1 on cream, which is why the
+              numerals are clamped to a 27px floor at 700 weight
+              and the dots and fills are drawn at 7-9px and 2px:
+              LARGE TEXT and GRAPHICS ONLY, never body copy.
+     --muted  the two funnel guides in 03 and the leaders, at
+              5.23:1. Both are drawn as solid or dashed borders
+              at full alpha — no tint, no ancestor opacity, so
+              the RENDERED pixel is the token. The page has been
+              burned twice by colours that computed one ratio
+              and painted another; nothing here composites.
+
+   MEASURE. The old phase put a 31px lead and a 46px pull-quote
+   in a 438px half-column: 31.4 and 21.9 cpl at 1920. Both are
+   now full-width rows with their own ceilings, and the two body
+   paragraphs hold a 30rem column while the photograph absorbs
+   the rest of the width — which is also what stops 2560 from
+   stranding this phase in empty cream.
+   ============================================================ */
+
+/* ---- composition ---- */
+/* Above the ghost numeral, like every other block in the shell. */
+#phase-2 .chain, #phase-2 .bp__body { position: relative; z-index: 1; }
+
+/* THE STANDFIRST JOINS THE MASTHEAD. It is the thesis of the phase
+   ("your body works as a system"), and Fig. 1 answers it directly, so
+   it belongs to the head rather than to the discussion that follows the
+   figure. 41rem is the one ceiling that holds 45-75cpl at all three
+   widths for a type size that jumps 21px -> 31px between them:
+   69.3 / 47.0 / 47.0 cpl at 1280 / 1920 / 2560. */
+#phase-2 .bp__lede { margin-top: clamp(1.1rem, 1.9vw, 2.1rem); max-width: 41rem; }
+
+/* THE GHOST STOPS BEING A SMUDGE BEHIND THE COPY. At 272-368px and
+   right-aligned it landed ON the heading and standfirst of the two
+   FLIPPED phases, where the prose sits in the right-hand column — in
+   the unflipped ones it hides behind the photograph and is never seen
+   over text at all. This phase is no longer flipped, but its head now
+   runs the full width, so the numeral is re-cut to clear the 41rem
+   standfirst at every width instead: it starts at 674 / 717 / 1106px
+   against text that ends at 656. It stays 0.10 --green, the same
+   decoration the other four carry. */
+#phase-2 .phase__ghost { font-size: clamp(6rem, 13vw, 15rem); }
+
+/* ---- Fig. 1 ---- */
+.chain {
+  container-type: inline-size; container-name: chain;
+  margin-top: clamp(1.75rem, 3.4vw, 3.25rem);
+  --chain-gap: clamp(1.15rem, 3.2vw, 4.25rem);
+  --chain-drop: clamp(1.4rem, 2.6vw, 2.75rem);
+}
+/* The plate marker, on its rule. Same construction as .rig__title, because
+   the two figures on this page are two plates in one paper. */
+.chain__mark {
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.22em; color: var(--deep);
+  padding-bottom: 0.7rem; margin-bottom: clamp(1.4rem, 3vw, 2.75rem);
+  border-bottom: 1px solid var(--deep);
+}
+
+/* ONE GRID, THREE ROWS, FOUR COLUMNS — and the whole point of it is that a
+   station, its leader and its name are the same grid column, so they cannot
+   drift apart at any width. Column 1 is the inlet: the material comes from
+   outside the chain, which is a thing the figure has to say. */
+.chain__grid {
+  display: grid;
+  grid-template-columns: minmax(2.5rem, 0.32fr) repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto var(--chain-drop) auto;
+  column-gap: var(--chain-gap);
+}
+
+.chain__in { grid-row: 1; grid-column: 1; position: relative; }
+.chain__cell { grid-row: 1; position: relative; }
+.chain__cell--1 { grid-column: 2; }
+.chain__cell--2 { grid-column: 3; }
+.chain__cell--3 { grid-column: 4; }
+
+/* The station glyphs scale with their column and their strokes do not —
+   vector-effect keeps every rule at the px weight it was drawn at, so a
+   344px station at 2560 and a 216px one at 1280 are the same drawing rather
+   than the same drawing at two line weights. */
+.chain__glyph { display: block; width: 100%; height: auto; }
+.chain__glyph * { vector-effect: non-scaling-stroke; }
+.chain__glyph .g-wall { fill: none; stroke: var(--deep); stroke-width: 1.5px; }
+.chain__glyph .g-fit { fill: none; stroke: var(--deep); stroke-width: 1.4px; stroke-linecap: round; stroke-linejoin: round; }
+.chain__glyph .g-guide { fill: none; stroke: var(--muted); stroke-width: 1px; stroke-dasharray: 3 4; }
+.chain__glyph .chain__mat circle { fill: var(--green); }
+
+/* THE MATERIAL. The only thing in this figure that arrives. Opacity only —
+   the dots are already in position, so what the reveal shows is the chain
+   FILLING, station by station, not three objects sliding in. */
+.chain__mat {
+  opacity: 0;
+  transition: opacity 340ms var(--ease);
+}
+.chain__cell--1 .chain__mat { transition-delay: 300ms; }
+.chain__cell--2 .chain__mat { transition-delay: 700ms; }
+.chain__cell--3 .chain__mat { transition-delay: 1100ms; }
+.chain.is-in .chain__mat { opacity: 1; }
+
+/* THE CONDUITS. Dotted run and arrowhead are chassis: the reader knows which
+   way this goes before anything moves. Only the solid fill inside travels,
+   and it is --green because it IS the material, in transit. */
+.chain__link {
+  position: absolute; top: 50%; height: 0;
+  border-top: 1.5px dotted var(--deep);
+}
+.chain__link--in { left: 0; right: calc(var(--chain-gap) * -1); }
+.chain__link--out { left: 100%; width: var(--chain-gap); }
+.chain__link::after {
+  content: ""; position: absolute; right: 1px; top: 0; width: 8px; height: 8px;
+  border-top: 1.5px solid var(--deep); border-right: 1.5px solid var(--deep);
+  transform: translateY(-50%) rotate(45deg);
+}
+.chain__flow {
+  position: absolute; left: 0; top: -1px; width: 100%; height: 0;
+  border-top: 2px solid var(--green);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 380ms var(--ease-draw);
+  will-change: transform;
+}
+.chain__link--in .chain__flow { transition-delay: 80ms; }
+.chain__cell--1 .chain__flow { transition-delay: 480ms; }
+.chain__cell--2 .chain__flow { transition-delay: 880ms; }
+.chain.is-in .chain__flow { transform: none; }
+
+/* The material's name, on the inlet it enters by. */
+.chain__src {
+  position: absolute; left: 0; bottom: 50%; margin-bottom: 0.5rem;
+  font-size: clamp(0.95rem, 1.05vw, 1.3rem); font-weight: 700;
+  line-height: 1.2; letter-spacing: -0.01em; color: var(--deep);
+  white-space: nowrap;
+}
+
+/* THE SPAN. Ticked at both ends, running the full width of the three
+   stations: this is where the figure says "system". Its caption is the
+   sentence about what happens when one step of it is missed. */
+.chain__span {
+  grid-row: 2; grid-column: 2 / -1; align-self: center; position: relative;
+  height: 0; border-top: 1px solid var(--deep);
+}
+.chain__span::before, .chain__span::after {
+  content: ""; position: absolute; top: -7px; width: 0; height: 7px;
+  border-left: 1px solid var(--deep);
+}
+.chain__span::before { left: 0; }
+.chain__span::after { right: 0; }
+
+/* NOTHING FLOATS. One leader per column, from the station's bottom edge,
+   through the span, to the name beneath it. */
+.chain__drop {
+  grid-row: 2; justify-self: center; align-self: stretch;
+  width: 0; border-left: 1px dashed var(--muted);
+}
+.chain__drop--1 { grid-column: 2; }
+.chain__drop--2 { grid-column: 3; }
+.chain__drop--3 { grid-column: 4; }
+
+/* THE NAMES ARE THE COPY'S OWN. Three verb phrases lifted whole out of the
+   blood-sugar sentence, in the order that sentence puts them. Nothing here
+   was invented except the numeral that marks the step. */
+.chain__key {
+  grid-row: 3; padding-top: clamp(0.55rem, 1.1vw, 1rem);
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+  text-align: center;
+}
+.chain__key--1 { grid-column: 2; }
+.chain__key--2 { grid-column: 3; }
+.chain__key--3 { grid-column: 4; }
+/* --green is 3.59:1 on cream: it passes 3:1 for LARGE text only. 1.7rem at
+   700 weight is 27.2px, and the clamp never goes below it. */
+.chain__key b {
+  font-size: clamp(1.7rem, 2.5vw, 3rem); font-weight: 700; line-height: 1;
+  letter-spacing: -0.02em; color: var(--green);
+}
+.chain__key span {
+  font-size: clamp(1rem, 1.05vw, 1.35rem); font-weight: 700;
+  line-height: 1.25; letter-spacing: -0.01em; color: var(--deep);
+}
+
+/* The closing rule, and the caption on it. The quote keeps the --green stem
+   it has always had; what it loses is a 22-character column. Full plate
+   width puts it at 65 / 51 / 71 cpl across the three widths. */
+.chain__cap {
+  margin-top: clamp(1.5rem, 3vw, 2.75rem);
+  padding-top: clamp(1.15rem, 2.3vw, 2.1rem);
+  border-top: 1px solid var(--deep);
+}
+
+/* Readers who asked for less motion get the finished plate. The shared block
+   already flattens [data-reveal] and cuts every duration to .001ms; these two
+   are the resting values of the only things inside the figure that move, so
+   the figure is complete even if .is-in never lands at all. */
+@media (prefers-reduced-motion: reduce) {
+  .chain__flow { transform: none !important; }
+  .chain__mat { opacity: 1 !important; }
+}
+
+/* ------------------------------------------------------------------
+   NARROW PLATE. Four columns will not survive a phone, so the chain
+   turns 90° and runs down the page: inlet, station, station, station,
+   each name beside its station instead of under it. The span and the
+   leaders are dropped rather than crushed — they are aria-hidden
+   geometry whose only job is tethering names to stations, and at this
+   width adjacency already does that. A CONTAINER query, not a viewport
+   one, so the figure composes on what it actually has.
+   ------------------------------------------------------------------ */
+@container chain (max-width: 700px) {
+  /* The two tracks are PERCENTAGES, not fr, for one reason: the inlet and
+     the material's name are absolutely positioned inside a cell that spans
+     both of them, so they have to be able to compute where the columns are.
+     `1.15fr` cannot be read back; `54%` can. */
+  .chain__grid {
+    --nglyph: 54%;
+    --ngap: clamp(0.9rem, 4vw, 1.6rem);
+    --nrow: clamp(1.5rem, 6vw, 2.5rem);
+    grid-template-columns: var(--nglyph) minmax(0, 1fr);
+    grid-template-rows: auto repeat(3, auto);
+    column-gap: var(--ngap);
+    row-gap: var(--nrow);
+  }
+  .chain__span, .chain__drop { display: none; }
+
+  .chain__in { grid-column: 1 / -1; grid-row: 1; min-height: clamp(2.4rem, 9vw, 3.5rem); }
+  /* the inlet turns with the chain: it now enters the first station from
+     above, on that station's centre line, and the material's name sits
+     beside it in the names' column. */
+  .chain__link--in {
+    left: calc(var(--nglyph) / 2 - 1px); right: auto; top: 0; bottom: calc(var(--nrow) * -1);
+    width: 0; height: auto; border-top: 0; border-left: 1.5px dotted var(--deep);
+  }
+  .chain__src {
+    left: calc(var(--nglyph) + var(--ngap)); right: auto; bottom: auto; top: 50%;
+    margin-bottom: 0; transform: translateY(-50%); text-align: left;
+  }
+
+  .chain__cell { grid-column: 1; }
+  .chain__cell--1 { grid-row: 2; }
+  .chain__cell--2 { grid-row: 3; }
+  .chain__cell--3 { grid-row: 4; }
+  .chain__link--out {
+    left: 50%; top: 100%; width: 0; height: var(--nrow);
+    border-top: 0; border-left: 1.5px dotted var(--deep);
+  }
+  .chain__link::after { right: auto; left: 0; top: auto; bottom: 1px; transform: translateX(-50%) rotate(135deg); }
+  .chain__flow {
+    left: -1px; top: 0; width: 0; height: 100%;
+    border-top: 0; border-left: 2px solid var(--green);
+    transform: scaleY(0); transform-origin: center top;
+  }
+
+  .chain__key { grid-column: 2; align-self: center; align-items: flex-start; text-align: left; padding-top: 0; }
+  .chain__key--1 { grid-row: 2; }
+  .chain__key--2 { grid-row: 3; }
+  .chain__key--3 { grid-row: 4; }
+}
+
+/* ------------------------------------------------------------------
+   PIECE 05 — DESKTOP. The head, the figure and the caption are all
+   FULL-WIDTH rows, and that is not a stylistic preference: a 31px
+   standfirst needs 629px to reach 45cpl and a 46px pull-quote needs
+   846px, while a half column of this phase is 388-633px. They cannot
+   sit in one. The only two-column row left is the discussion, where
+   17px type holds a 30rem measure (65.8 / 63.9 cpl at every width)
+   and the photograph takes whatever the screen has left over —
+   297px at 1280, 397 at 1920, 786 at 2560. That is the answer to
+   both notes at once: the measure stops shrinking and the extra
+   width at 2560 goes into the plate instead of into empty cream.
+   ------------------------------------------------------------------ */
+@media (min-width: 1024px) {
+  /* The discussion keeps the left margin every other full-width row in this
+     phase is set on — head, figure, caption — so the type reads as one
+     column all the way down and the photograph closes on the right. */
+  #phase-2 { grid-template-columns: minmax(0, 30rem) minmax(0, 1fr); }
+  #phase-2 .phase__head { grid-column: 1 / -1; grid-row: 1; }
+  #phase-2 .chain { grid-column: 1 / -1; grid-row: 2; }
+  #phase-2 .bp__body { grid-column: 1; grid-row: 3; max-width: none; }
+
+  /* THE PHOTOGRAPH TAKES THE LEFTOVER WIDTH, NOT THE LEFTOVER HEIGHT.
+     In the other phases this plate is caged by a tall prose column beside
+     it. Here the prose is two short paragraphs, so `height: 100%` on the
+     image resolved against an auto-height figure and fell back to the
+     file's own 922x938 — an 800px square at 2560 with the discussion
+     stranded in the corner beside it. Taking the image out of flow makes
+     the ROW the authority: the text sets the height, the screen sets the
+     width, and the crop widens as the display does — 297x217 at 1280,
+     397x326 at 1920, 786x340 at 2560. */
+  #phase-2 .bp__plate {
+    grid-column: 2; grid-row: 3; position: relative;
+    align-self: stretch; min-height: clamp(230px, 15vw, 310px);
+  }
+  #phase-2 .bp__plate img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+}
+
+/* ============================================================
    PIECE 07 — SYNERGY. THE MECHANISM, DRAWN.
 
    THE FIGURE. A plate from a process paper, not a mood. Three
