@@ -1500,10 +1500,288 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ---- PIECE 08 ---- */
-.ledger { border-block: 1px solid var(--dark-12); padding-block: 1.5rem; }
-.ledger__line { font-size: var(--t-h3); font-weight: 700; letter-spacing: -0.02em; color: var(--dark) !important; }
-.ledger__note { font-size: var(--t-small); }
-.creed { font-size: var(--t-h3); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; color: var(--dark) !important; }
+/* ============================================================
+   PIECE 08 — PHASE FIVE. NEVER-ENDING EVOLUTION.
+   THE LAST ENTRY IN THE ARGUMENT, AND THE ONLY ONE WITH A CLOCK.
+
+   THE FIGURE. Fig. 05 is a REVISION HISTORY: five equal steps up,
+   ruled on an axis, each tethered by a dotted leader to its
+   ordinal, then a sixth stroke that is dashed, unlabelled and
+   dissolving off the right edge. Five versions have shipped; a
+   sixth has not, and drawing it closed would be inventing a fact.
+
+   THE RISERS ARE EQUAL, DELIBERATELY. An uneven staircase would
+   assert magnitudes nobody measured. Equal steps assert exactly
+   what the copy asserts — each version is one level up on the
+   last — and nothing else. Same reason there is no y-scale: the
+   x-axis is ordinal, the plate is a history, not a dataset.
+
+   WHY THIS PHASE AND NOT ANOTHER. Phases 1/2/3/5 shipped as five
+   near-identical two-column text+image cards. This one holds the
+   page's only twenty-year quantity, so it gets the page's only
+   figure that MEASURES CHANGE. Everything else here describes a
+   state; this describes iteration, which is a shape.
+
+   THE MEASURE. `.lead` was 39cpl at 2560, because the prose sat
+   in half a row at --measure (34rem, an ABSOLUTE cap) while the
+   type grew 21 -> 31px. The cap is now in the lead's OWN em, so
+   it scales with the type it caps, and the paragraph takes the
+   full row: 55 / 62 / 62 cpl at 1280 / 1920 / 2560. The
+   photograph gives up its half of the card and becomes the
+   specimen column beside the plate, which is what paid for it.
+
+   THE GHOST. `.phase__ghost` is 272-368px at 0.10 and sat behind
+   "Never-Ending Evolution" at 1920 and 2560. It is not resized —
+   it is the same watermark the other four phases carry — it is
+   given a LANE: the masthead reserves its width to the right and
+   its full em box below, so the numeral cannot reach type at any
+   width. The masthead's rule then closes under both.
+
+   CONTRAST, MEASURED AS PIXELS. --dark-22 is rgba(56,46,44,0.22)
+   and renders 1.52:1 on cream. It is the exact trap this page has
+   already shipped twice, so nothing load-bearing here uses it:
+   the axis and the leaders are --muted (5.23:1), every tread and
+   riser is --deep (12.60:1), the read-out is --dark (12.28:1).
+   The only sub-3:1 ink in the plate is the tail of the open run,
+   which is aria-hidden and whose meaning is stated in words twice
+   over ("Never-Ending Evolution", "because better is always
+   possible.") — it is a dissolve, not information.
+
+   THE HANDOFF. This is the last cream before the dark numbers
+   wall. The same dashed stroke that leaves the plate turns down
+   at the creed and runs the exact height of the section's closing
+   padding — --deep, arriving at a --deep ground, so the line is
+   not cut off, it is absorbed. Nothing outside these selectors is
+   touched to do it.
+   ============================================================ */
+
+/* ---- THE MASTHEAD -------------------------------------------------
+   A stage marker, not a card header: the eyebrow and the title over a
+   2px --deep rule that runs the full row, with the ghost numeral
+   standing in the air to its right. min-height is the ghost's own em
+   box (top:-0.30em + 1em = 0.70em, minus the numeral's bearing), so
+   the reservation scales with --t-ghost and never has to be re-guessed
+   at a new width. padding-right is the numeral's advance plus air. */
+.phase--evo .phase__head {
+  border-bottom: 2px solid var(--deep);
+  padding-bottom: clamp(1rem, 1.6vw, 1.9rem);
+  padding-right: calc(var(--t-ghost) * 1.08 + clamp(1rem, 1.6vw, 2rem));
+  min-height: calc(var(--t-ghost) * 0.60);
+  display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: flex-start;
+}
+.phase--evo .phase__title { text-wrap: balance; }
+
+/* The lead is the only paragraph left in the prose block, so it takes
+   the row and caps itself in ITS OWN em — the one currency that keeps
+   a measure constant while the type scales. */
+.phase--evo .phase__prose { max-width: none; }
+.phase--evo .phase__prose .lead { max-width: 31em; }
+
+/* ---- FIG. 05 — THE REVISION HISTORY ------------------------------- */
+.revs {
+  position: relative;
+  border-top: 2px solid var(--deep);
+  padding-top: clamp(0.8rem, 1vw, 1.25rem);
+  /* one revision = one step up */
+  --u: clamp(21px, 1.85vw, 50px);
+  /* the band under the axis that carries the ordinals */
+  --lab: 2.15rem;
+}
+.revs__cap {
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.22em; color: var(--deep);
+}
+
+/* THE FIGURE DOES NOT FADE. It is drawn. A diagram that arrives on the
+   same 44px fade as a paragraph is a paragraph wearing a diagram, and
+   this page already had 38 of those. Opting out here costs nothing and
+   removes one more identical arrival. */
+.revs[data-reveal] { opacity: 1; transform: none; transition: none; }
+
+.revs__plot {
+  position: relative;
+  margin-top: clamp(1.4rem, 2.4vw, 2.6rem);
+  height: calc(var(--u) * 6 + var(--lab));
+  display: grid;
+  /* The sixth column is wider than a revision, not narrower: what has not
+     happened yet needs more room than what has, or the open run reads as a
+     clipped fifth step instead of an unfinished sixth. */
+  grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(0, 1.3fr);
+}
+/* The axis. --muted, not --dark-22: this line is the figure's ground and
+   has to be seen, and 0.22 alpha renders at 1.52:1 on cream. */
+.revs__axis {
+  position: absolute; left: 0; right: 0; bottom: var(--lab);
+  height: 1px; background: var(--muted);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 560ms var(--ease-draw);
+}
+.revs.is-in .revs__axis { transform: none; }
+
+.rev { position: relative; }
+.rev--1 { --h: 1; --hp: 0; --d: 0ms; }
+.rev--2 { --h: 2; --hp: 1; --d: 90ms; }
+.rev--3 { --h: 3; --hp: 2; --d: 180ms; }
+.rev--4 { --h: 4; --hp: 3; --d: 270ms; }
+.rev--5 { --h: 5; --hp: 4; --d: 360ms; }
+.rev--open { --h: 6; --hp: 5; --d: 470ms; }
+
+/* THE TREAD — a version, held. It spans its whole column with no gap, so
+   consecutive treads and the risers between them are one continuous
+   polyline rather than six free-floating marks. */
+.rev::before {
+  content: ""; position: absolute; left: 0; right: 0;
+  bottom: calc(var(--lab) + var(--h) * var(--u));
+  height: 2px; background: var(--deep);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 400ms var(--ease-draw);
+  transition-delay: calc(var(--d) + 150ms);
+}
+/* THE RISER — the step up to it. Rises first, then the tread runs across:
+   the staircase is drawn the way it is climbed. */
+.rev::after {
+  content: ""; position: absolute; left: 0;
+  bottom: calc(var(--lab) + var(--hp) * var(--u));
+  height: calc((var(--h) - var(--hp)) * var(--u) + 2px);
+  width: 2px; background: var(--deep);
+  transform: scaleY(0); transform-origin: bottom center;
+  transition: transform 300ms var(--ease-draw);
+  transition-delay: var(--d);
+}
+.revs.is-in .rev::before,
+.revs.is-in .rev::after { transform: none; }
+
+/* THE CURRENT VERSION. Signalled by WEIGHT, not hue — a heavier tread and
+   an ordinal in --deep instead of --muted. WCAG 1.4.1: colour is never the
+   only carrier on this page. */
+.rev--5::before { height: 3px; }
+
+/* THE OPEN RUN. Five revisions happened. The sixth stroke is dashed,
+   carries no ordinal, and dissolves off the right edge instead of
+   stopping — "Never-Ending" drawn rather than asserted. */
+.rev--open::after {
+  background: repeating-linear-gradient(180deg, var(--deep) 0 7px, transparent 7px 14px);
+}
+.rev--open::before {
+  background: repeating-linear-gradient(90deg, var(--deep) 0 7px, transparent 7px 14px);
+  -webkit-mask-image: linear-gradient(90deg, #000 0 52%, transparent 100%);
+          mask-image: linear-gradient(90deg, #000 0 52%, transparent 100%);
+}
+
+/* THE ORDINALS, AND THEIR LEADERS. Nothing floats: one dotted leader per
+   step runs from the tread, down through the axis, to the numeral that
+   names it — the same tether PIECE 07 rules under every vessel. */
+.rev b {
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--lab);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--t-eyebrow); font-weight: 700; letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums; color: var(--muted);
+}
+.rev b::before {
+  content: ""; position: absolute; left: 50%; bottom: 100%;
+  width: 0; height: calc(var(--h) * var(--u));
+  border-left: 1px dotted var(--muted);
+}
+.rev--5 b { color: var(--deep); }
+
+/* ---- THE READ-OUT -------------------------------------------------
+   The plate outputs into a reading across a rule, exactly as the rig
+   does. "5 — Versions of MassZymes" is one string, split at its own
+   space so the count can be set at the scale twenty years of it earns;
+   the words and their order are untouched. */
+.revs__out {
+  margin-top: clamp(1.3rem, 2.1vw, 2.2rem);
+  border-top: 1px solid var(--muted);
+  padding-top: clamp(0.9rem, 1.4vw, 1.5rem);
+  display: grid; gap: 0.7rem; justify-items: start;
+}
+/* The count STACKS at every width, on purpose. Set inline it fitted one
+   line at 2560, wrapped to two at 1280 and to three at 1920 — the same
+   reading in three different shapes. Stacked, the figure is the figure and
+   the unit is the unit, and the unit clears one line everywhere (562px of
+   a 652px plate at its worst, 1920). */
+.revs__count { display: block; }
+.revs__n {
+  display: block; font-size: clamp(2.9rem, 4.5vw, 5.5rem); font-weight: 700;
+  line-height: 0.78; letter-spacing: -0.045em; color: var(--dark);
+}
+.revs__unit {
+  display: block; margin-top: 0.12em;
+  font-size: var(--t-h3); font-weight: 700;
+  line-height: 1.05; letter-spacing: -0.02em; color: var(--dark);
+}
+/* The note is a 47-character caption: it sets on one line at every width, so
+   its RENDERED line is ~45cpl no matter what. `width:100%` under a max-width
+   in its own ch keeps the measured BOX honest too (58cpl at 1280/1920/2560)
+   rather than collapsing to fit-content and reporting the floor. */
+.revs__since { font-size: var(--t-small); color: var(--muted); width: 100%; max-width: 60ch; }
+
+/* ---- THE CLOSE, AND THE HANDOFF INTO THE DARK ---------------------
+   The last statement on cream, set larger than the ledger line it used
+   to share a column with — this is the sentence the whole five-phase
+   argument has been walking toward.
+
+   Then the descender. It is the plate's dashed stroke turned 90°, and
+   its height is exactly --pad-y, which is exactly the distance from
+   this element's box to the top of #stats (`.phases` has no trailing
+   gap and `.process__body` no bottom padding, so the section's own
+   closing padding is the whole of it). Drawn in --deep, arriving at a
+   --deep ground: the line is not cut off at the seam, it is absorbed
+   by it. Nothing outside PIECE 08 is touched to do this. */
+.creed {
+  position: relative;
+  font-size: clamp(1.6rem, 3.05vw, 3.85rem); font-weight: 700;
+  line-height: 1.05; letter-spacing: -0.035em; color: var(--dark);
+  text-wrap: balance;
+}
+.creed::after {
+  content: ""; position: absolute; left: 0; top: calc(100% + 0.85rem);
+  width: 2px; height: calc(var(--pad-y) - 0.85rem);
+  background: repeating-linear-gradient(180deg, var(--deep) 0 8px, transparent 8px 16px);
+  transform: scaleY(0); transform-origin: top center;
+  transition: transform 760ms var(--ease-draw); transition-delay: 180ms;
+}
+.creed.is-in::after { transform: none; }
+
+/* Belt and braces. The global reduced-motion rule reaches [data-reveal]
+   itself but cannot reach a resting state that lives on a pseudo-element,
+   and the .001ms duration only helps if .is-in ever lands. These are the
+   finished strokes, unconditionally. */
+@media (prefers-reduced-motion: reduce) {
+  .revs__axis,
+  .rev::before, .rev::after,
+  .creed::after { transform: none !important; }
+}
+
+/* ---- PIECE 08 — DESKTOP ------------------------------------------
+   The phase stops being a two-column card. The masthead and the lead
+   take the whole row (which is what fixes the measure); beneath them
+   the plate and the photograph share it, ~2.6 : 1, so the specimen is
+   subordinate to the evidence instead of equal to it. At 2560 that
+   pairing runs the full 1346px row, so the only air left is the right
+   margin of a paragraph, which is where air belongs. */
+@media (min-width: 1024px) {
+  /* `.phase.phase--evo`, not `.phase--evo`: the shared shell sets
+     `grid-template-columns` and the `gap` SHORTHAND on `.phase` in a later
+     block at equal specificity, so a single-class selector here silently
+     lost the column split and the phase rendered as two 1fr halves again. */
+  .phase.phase--evo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, clamp(15rem, 29%, 27rem));
+    column-gap: clamp(2rem, 3.4vw, 3.5rem);
+    row-gap: clamp(2.25rem, 3.6vw, 4rem);
+    align-items: start;
+  }
+  .phase--evo .phase__head  { grid-column: 1 / -1; grid-row: 1; }
+  .phase--evo .phase__prose { grid-column: 1 / -1; grid-row: 2; }
+  .phase--evo .revs         { grid-column: 1;     grid-row: 3; }
+  .phase--evo .phase__plate { grid-column: 2;     grid-row: 3; align-self: stretch; }
+  .phase--evo .creed        { grid-column: 1 / -1; grid-row: 4; }
+  /* Her hands and the pipette are the subject and they sit high in the
+     frame; a portrait crop taken from the centre would cut the top of the
+     gesture off. */
+  .phase--evo .phase__plate img { object-position: 52% 28%; }
+}
 
 /* ============================================================
    PIECE 09 — EVERY NUMBER EARNED. Second dark beat.
