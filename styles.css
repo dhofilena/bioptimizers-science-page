@@ -2040,34 +2040,147 @@ section { position: relative; padding-block: var(--pad-y); }
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: rgba(255, 255, 255, 0.22);
 }
+/* R1 — THE SHELL IS EXPRESSED AS A GRID TRACK, NOT AS PADDING.
+   It used to be padding-inline, which is correct for type and useless for
+   anything that has to REACH an edge: with the shell held in padding, the
+   photograph could only ever be a card floating inside it, and the ruled
+   claims could only ever start and stop inside it. Both of those were the
+   Round 3 defects — "the page's only rounded-corner image", and rules that
+   ran 518px inside a full-bleed section with 1,320px of empty ground to
+   their right at 2560.
+   Naming the gutter as a TRACK costs nothing (the type lands on exactly the
+   column .shell would have given it, to the pixel) and buys both edges back:
+   the plate spans plate-start/edge-end and simply is the right wall, and the
+   rules can run out through the gutter track to the page edge the way the
+   register's do. `100%` inside --proof-pad resolves against this grid's own
+   inline size, which is the viewport — the same value the padding computed,
+   without the 100vw scrollbar error a negative margin would have needed. */
 .proof {
+  --proof-pad: max(var(--gutter), calc((100% - var(--shell)) / 2 + var(--gutter)));
+  --proof-gap: clamp(2rem, 3.4vw, 4.25rem);
   background: var(--deep-2); color: var(--white);
-  display: grid; gap: clamp(2.5rem, 5vw, 5rem);
-  /* The ground has to reach both edges — a --deep band that stopped at 1240px
-     would be a dark card floating on cream. The section is full width and the
-     shell is expressed as padding instead, so the type still lands on exactly
-     the column .shell would have given it. */
-  width: 100%;
-  padding-inline: max(var(--gutter), calc((100% - var(--shell)) / 2 + var(--gutter)));
+  /* The ground has to reach both edges — a --deep-2 band that stopped at
+     1240px would be a dark card floating on cream. */
+  width: 100%; overflow: hidden;
+  display: grid; row-gap: clamp(2.5rem, 5vw, 5rem);
+  grid-template-columns:
+    [edge-start] var(--proof-pad) [type-start] minmax(0, 1fr) [type-end] var(--proof-pad) [edge-end];
 }
+.proof__type  { grid-column: type-start / type-end; }
+.proof__plate { grid-column: edge-start / edge-end; }
+
 .proof__title { font-size: var(--t-h1); font-weight: 700; line-height: 0.95; letter-spacing: -0.035em; }
-.proof__lede { margin-top: 1.5rem; font-size: var(--t-lead); line-height: 1.45; max-width: 52ch; color: var(--cream); }
-.proof__list { margin-top: 2.5rem; display: flex; flex-direction: column; }
-/* WAVE 3 — the second thing the scale pass left uncapped. --shell grew
-   1240 -> 1900 and this list had no measure at all, so at 2560 the three
-   claims ran to 95 characters per line: the widest body copy on the page by
-   25 characters, and 20 past the band everything else was just fixed into.
-   The RULES have to stay the full column width — they are the object, and a
-   rule that stops where the text stops reads as a mistake — so the measure is
-   set as padding on the content box rather than a max-width on the element.
-   Measured: 1280 60cpl · 1920 64cpl · 2560 64cpl. */
-.proof__list li {
-  padding-block: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.18);
-  padding-right: max(0px, calc(100% - 31rem));   /* 38rem measured 79cpl, not the 60-64 reported */
-  color: rgba(255, 255, 255, 0.78); display: flex; gap: 1rem;
+
+/* ---- THE THESIS. The one bespoke gesture, and the widow fix, are the same
+   decision. ------------------------------------------------------------
+   The sentence is two sentences, so it is set as two: a setup and a payoff,
+   one line each, each in its own mask. That is per-line typesetting on the
+   line that matters, which is the only place on this page it is spent.
+
+   THE WIDOW (Round 3, 1920). "...perform every / day." — one word on a line
+   of its own, because a single 92-character string was being wrapped by a
+   52ch cap that happened to land two characters short. Capping harder just
+   moves the orphan. Splitting on the sentence break removes the possibility:
+   the longest sentence measures 20.4em set, the cap is 22.5em, so each
+   sentence occupies exactly one line at 1280/1920/2560 and there is no last
+   line to orphan. text-wrap: balance is the floor under that — if a fallback
+   face runs wide enough to wrap, it wraps into two balanced halves, never a
+   word. Measured after: 2 lines at 1280, 2 at 1920, 2 at 2560.
+
+   COLOUR. --white, not --cream. The manifesto sets its question (.mf-q) in
+   --white at one size step above this; this is that question answered, so it
+   is the same ink at the next step down. Measured off rendered pixels:
+   rgb(255,255,255) on rgb(12,39,6) = 16.05:1. ---- */
+.proof__lede {
+  margin-top: clamp(1.1rem, 1.6vw, 1.75rem);
+  font-size: var(--t-lead); line-height: 1.3; letter-spacing: -0.012em;
+  max-width: 22.5em; color: var(--white);
 }
-.proof__list li::before { content: "✓"; color: var(--vital); font-weight: 700; }
-.proof .btn { margin-top: 2.5rem; }
+/* The mask. Same trick the hero uses: 0.06em of padding so descenders are not
+   shaved by the clip, pulled straight back out again so layout is unmoved. */
+.proof__mask { display: block; overflow: hidden; padding-block: 0.06em; margin-block: -0.06em; }
+.proof__line { display: block; font-style: normal; text-wrap: balance; }
+/* CLIMB. 660ms is the manifesto's duration, not a fourth number — the hero
+   takes 900ms on --t-display, the manifesto 660ms on ~34px, the register rows
+   520ms on ~17px, and this sits on the manifesto's step at 31px.
+   [data-reveal] is on the <i> ITSELF, which is why nothing had to be added to
+   the <noscript> block or to the reduced-motion escape: both of those clear
+   `transform` on `[data-reveal]` with !important, and the transformed element
+   IS the revealed element. Longhands only — the `transition` shorthand would
+   reset transition-delay and silently kill the 110/220ms stagger the
+   [data-reveal-delay] attributes carry. */
+.proof__line[data-reveal] {
+  opacity: 1; transform: translate3d(0, 110%, 0);
+  transition-property: transform;
+  transition-duration: 660ms;
+  transition-timing-function: var(--ease-climb);
+}
+.proof__line[data-reveal].is-in { transform: none; }
+
+/* ---- THE CLAIMS. A REGISTER THAT CROSSED THE JOIN, NOT A CHECKLIST. ----
+   The ✓ is gone. It was a --vital graphic doing checkbox duty — which is not
+   what --vital does on this page (apparatus: rules, walls, and the labels
+   that NAME things) — and three ticks are what made three unrelated kinds of
+   statement read as one bulleted list. The register above carries five
+   entries with no markers at all, on rules; these are its next entries. ---- */
+.proof__list { margin-top: clamp(2.75rem, 4vw, 4rem); }
+.proof__claim {
+  position: relative;
+  padding-block: clamp(1.15rem, 1.8vw, 1.6rem);
+  font-size: clamp(1.0625rem, 1.05vw, 1.3rem);
+  line-height: 1.55; color: rgba(255, 255, 255, 0.78);
+  /* THE MEASURE, IN THE CLAIM'S OWN CURRENCY. `31rem` was a ROOT-relative cap
+     on type that is not root-sized, so it froze at 496px while the font grew;
+     `em` here tracks the claim's own size, and the two claims' average glyph
+     advances (0.452em and 0.419em) put both inside the band at every width by
+     construction: 27em / 0.452 = 59.7cpl and 27em / 0.419 = 64.4cpl.
+     It is padding, not max-width, on purpose — the RULE is the object and has
+     to keep the full column; "a ledger line runs past its last word, it does
+     not stretch the word to fill the box" is PIECE 09's own note. */
+  padding-right: max(0px, calc(100% - 27em));
+}
+/* THE RULE. Anchored to the claim's RIGHT edge and 100vw wide, so it always
+   runs out through the gutter track and off the left of the page — the same
+   full-bleed stroke, the same 1px, the same 0.18 alpha as .tally__entry::before
+   one section up. .proof's own overflow clip contains it. On desktop it is
+   extended right by the column gap so it terminates ON the photograph rather
+   than 65px short of it: the ledger runs into a person and stops. */
+.proof__claim::before {
+  content: ""; position: absolute; top: 0; width: 100vw; height: 1px;
+  background: rgba(255, 255, 255, 0.18);
+  /* Below 1024 there is no photograph beside the rules, so they bleed BOTH
+     ways and are simply the register's rules, full width. Every viewport that
+     reaches this line is narrower than --shell's 1240px floor, which is
+     exactly the range in which --proof-pad reduces to --gutter — so this is
+     the same value the grid's edge track has, not an approximation of it. */
+  right: calc(-1 * var(--gutter));
+}
+/* THE HANDOFF, IN INK. PIECE 09's last entry hands over "1.2M+ / People
+   Helped" and this sentence says the same figure in words, so it is set in
+   that register's exact treatment — .tally__val is --white, 700, tabular —
+   inside the running text. The eye catches the object it read one screen ago.
+   Same device the page already spends on 80,648: promised in --vital by the
+   manifesto, banked in --white by the register. Sampled off the rendered
+   screenshot: the pick-out is rgb(255,255,255) = 16.05:1, the 0.78 text it
+   sits inside composites to rgb(202,208,200) = 10.22:1. */
+.proof__figure {
+  font-weight: 700; color: var(--white);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+/* THE TURN. The shortest, most quotable and only forward-facing claim, so it
+   is set up rather than levelled — the manifesto's logic applied at a smaller
+   scale ("the most quotable thing here now looks like it"). One line at every
+   width (27em cap against a 23.4em set line), --white, and no rule under it:
+   the argument does not close, it runs into the CTA. */
+.proof__claim--turn {
+  padding-top: clamp(1.6rem, 2.4vw, 2.25rem);
+  font-size: clamp(1.25rem, 1.5vw, 1.75rem); font-weight: 700;
+  line-height: 1.25; letter-spacing: -0.02em; color: var(--white);
+  text-wrap: balance;   /* insurance: if a wide fallback face wraps it, it
+                           wraps into two halves and never orphans "next." */
+}
+.proof .btn { margin-top: clamp(2rem, 3vw, 2.75rem); }
+
 /* Same holding tint as the poster and the portrait frames, so a photograph
    still arriving is a considered panel rather than a hole in the ground. */
 .proof__plate { overflow: hidden; background: rgba(255, 255, 255, 0.06); }
@@ -2077,8 +2190,54 @@ section { position: relative; padding-block: var(--pad-y); }
    the photograph. Same answer PIECE 11 gives its poster: crop past the arc.
    Clearing a radius r by centre-cropping needs 0.293r off each edge; 2.5%
    here is 25px horizontally and 20px vertically, both clear of the 11.7px
-   the geometry actually asks for. */
+   the geometry actually asks for. Above 1024 the object-fit cover crop is
+   already deeper than that on its own; the scale stays because the reveal
+   settles 1.11 -> 1.05 into it and because it is the value the <noscript>
+   floor and the reduced-motion escape both name. */
 .proof__plate img { transform: scale(1.05); }
+
+/* ---- PIECE 10 — RESPONSIVE. Kept inside this block. ---- */
+@media (min-width: 1024px) {
+  /* The photograph stops being a card and becomes the section's right wall:
+     it takes its own track and runs out through the far gutter to the page
+     edge. No corners to notch, no floating rounded rectangle, and the empty
+     right-hand ground Round 3 measured (1,320px at 2560) is now 1,099px of
+     photograph. It stretches to the type's height rather than bleeding past
+     the section's padding on purpose — the chapter hairline that rules the
+     join at top:0 would otherwise cross the picture, and a 22%-white hairline
+     disappears over a bright sky, which would read as the rule breaking. */
+  /* The split favours the PHOTOGRAPH, 1 : 1.1. An even half-and-half — or the
+     1fr 1fr this section shipped with — reads fine at 1440 and falls apart at
+     2560, where the type column grows to 1,144px while the text inside it is
+     capped at ~560, leaving 580px of ruled nothing between the last word and
+     the picture. Giving the surplus to the plate instead puts the growth
+     somewhere it can be used: 610px of photograph at 1280, 828 at 1920,
+     1,099 at 2560. */
+  .proof {
+    grid-template-columns:
+      [edge-start] var(--proof-pad) [type-start] minmax(0, 1fr) [type-end]
+      var(--proof-gap) [plate-start] minmax(0, 1.1fr) [edge-end];
+    row-gap: 0; align-items: start;
+  }
+  .proof__type  { grid-column: type-start / type-end; grid-row: 1; }
+  /* The photograph is TAKEN OUT OF THE ROW'S SIZING, not just stretched into
+     it. Left in flow, a 1,099px-wide plate at 2560 contributes its own
+     intrinsic height to the row, the row grows past the type, and the picture
+     hangs 132px below the CTA with nothing beside it — measured. Absolutely
+     positioned, it contributes nothing: the row is the height of the argument
+     and the picture is exactly as tall as the words it sits beside. Top edge
+     on the title's cap-line, bottom edge on the button's baseline. */
+  .proof__plate { grid-column: plate-start / edge-end; grid-row: 1; align-self: stretch; position: relative; }
+  .proof__plate img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .proof__claim::before { right: calc(-1 * var(--proof-gap)); }
+}
+/* The climb is a transform on the revealed element itself, so the shared
+   reduced-motion escape already lands on it. This is the belt to that
+   braces: it names the resting value locally, so the section cannot be
+   broken by a future edit to a block this piece does not own. */
+@media (prefers-reduced-motion: reduce) {
+  .proof__line[data-reveal] { transform: none !important; transition: none !important; }
+}
 
 /* ============================================================
    PIECE 11 — INSIDE THE BIOLAB
@@ -2628,6 +2787,9 @@ section { position: relative; padding-block: var(--pad-y); }
     .phase--synergy .phase__prose p:not(.lead) { max-width: 38rem; }
   }
 
-  .proof { grid-template-columns: 1fr 1fr; align-items: center; }
-  .proof__plate { order: 2; }
+  /* PIECE 10's two-column rules used to live here (`1fr 1fr` + `order: 2`).
+     They moved into the PIECE 10 block with the rest of that section's
+     responsive behaviour — the layout is now expressed in named grid tracks
+     that the plate has to span, which is not something a bare column count
+     can say. See "PIECE 10 — RESPONSIVE". */
 }
