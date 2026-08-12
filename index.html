@@ -44,6 +44,13 @@
      three unruled, over-zoomed tiles. These are the finished stills. */
   .door__row::before { transform: none !important; }
   .door__frame img { transform: scale(1.28) !important; }
+  /* PIECE 05 — Fig. 1. The chassis of the chain is never animated, so it is
+     already whole here. The two things that are: the conduit fills, which
+     rest at scaleX(1), and the material inside each station, which rests at
+     full opacity. Without these the figure would render as a labelled but
+     EMPTY apparatus with scripts off — drawn, and carrying nothing. */
+  .chain__flow { transform: none !important; }
+  .chain__mat { opacity: 1 !important; }
 </style></noscript>
 </head>
 <body>
@@ -316,19 +323,130 @@
       <!-- ---------- PIECE 04: PHASE ONE — END ---------- -->
 
       <!-- ---------- PIECE 05: PHASE TWO — START ---------- -->
-      <article class="phase phase--flip" id="phase-2" data-phase="2" tabindex="-1" aria-labelledby="phase-2-heading">
+      <!-- THE PAGE'S CLEAREST CONTENT GAP, CLOSED. The copy said "we start by
+           mapping the entire biological chain" and then showed a stock
+           micrograph of chloroplasts. The claim was stated and never
+           demonstrated. Fig. 1 is that map: the three connected steps the
+           blood-sugar sentence names — responds to glucose, transports it,
+           puts it to use — drawn as one pathway that a single material
+           travels through.
+
+           EVERY WORD IN THE FIGURE IS LIFTED FROM THE COPY. The three station
+           names are the three verb phrases of the source sentence, unaltered
+           and in source order; "glucose" names the material at the inlet. The
+           only strings that are not source copy are the plate marker "Fig. 1"
+           and the stage numerals 01/02/03.
+
+           THE PULL-QUOTE IS NOW THE PLATE'S CAPTION. It sits under the closing
+           rule, directly beneath the bracket that spans all three steps — so
+           "support one step and miss the others" annotates the drawn span it
+           is about, instead of floating in a 22-character column. Source
+           string order (lead, quote, blood sugar, Berberine) is unchanged.
+
+           THE MATERIAL IS THE ONLY THING THAT MOVES. Chambers, receptor slots,
+           carriage rails, the output node, the conduits, the bracket, the
+           leaders, the numerals and every label are chassis: drawn from the
+           first frame and never animated — the same law PIECE 07 wrote for the
+           rig. What arrives is the glucose and the conduit fills between the
+           stations, in sequence, on DRAW. So no-JS, reduced motion and a dead
+           observer all land on the complete, labelled figure. -->
+      <article class="phase phase--blueprint" id="phase-2" data-phase="2" tabindex="-1" aria-labelledby="phase-2-heading">
         <p class="phase__ghost" aria-hidden="true">02</p>
         <header class="phase__head">
           <p class="eyebrow" data-reveal>Phase Two</p>
           <h3 id="phase-2-heading" class="phase__title" data-reveal data-reveal-delay="1">The Blueprint</h3>
+          <p class="lead bp__lede" data-reveal data-reveal-delay="2">Your body works as a system. So we start by mapping the entire biological chain.</p>
         </header>
-        <div class="phase__prose" data-reveal data-reveal-delay="2">
-          <p class="lead">Your body works as a system. So we start by mapping the entire biological chain.</p>
-          <blockquote class="quote">"Support one step and miss the others, and the system still falls short."</blockquote>
+
+        <figure class="chain" data-reveal>
+          <p class="chain__mark">Fig. 1</p>
+
+          <div class="chain__grid">
+
+            <!-- THE INLET. The material enters the system from outside it. -->
+            <div class="chain__in">
+              <p class="chain__src">glucose</p>
+              <span class="chain__link chain__link--in" aria-hidden="true"><i class="chain__flow"></i></span>
+            </div>
+
+            <!-- 01 — RESPONDS TO GLUCOSE. Four sites on the inner face of the
+                 wall the material arrives at; two of them occupied. The body
+                 has somewhere for glucose to land, and it lands. -->
+            <div class="chain__cell chain__cell--1">
+              <svg class="chain__glyph" viewBox="0 0 240 160" aria-hidden="true" focusable="false">
+                <rect class="g-wall" x="1" y="1" width="238" height="158" rx="3"/>
+                <path class="g-fit" d="M8 14 H27 V36 H8 M8 48 H27 V70 H8 M8 82 H27 V104 H8 M8 116 H27 V138 H8"/>
+                <g class="chain__mat">
+                  <circle cx="17" cy="25" r="5"/><circle cx="17" cy="93" r="5"/>
+                  <circle cx="60" cy="36" r="5"/><circle cx="97" cy="66" r="5"/>
+                  <circle cx="68" cy="112" r="5"/><circle cx="114" cy="134" r="5"/>
+                  <circle cx="136" cy="40" r="5"/><circle cx="160" cy="98" r="5"/>
+                  <circle cx="188" cy="62" r="5"/><circle cx="208" cy="126" r="5"/>
+                </g>
+              </svg>
+              <span class="chain__link chain__link--out" aria-hidden="true"><i class="chain__flow"></i></span>
+            </div>
+
+            <!-- 02 — TRANSPORTS IT. The same material, no longer loose: ordered
+                 onto a carriage and moving one way. -->
+            <div class="chain__cell chain__cell--2">
+              <svg class="chain__glyph" viewBox="0 0 240 160" aria-hidden="true" focusable="false">
+                <rect class="g-wall" x="1" y="1" width="238" height="158" rx="3"/>
+                <path class="g-fit" d="M12 54 H228 M12 106 H228"/>
+                <path class="g-fit" d="M36 54 V44 M72 54 V44 M108 54 V44 M144 54 V44 M180 54 V44 M36 106 V116 M72 106 V116 M108 106 V116 M144 106 V116 M180 106 V116"/>
+                <path class="g-fit" d="M206 68 L220 80 L206 92"/>
+                <g class="chain__mat">
+                  <circle cx="28" cy="80" r="5"/><circle cx="58" cy="80" r="5"/>
+                  <circle cx="88" cy="80" r="5"/><circle cx="118" cy="80" r="5"/>
+                  <circle cx="148" cy="80" r="5"/><circle cx="178" cy="80" r="5"/>
+                </g>
+              </svg>
+              <span class="chain__link chain__link--out" aria-hidden="true"><i class="chain__flow"></i></span>
+            </div>
+
+            <!-- 03 — PUTS IT TO USE. The same material again, gathered to one
+                 point and spent: the chain has no outlet because nothing leaves
+                 it. Five strokes off the node are the only thing that does. -->
+            <div class="chain__cell chain__cell--3">
+              <svg class="chain__glyph" viewBox="0 0 240 160" aria-hidden="true" focusable="false">
+                <rect class="g-wall" x="1" y="1" width="238" height="158" rx="3"/>
+                <path class="g-guide" d="M14 30 L134 74 M14 130 L134 86"/>
+                <circle class="g-fit" cx="152" cy="80" r="17"/>
+                <path class="g-fit" d="M152 57 V44 M168.3 63.7 L177.5 54.5 M175 80 H188 M168.3 96.3 L177.5 105.5 M152 103 V116"/>
+                <g class="chain__mat">
+                  <circle cx="30" cy="44" r="5"/><circle cx="30" cy="116" r="5"/>
+                  <circle cx="58" cy="58" r="5"/><circle cx="58" cy="102" r="5"/>
+                  <circle cx="86" cy="68" r="5"/><circle cx="86" cy="92" r="5"/>
+                  <circle cx="112" cy="80" r="5"/>
+                  <circle cx="152" cy="80" r="6"/>
+                </g>
+              </svg>
+            </div>
+
+            <!-- THE SPAN. One bracket under all three, ticked at both ends:
+                 the three steps are one system. The caption below it is the
+                 sentence about exactly that. -->
+            <span class="chain__span" aria-hidden="true"></span>
+            <span class="chain__drop chain__drop--1" aria-hidden="true"></span>
+            <span class="chain__drop chain__drop--2" aria-hidden="true"></span>
+            <span class="chain__drop chain__drop--3" aria-hidden="true"></span>
+
+            <p class="chain__key chain__key--1"><b>01</b><span>responds to glucose</span></p>
+            <p class="chain__key chain__key--2"><b>02</b><span>transports it</span></p>
+            <p class="chain__key chain__key--3"><b>03</b><span>puts it to use</span></p>
+
+          </div>
+
+          <figcaption class="chain__cap">
+            <blockquote class="quote">"Support one step and miss the others, and the system still falls short."</blockquote>
+          </figcaption>
+        </figure>
+
+        <div class="phase__prose bp__body" data-reveal>
           <p>Take blood sugar — it isn't one event. It's a series of connected steps: how your body responds to glucose, how it transports it, and how it puts it to use.</p>
           <p>That's why Berberine Breakthrough isn't a single ingredient, but a blend of 10 ingredients designed to support multiple aspects of glucose metabolism.</p>
         </div>
-        <figure class="phase__plate" data-reveal>
+        <figure class="phase__plate bp__plate" data-reveal>
           <img src="./microscopic-plant-cells-chloroplasts-m-5b2cbe44cb7ab2a94076068d9a5066e8.png"
                alt="Microscopic view of plant cells with green chloroplasts"
                width="489" height="516" loading="lazy" decoding="async">
