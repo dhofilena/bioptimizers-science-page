@@ -667,10 +667,20 @@
        contradicted the drawing.
 
        Each clip is now held at frame 0 and cued by its OWN stage: on the
-       stage opening it seeks to 0 and plays once, settling on its last frame;
-       on the stage closing (a reader scrubbing back up) it pauses and rewinds
-       to 0. So what a vessel is doing is always exactly what the build says
-       it is doing, at any scroll position and at any scroll speed.
+       stage opening it seeks to 0 and starts; on the stage closing (a reader
+       scrubbing back up) it pauses and rewinds to 0. So what a vessel is
+       doing is always exactly what the build says it is doing, at any scroll
+       position and at any scroll speed.
+
+       R5 — and once started, it LOOPS. R4 let each clip settle on its last
+       frame, which fixed the contradiction above but left the reader looking
+       at three static images at the end of the sequence. On luminance-on-black
+       culture footage a frozen frame does not read as "resolved", it reads as
+       dead, which is the opposite of what this figure claims about the
+       material. Looping costs the sequence nothing, because what is gated is
+       the FIRST play: a vessel still cannot start before its own stage opens,
+       so the reveal is still first-this-then-this, and the reader simply ends
+       it with three live specimens instead of three corpses.
 
        Two separate concerns, deliberately not merged:
          visible  — bytes and decoding. The clips ship preload="none", so a
@@ -684,7 +694,23 @@
     var onStage = [false, false, false];
     var visible = false, halted = false;
 
+    // These are living cultures shot as luminance on black, and a clip parked
+    // on its last frame reads as a dead specimen — the figure's whole claim is
+    // that this material is doing something. So each vessel LOOPS.
+    //
+    // The loop is set here in script rather than as a `loop` attribute in the
+    // markup on purpose: the attribute would also be true with scripts off and
+    // under reduced motion, and this figure's contract in both of those states
+    // is one still frame. Set in JS, the looping cannot outlive the conditions
+    // that justify it.
+    //
+    // What loops is only the RESTING behaviour. The first play of each vessel
+    // is still gated to its own stage, so the staged reveal survives intact:
+    // acid opens at p=0.04, enzyme at 0.26, colony at 0.48, and each one keeps
+    // running from the moment its stage opens. The reader ends the sequence
+    // with three live specimens rather than three corpses.
     function start(v) {
+      v.loop = true;
       // Autoplay can still be refused (power saving, engine policy). The
       // refusal is not an error worth surfacing: the poster is the settle
       // frame, so the scene simply stays as drawn.
@@ -727,6 +753,10 @@
       for (var i = 0; i < vids.length; i++) {
         var v = vids[i];
         if (!v) continue;
+        // Clearing the loop FIRST matters: pausing a looping clip still leaves
+        // it armed, and any later resume would start it running again in a
+        // mode the reader has just asked not to see.
+        v.loop = false;
         if (!v.paused) v.pause();
         if (v.duration > 0 && isFinite(v.duration) && v.currentTime < v.duration - 0.06) {
           try { v.currentTime = v.duration - 0.05; } catch (e) {}
