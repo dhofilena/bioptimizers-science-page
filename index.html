@@ -455,6 +455,57 @@
       <!-- ---------- PIECE 05: PHASE TWO — END ---------- -->
 
       <!-- ---------- PIECE 06: PHASE THREE — START ---------- -->
+      <!-- THIS PHASE IS THE PAGE'S EVIDENCE, AND IT WAS SET AS A TABLE.
+           Two boxed cards, side by side, 15px grey, a 12px label on top of
+           each. Everything the copy actually names — chromatography, mass
+           spectrometry, heavy metals, genotoxicity, cytotoxicity, solubility
+           and stability across hundreds of versions, the Bradford assay,
+           biofilm survival — was documentation you scan past.
+
+           It is now a RECORD SHEET, and the sheet is the composition:
+             · one 2px --deep rule opens each stage
+             · a hairline closes every entry, and the rules run the FULL
+               column while the prose stays at ~69 characters (see the
+               padding-right trick in styles.css — full-width rules, capped
+               measure, no wrapper elements)
+             · a --green tick is drawn in the margin of every entry, the same
+               gesture the spine uses to mark the step you are on
+           Two stages STACKED, not columned: the copy says "two major stages
+           BEFORE any ingredient earns a place", which is a sequence. Columns
+           said they were parallel.
+
+           THE STAGE LINE IS ONE LINE OF SOURCE, TYPESET IN THREE VOICES.
+           Ritual's tiebreaker was sans + serif italic. There is no second
+           family available here (Neue Haas Unica Pro is not installed; it
+           falls back to Arial), so the answer is scale, case and weight on
+           one family, set on ONE baseline:
+               STAGE      12px / 700 / caps / +0.2em     the instrument label
+               01         32-52px / 700 / --green        the index
+               Purity & Safety  22-31px / 400 / --deep   the finding
+           Every fragment is an inline <span>, with no whitespace between the
+           tags, so textContent and innerText both read back exactly
+           "Stage 01 — Purity & Safety". Nothing was reworded, added or cut.
+
+           THE PHOTOGRAPH'S BAKED LABEL: A SCRIM CANNOT FIX IT, AND THE
+           MEASUREMENT SAYS SO. "BIOLab INGREDIENT TESTING" is white type
+           burned into the PNG at x 11.6-88.6%, y 48.9-51.5% — dead centre,
+           nearly full width. Over the cherry it is fine; over the pale ground
+           on the right it measures 1.30:1. A scrim was built to it first and
+           MEASURED on the rendered frame: an alpha wash is a linear blend, so
+           it pulls BOTH the white glyphs and the pale ground toward the same
+           colour — 1.30:1 became 1.24:1. Darkening cannot separate two
+           already-close values; it is the same class of trap as the
+           rgba() that computed 12.27:1 and rendered 1.51:1.
+           So the label is cropped OUT, not dressed up. The ink ends at y 342
+           of 656, so any bottom-anchored crop shorter than A = 0.56 (h/w)
+           starts below it — that single invariant holds at every breakpoint
+           here, with 23px of margin at the tightest. What is left is the
+           vessel: rim, ice, and the pour landing. The sentence the label was
+           carrying is still on the page, in the alt text, where it is
+           selectable by a screen reader and translatable by a browser —
+           which the raster never was.
+           The plate also breaks the shell to the right from 1440 up: at 2560
+           that is 394px of photograph where there was cream. -->
       <article class="phase phase--wide" id="phase-3" data-phase="3" tabindex="-1" aria-labelledby="phase-3-heading">
         <p class="phase__ghost" aria-hidden="true">03</p>
         <header class="phase__head">
@@ -463,26 +514,40 @@
         </header>
         <div class="phase__prose" data-reveal data-reveal-delay="2">
           <p class="lead">In formulation, everything starts with the raw material. The wrong source, form, or purity, and the rest doesn't matter. Once we know what a formula needs, we look for the best ingredients — not the cheapest or easiest to source. The best.</p>
-          <p>Our testing goes through two major stages before any ingredient earns a place in a formula.</p>
         </div>
-        <figure class="phase__plate phase__plate--tall" data-reveal>
+        <figure class="phase__plate hunt__plate" data-reveal>
           <img src="./biolab-ingredient-testing-cherry-pour-d-b2fbfdc410f5ce7567de5480a527dbaa.png"
                alt="Pink liquid poured during BIOLab ingredient testing"
                width="519" height="656" loading="lazy" decoding="async">
         </figure>
+        <!-- ONE arrival for the whole sheet — the caption line and both
+             stages — not one per card. The unit of arrival is the block;
+             two reveals become one.
+             "Our testing goes through two major stages…" is the sentence
+             that announces the record's structure, so it is set AS the
+             record's opening line, immediately above the first rule,
+             instead of being the last paragraph of the prose four hundred
+             pixels earlier. Same sentence, same order, no rewording. -->
+        <div class="hunt__sheet" data-reveal>
+        <p class="hunt__bridge">Our testing goes through two major stages before any ingredient earns a place in a formula.</p>
         <ol class="assay">
-          <li class="assay__card" data-reveal>
-            <p class="assay__step">Stage 01 — Purity &amp; Safety</p>
-            <p>We bring in raw ingredients from suppliers around the world and test them using chromatography and mass spectrometry to verify purity, potency, and active compound concentration.</p>
-            <p>We screen for heavy metals and conduct genotoxicity and cytotoxicity testing to help evaluate safety at the cellular level.</p>
+          <li class="assay__stage">
+            <h4 class="assay__step"><span class="assay__word">Stage </span><b class="assay__no">01</b><span class="assay__em"> — </span><span class="assay__name">Purity &amp; Safety</span></h4>
+            <div class="assay__runs">
+              <p>We bring in raw ingredients from suppliers around the world and test them using chromatography and mass spectrometry to verify purity, potency, and active compound concentration.</p>
+              <p>We screen for heavy metals and conduct genotoxicity and cytotoxicity testing to help evaluate safety at the cellular level.</p>
+            </div>
           </li>
-          <li class="assay__card" data-reveal data-reveal-delay="1">
-            <p class="assay__step">Stage 02 — Efficacy Testing</p>
-            <p>Our team sets up a battery of experiments to answer one question: How well does it actually perform?</p>
-            <p>For Magnesium Breakthrough, we ran solubility and stability testing across hundreds of versions — from citrates to bisglycinates — keeping only those with the strongest bioavailability profile.</p>
-            <p>Enzymes are measured for catalytic activity using the Bradford assay. Probiotics are evaluated for their ability to survive stomach acid, then grow and form the biofilm that helps them take hold.</p>
+          <li class="assay__stage">
+            <h4 class="assay__step"><span class="assay__word">Stage </span><b class="assay__no">02</b><span class="assay__em"> — </span><span class="assay__name">Efficacy Testing</span></h4>
+            <div class="assay__runs">
+              <p>Our team sets up a battery of experiments to answer one question: How well does it actually perform?</p>
+              <p>For Magnesium Breakthrough, we ran solubility and stability testing across hundreds of versions — from citrates to bisglycinates — keeping only those with the strongest bioavailability profile.</p>
+              <p>Enzymes are measured for catalytic activity using the Bradford assay. Probiotics are evaluated for their ability to survive stomach acid, then grow and form the biofilm that helps them take hold.</p>
+            </div>
           </li>
         </ol>
+        </div>
       </article>
       <!-- ---------- PIECE 06: PHASE THREE — END ---------- -->
 
