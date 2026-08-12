@@ -709,21 +709,105 @@
     // acid opens at p=0.04, enzyme at 0.26, colony at 0.48, and each one keeps
     // running from the moment its stage opens. The reader ends the sequence
     // with three live specimens rather than three corpses.
+    //
+    // EACH CLIP LOOPS FROM ITS OWN IN-POINT, NOT FROM ZERO.
+    // These are luminance-on-black, so mean frame luminance is literally how
+    // much specimen is in the vessel, and a loop jars in proportion to the
+    // step between the frame it leaves and the frame it restarts on. Measured
+    // over real playback, 96x96, mean luminance:
+    //
+    //   clip     t=0     end    wrap step from 0   in-point   step from it
+    //   acid     27.9    31.8         3.8            0.00         3.8
+    //   enzyme    6.8    82.0        75.2            1.55         8.1
+    //   colony    0.0    38.8        38.8            0.20         1.4
+    //
+    // Enzyme was restarting from a nearly empty vessel every 3.13s — the
+    // clip's whole bloom replayed as a flash. Colony's frame 0 is literally
+    // black, so it strobed. Acid genuinely erodes slowly and its wrap is
+    // already the gentlest thing here, so it keeps its full length.
+    //
+    // The in-point is read from the markup so it can be retuned without
+    // touching this file.
+    function inPoint(v) {
+      var t = parseFloat(v.getAttribute('data-in') || '0');
+      return isFinite(t) && t > 0 ? t : 0;
+    }
+    function rewind(v) {
+      // Seeking an element with no data yet is harmless — it is a no-op until
+      // metadata lands. Parking at the in-point rather than 0 also matters
+      // paused: colony's frame 0 is a black frame, and a scrubbed-away vessel
+      // must not be sitting on it.
+      try { v.currentTime = inPoint(v); } catch (e) {}
+    }
     function start(v) {
-      v.loop = true;
+      // Manual loop, not the `loop` property: the property always wraps to 0,
+      // which is exactly the frame these clips need to skip.
+      v.loop = false;
+      // Two ways to be on the wrong frame: before the in-point, or finished.
+      // play() on an ended element restarts at 0 — the exact frame these
+      // clips exist to skip — so an ended clip has to be rewound explicitly.
+      if (v.ended || v.currentTime < inPoint(v) ||
+          (v.duration > 0 && v.currentTime >= v.duration - TAIL)) rewind(v);
       // Autoplay can still be refused (power saving, engine policy). The
       // refusal is not an error worth surfacing: the poster is the settle
       // frame, so the scene simply stays as drawn.
       var q = v.play();
       if (q && q.catch) { q.catch(function () {}); }
     }
+    /* THE WRAP HAS TO HAPPEN BEFORE THE END, NOT ON IT.
+       Chrome resets the playback position to 0 the moment a clip ends, and a
+       seek issued from inside the `ended` handler is clobbered by that reset.
+       Measured directly: in an ended handler, `v.currentTime = 1.55` reads
+       back as 0.000, and playback resumes from the head — the exact frame the
+       in-point exists to skip. `loop = true` has the same problem by
+       definition: it always wraps to zero.
+
+       So the clip is turned over early, while it is still playing and a seek
+       still sticks. requestVideoFrameCallback fires once per presented frame,
+       which is what makes the turn-over precise; timeupdate only fires about
+       four times a second.
+
+       TAIL has to be generous, because THE SEEK IS ASYNCHRONOUS. At 0.06s
+       this raced the end of the stream and lost: measured, the callback saw
+       3.075 of 3.125, wrote 1.55, and the decoder reached true end-of-stream
+       before the seek landed — so Chrome's own reset won and the clip played
+       from 0 anyway. 0.22s is about five frames at these clips' 24fps and
+       comfortably longer than a seek on a fully buffered local file. It costs
+       nothing visible: over their last 200ms these clips move about two
+       luminance points out of eighty. */
+    var TAIL = 0.22;
+    function armWrap(v) {
+      if (v.__wrapArmed) return;
+      v.__wrapArmed = true;
+      var queue = v.requestVideoFrameCallback
+        ? function (fn) { v.requestVideoFrameCallback(fn); }
+        : function (fn) { requestAnimationFrame(fn); };
+      var tick = function () {
+        if (halted || v.paused) { v.__wrapArmed = false; return; }
+        var d = v.duration;
+        if (d > 0 && isFinite(d) && v.currentTime >= d - TAIL) rewind(v);
+        queue(tick);
+      };
+      queue(tick);
+    }
+    vids.forEach(function (v, i) {
+      if (!v) return;
+      v.addEventListener('play', function () { armWrap(v); });
+      // Safety net only. If the turn-over is ever missed — a stalled decode, a
+      // throttled frame callback — the clip must not simply stop. This path
+      // shows the head for an instant, which is why it is not the mechanism.
+      v.addEventListener('ended', function () {
+        if (halted || !visible || !onStage[i]) return;
+        rewind(v);
+        var q = v.play();
+        if (q && q.catch) { q.catch(function () {}); }
+      });
+    });
     function cue(i, on) {
       var v = vids[i];
       if (halted || !v || onStage[i] === on) return;
       onStage[i] = on;
-      // Seeking an element with no data yet is harmless — it is a no-op until
-      // metadata lands, and play() starts from 0 regardless.
-      try { v.currentTime = 0; } catch (e) {}
+      rewind(v);
       if (on) { if (visible) start(v); }
       else if (!v.paused) { v.pause(); }
     }
@@ -735,8 +819,11 @@
         if (on) {
           if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
           // Resume only what the scroll says should be running. A stage the
-          // reader has not reached stays on frame 0.
-          if (onStage[i] && v.paused && !v.ended) { start(v); }
+          // reader has not reached stays on its in-point. `ended` is NOT a
+          // reason to skip: with the loop driven manually a clip that ran out
+          // while the scene was off screen is exactly what needs restarting,
+          // and start() rewinds it off the last frame first.
+          if (onStage[i] && v.paused) { start(v); }
         } else if (!v.paused) {
           v.pause();
         }
