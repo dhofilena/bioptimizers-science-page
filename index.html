@@ -156,10 +156,15 @@
 <!-- ============ PIECE 03: PHASE SPINE (carries 04-08) — START ============ -->
 <section class="process" id="phases" aria-labelledby="phases-heading">
 
-  <header class="overture shell">
-    <p class="eyebrow overture__kicker" data-reveal>It Can Take 24 Months To Get One Formula Right</p>
-    <h2 id="phases-heading" class="overture__title" data-reveal data-reveal-delay="1">The 5-Phase Best in Class Process</h2>
-    <p class="overture__lede" data-reveal data-reveal-delay="2">We believe a product can't be best-in-class until it goes through our rigorous 5-phase process. We spend over $1 million a year on research, testing, and formulation to make sure every formula is as strong and clean as possible.</p>
+  <!-- WAVE 4 — ONE MASTHEAD, ONE ARRIVAL. Every heading block on this page
+       used to deal its own parts 0/110/220ms apart, which is how 53 reveals
+       ended up with 37 of them on one identical fade. A masthead is a block:
+       kicker, title and lede arrive together, here and in all five phases,
+       the register and the people board. Nine fades removed, none re-cut. -->
+  <header class="overture shell" data-reveal>
+    <p class="eyebrow overture__kicker">It Can Take 24 Months To Get One Formula Right</p>
+    <h2 id="phases-heading" class="overture__title">The 5-Phase Best in Class Process</h2>
+    <p class="overture__lede">We believe a product can't be best-in-class until it goes through our rigorous 5-phase process. We spend over $1 million a year on research, testing, and formulation to make sure every formula is as strong and clean as possible.</p>
   </header>
 
   <div class="process__body">
@@ -258,7 +263,16 @@
 
         <p class="lead phase__lead" data-reveal data-reveal-delay="1">Before a new product idea reaches the BIOLab, it has to clear three hurdles: legitimate science, physiological impact, and a real need — not a passing trend.</p>
 
-        <ol class="gates" data-reveal>
+        <!-- WAVE 4 COHERENCE — THE PLATE IS NUMBERED LIKE EVERY OTHER PLATE.
+             The gate triptych was the one figure on this page with no marker
+             at all while phase 2 carried "Fig. 1" and phase 5 "Fig. 05". One
+             convention now: Fig. 0N, where N is the PHASE the plate belongs
+             to, so the five plates index against the same 01–05 the spine
+             uses. Each name is a phrase already in this page's copy — here,
+             the "three hurdles" the lead directly above it names. -->
+        <figure class="fig fig--gate" data-reveal>
+        <p class="fig__mark">Fig. 01 — Three Hurdles</p>
+        <ol class="gates">
           <li class="gate">
             <p class="gate__name">Legitimate Science</p>
             <svg class="gate__fig" viewBox="0 0 168 104" aria-hidden="true" focusable="false">
@@ -303,6 +317,7 @@
             </svg>
           </li>
         </ol>
+        </figure>
 
         <div class="phase__coda" data-reveal>
           <p class="phase__note">There are a lot of new ingredients that get big hype but don't have enough scientific validity. Before we commit to a product, we make sure there's strong scientific evidence that an ingredient can support your health.</p>
@@ -351,15 +366,17 @@
            stations, in sequence, on DRAW. So no-JS, reduced motion and a dead
            observer all land on the complete, labelled figure. -->
       <article class="phase phase--blueprint" id="phase-2" data-phase="2" tabindex="-1" aria-labelledby="phase-2-heading">
-        <p class="phase__ghost" aria-hidden="true">02</p>
-        <header class="phase__head">
-          <p class="eyebrow" data-reveal>Phase Two</p>
-          <h3 id="phase-2-heading" class="phase__title" data-reveal data-reveal-delay="1">The Blueprint</h3>
-          <p class="lead bp__lede" data-reveal data-reveal-delay="2">Your body works as a system. So we start by mapping the entire biological chain.</p>
+        <header class="phase__head" data-reveal>
+          <p class="eyebrow">Phase Two</p>
+          <div class="phase__mast">
+            <p class="phase__ghost" aria-hidden="true">02</p>
+            <h3 id="phase-2-heading" class="phase__title">The Blueprint</h3>
+          </div>
+          <p class="lead bp__lede">Your body works as a system. So we start by mapping the entire biological chain.</p>
         </header>
 
-        <figure class="chain" data-reveal>
-          <p class="chain__mark">Fig. 1</p>
+        <figure class="chain" data-reveal data-reveal-delay="1">
+          <p class="fig__mark chain__mark">Fig. 02 — The Biological Chain</p>
 
           <div class="chain__grid">
 
@@ -507,12 +524,14 @@
            The plate also breaks the shell to the right from 1440 up: at 2560
            that is 394px of photograph where there was cream. -->
       <article class="phase phase--wide" id="phase-3" data-phase="3" tabindex="-1" aria-labelledby="phase-3-heading">
-        <p class="phase__ghost" aria-hidden="true">03</p>
-        <header class="phase__head">
-          <p class="eyebrow" data-reveal>Phase Three</p>
-          <h3 id="phase-3-heading" class="phase__title" data-reveal data-reveal-delay="1">The Hunt</h3>
+        <header class="phase__head" data-reveal>
+          <p class="eyebrow">Phase Three</p>
+          <div class="phase__mast">
+            <p class="phase__ghost" aria-hidden="true">03</p>
+            <h3 id="phase-3-heading" class="phase__title">The Hunt</h3>
+          </div>
         </header>
-        <div class="phase__prose" data-reveal data-reveal-delay="2">
+        <div class="phase__prose" data-reveal data-reveal-delay="1">
           <p class="lead">In formulation, everything starts with the raw material. The wrong source, form, or purity, and the rest doesn't matter. Once we know what a formula needs, we look for the best ingredients — not the cheapest or easiest to source. The best.</p>
         </div>
         <figure class="phase__plate hunt__plate" data-reveal>
@@ -529,6 +548,7 @@
              instead of being the last paragraph of the prose four hundred
              pixels earlier. Same sentence, same order, no rewording. -->
         <div class="hunt__sheet" data-reveal>
+        <p class="fig__mark">Fig. 03 — Two Major Stages</p>
         <p class="hunt__bridge">Our testing goes through two major stages before any ingredient earns a place in a formula.</p>
         <ol class="assay">
           <li class="assay__stage">
@@ -553,12 +573,14 @@
 
       <!-- ---------- PIECE 07: PHASE FOUR — SYNERGY [MONEY MOMENT] — START ---------- -->
       <article class="phase phase--synergy" id="phase-4" data-phase="4" tabindex="-1" aria-labelledby="phase-4-heading">
-        <p class="phase__ghost" aria-hidden="true">04</p>
-        <header class="phase__head">
-          <p class="eyebrow" data-reveal>Phase Four — Our Secret Weapon</p>
-          <h3 id="phase-4-heading" class="phase__title" data-reveal data-reveal-delay="1">Synergy</h3>
+        <header class="phase__head" data-reveal>
+          <p class="eyebrow">Phase Four — Our Secret Weapon</p>
+          <div class="phase__mast">
+            <p class="phase__ghost" aria-hidden="true">04</p>
+            <h3 id="phase-4-heading" class="phase__title">Synergy</h3>
+          </div>
         </header>
-        <div class="phase__prose" data-reveal data-reveal-delay="2">
+        <div class="phase__prose" data-reveal data-reveal-delay="1">
           <p class="lead">This is where we separate ourselves from every other supplement company. Where most companies formulate with single ingredients, we engineer interactions: we study cofactors — the molecules that may activate or amplify an ingredient's effect — and we test combinations for synergy.</p>
           <p>But synergy doesn't stop inside a single formula. In digestion, stomach acid helps break down food, enzymes help release nutrients, and probiotics help support the gut environment.</p>
         </div>
@@ -598,7 +620,7 @@
             <div class="synergy__stage" data-syn="stage">
               <figure class="rig">
 
-                <p class="rig__title">The Digestion Stack</p>
+                <p class="fig__mark rig__title">Fig. 04 — The Digestion Stack</p>
 
                 <!-- CHASSIS. Present from the first frame; never animated. -->
                 <span class="rig__axis" aria-hidden="true"></span>
@@ -679,12 +701,14 @@
            in --deep, into a --deep ground. The line does not end. It is
            absorbed. -->
       <article class="phase phase--evo" id="phase-5" data-phase="5" tabindex="-1" aria-labelledby="phase-5-heading">
-        <p class="phase__ghost" aria-hidden="true">05</p>
-        <header class="phase__head">
-          <p class="eyebrow" data-reveal>Phase Five</p>
-          <h3 id="phase-5-heading" class="phase__title" data-reveal data-reveal-delay="1">Never-Ending Evolution</h3>
+        <header class="phase__head" data-reveal>
+          <p class="eyebrow">Phase Five</p>
+          <div class="phase__mast">
+            <p class="phase__ghost" aria-hidden="true">05</p>
+            <h3 id="phase-5-heading" class="phase__title">Never-Ending Evolution</h3>
+          </div>
         </header>
-        <div class="phase__prose" data-reveal data-reveal-delay="2">
+        <div class="phase__prose" data-reveal data-reveal-delay="1">
           <p class="lead">Even after we launch a product, it doesn't end. We continue evolving. We read all the feedback. We continue testing new raw ingredients. And we level up our formulas.</p>
         </div>
 
@@ -696,7 +720,7 @@
              prefers-reduced-motion and a scriptless browser render, because
              every resting state below is the finished state. -->
         <figure class="revs" data-reveal>
-          <p class="revs__cap">Fig. 05 — Revision History</p>
+          <p class="fig__mark revs__cap">Fig. 05 — Revision History</p>
           <div class="revs__plot" aria-hidden="true">
             <span class="revs__axis"></span>
             <span class="rev rev--1"><b>01</b></span>
@@ -747,9 +771,9 @@
        src="./desktop-bg-precision-not-guesswork-d-b8213e23cc7e3ba6f8c347c49018c541.png"
        alt="" aria-hidden="true" width="1200" height="484" loading="lazy" decoding="async">
   <div class="shell">
-    <header class="numwall__head">
-      <p class="eyebrow" data-reveal>Precision, Not Guesswork</p>
-      <h2 id="stats-heading" class="numwall__title" data-reveal data-reveal-delay="1">Every Number Earned</h2>
+    <header class="numwall__head" data-reveal>
+      <p class="eyebrow">Precision, Not Guesswork</p>
+      <h2 id="stats-heading" class="numwall__title">Every Number Earned</h2>
     </header>
 
     <ol class="tally" data-tally>
@@ -880,9 +904,9 @@
 
 <!-- ============ PIECE 11: INSIDE THE BIOLAB — START ============ -->
 <section class="people" id="inside-biolab" aria-labelledby="lab-heading">
-  <div class="shell people__head">
-    <h2 id="lab-heading" class="people__title" data-reveal>Inside the <b>BIO</b>Lab</h2>
-    <p class="people__lede" data-reveal data-reveal-delay="1">BIOptimizers started with two personal trainers who loved helping people change their lives and became obsessed with the science behind it.</p>
+  <div class="shell people__head" data-reveal>
+    <h2 id="lab-heading" class="people__title">Inside the <b>BIO</b>Lab</h2>
+    <p class="people__lede">BIOptimizers started with two personal trainers who loved helping people change their lives and became obsessed with the science behind it.</p>
   </div>
 
   <!-- The poster PNG ships with a play glyph already burned into it at dead
