@@ -421,32 +421,48 @@
      ~1.5 viewport heights of travel; p is where you are inside that.
 
      WHAT IS ANIMATED, AND WHAT IS NOT. The CHASSIS — the plate rules,
-     the vessels and their arrows, the leader lines, all three names and
-     the words "The Formula" — is never touched. It is drawn by CSS and
-     it is there at p=0, which is the answer to the round-2 note that
-     arriving at the most important section of the page showed a
-     completely empty dark-green viewport. What the scroll moves is the
-     MATERIAL running through the rig, and only that.
+     the vessels and their arrows, the leader lines, all three names, the
+     chart's own labels and THE WHOLE PLACARD, equation included — is
+     never touched. It is drawn by CSS and it is there at p=0, which is
+     the answer to the round-2 note that arriving at the most important
+     section of the page showed a completely empty dark-green viewport.
+     What the scroll moves is the MATERIAL running through the rig, and
+     only that.
 
-       p 0.03–0.22   stage 1 charges: the acid bed fills, its yield
-                     column rises to one unit on the shared axis.
-       p 0.19–0.29   the conduit to stage 2 runs.
-       p 0.27–0.46   stage 2: a finer bed — nutrients released — and a
-                     second column of exactly the same height. Peers.
-       p 0.43–0.53   the conduit to stage 3 runs.
-       p 0.51–0.70   stage 3: the population takes the vessel wall; the
-                     third column, again one unit.
-       p 0.65–0.74   the outlet runs ACROSS the divider into the
-                     read-out. The apparatus hands off to the reading.
-       p 0.70–0.80   the output column stacks those three same units.
-       p 0.76–0.83   the SUM-OF-PARTS level is ruled across the plate —
-                     the stack meets it exactly. Nothing yet exceeds it.
-       p 0.72–0.90   "1 + 1 =" staggers in.
-       p 0.79–0.89   the surplus grows past the ruled level, in orange.
-       p 0.80–0.95   the "5" lands LATE and OVERSIZED on a back-out
-                     curve — the only overshoot anywhere on this page,
-                     directly above the surplus it names.
-       p 0.86–0.98   the note on the ruled level, then the caption.
+     R4 — THE EQUATION STOPPED BEING ANIMATED, AND THAT IS THE POINT.
+     Round 3 staggered "1 + 1 =" in at p 0.72–0.90 and then landed the
+     "5" last, on a back-out, directly above the surplus. Producing the
+     equation AT THE END OF THE MEASUREMENT is the strongest possible
+     statement that the measurement produced it — which is exactly the
+     read-out reading that made the figure contradict itself. A stated
+     principle is not computed, so it is simply there, complete, from the
+     first frame: claim first, evidence after. The "5" is still the
+     largest, brightest, only-orange glyph in the scene; it is the climax
+     by design rather than by timing.
+
+     THE PAGE'S ONE OVERSHOOT MOVED WITH IT — off the numeral and onto
+     the measured surplus, where an instrument going past a ruled level
+     and settling above it is not decoration, it is the claim.
+
+       p 0.04–0.20   stage 1 charges: the acid bed fills, its column
+                     rises to one contribution on the shared axis.
+       p 0.18–0.28   the conduit to stage 2 runs.
+       p 0.26–0.42   stage 2: nutrients released, and a second column of
+                     exactly the same height. Peers.
+       p 0.40–0.50   the conduit to stage 3 runs.
+       p 0.48–0.64   stage 3: the population takes the vessel wall; the
+                     third column, again one contribution.
+       p 0.62–0.72   the outlet elbows DOWN into the total. The apparatus
+                     discharges into the thing that measures it.
+       p 0.68–0.80   the total rises to the sum-of-parts level.
+       p 0.74–0.82   that level is ruled across the plate and named —
+                     the total meets it exactly. Nothing exceeds it yet.
+       p 0.82–0.96   the surplus grows PAST the ruled level, in orange,
+                     on a back-out: it goes over, and settles over.
+       p 0.90–1.00   the caption.
+
+     PLAYBACK IS THE SEQUENCE. See cue() below — each specimen is held at
+     frame 0 and plays ONCE when its own stage opens.
 
      Rules kept: transform and opacity only, one rAF per scroll event,
      and the CSS resting state is already the finished composition, so a
@@ -459,7 +475,6 @@
     scene.querySelectorAll('[data-syn]').forEach(function (n) {
       E[n.getAttribute('data-syn')] = n;
     });
-    var glyphs = scene.querySelectorAll('[data-syn-glyph]');
     if (!E.bleed || !E.stage) return;
 
     /* Full bleed without touching the shared grid. The scene box stays in
@@ -512,9 +527,16 @@
     // PIECE 11 used to run a back-out too; the coherence pass took it off,
     // because if everything that appears overshoots then overshoot stops
     // meaning "more came out than went in" — which is the entire claim this
-    // one glyph exists to make.
+    // one gesture exists to make.
+    //
+    // R4 MOVED IT off the "5" and onto the surplus. On a numeral an
+    // overshoot is a flourish; on a measured bar crossing a ruled level it
+    // is the sentence the figure is there to say, and it is the way a real
+    // instrument answers — past the mark, then settling above it. s is 1.9
+    // rather than 2.2 because this one has to read as a needle settling,
+    // not as a bounce.
     function backOut(t) {
-      var s = 2.2, u = t - 1;
+      var s = 1.9, u = t - 1;
       return 1 + (s + 1) * u * u * u + s * u * u;
     }
 
@@ -531,9 +553,16 @@
       n.style.transform = 'scale3d(' + s + ',' + s + ',1)';
       n.style.opacity = t.toFixed(3);
     }
-    function rise(n, t) {                         // a yield column
+    // A yield column. The whole chart turns 90° on a narrow stage, so a
+    // column grows UP on the wide plate and RIGHT on the phone one — same
+    // `geo.vertical` read that already steers the conduits, so there is
+    // still exactly one place that knows which way the figure is drawn,
+    // and it is the stylesheet.
+    function rise(n, t) {
       if (!n) return;
-      n.style.transform = 'scale3d(1,' + t.toFixed(4) + ',1)';
+      n.style.transform = geo.vertical
+        ? 'scale3d(' + t.toFixed(4) + ',1,1)'
+        : 'scale3d(1,' + t.toFixed(4) + ',1)';
     }
     function run(n, t) {                          // material along a conduit
       if (!n) return;
@@ -541,9 +570,14 @@
         ? 'scale3d(1,' + t.toFixed(4) + ',1)'
         : 'scale3d(' + t.toFixed(4) + ',1,1)';
     }
-    function wipe(n, t) {                         // a rule drawn across
+    // A rule drawn across the plate — which on the phone is a rule drawn
+    // DOWN it, because the sum-of-parts level is a vertical dashed line
+    // there. Same flip, same single source of truth.
+    function wipe(n, t) {
       if (!n) return;
-      n.style.transform = 'scale3d(' + t.toFixed(4) + ',1,1)';
+      n.style.transform = geo.vertical
+        ? 'scale3d(1,' + t.toFixed(4) + ',1)'
+        : 'scale3d(' + t.toFixed(4) + ',1,1)';
     }
     function arrive(n, y, o) {                    // type settling in
       if (!n) return;
@@ -551,40 +585,36 @@
       n.style.opacity = o.toFixed(3);
     }
 
+    // Where each stage OPENS. One array, read by both the drawing and the
+    // footage, so the build and the playback cannot drift apart — which is
+    // the entire round-3 failure this replaces.
+    var STAGE = [0.04, 0.26, 0.48];
+
     function render(p) {
-      var s1 = eo(seg(p, 0.03, 0.16)), y1 = eo(seg(p, 0.09, 0.22));
-      var f1 = eo(seg(p, 0.19, 0.29));
-      var s2 = eo(seg(p, 0.27, 0.40)), y2 = eo(seg(p, 0.33, 0.46));
-      var f2 = eo(seg(p, 0.43, 0.53));
-      var s3 = eo(seg(p, 0.51, 0.64)), y3 = eo(seg(p, 0.57, 0.70));
-      var f3 = eo(seg(p, 0.65, 0.74));
+      var s1 = eo(seg(p, STAGE[0], 0.17)), y1 = eo(seg(p, 0.09, 0.20));
+      var f1 = eo(seg(p, 0.18, 0.28));
+      var s2 = eo(seg(p, STAGE[1], 0.38)), y2 = eo(seg(p, 0.31, 0.42));
+      var f2 = eo(seg(p, 0.40, 0.50));
+      var s3 = eo(seg(p, STAGE[2], 0.59)), y3 = eo(seg(p, 0.53, 0.64));
+      var f3 = eo(seg(p, 0.62, 0.72));
 
       charge(E['bed-1'], s1); rise(E['bar-1'], y1); run(E['flow-1'], f1);
       charge(E['bed-2'], s2); rise(E['bar-2'], y2); run(E['flow-2'], f2);
       charge(E['bed-3'], s3); rise(E['bar-3'], y3); run(E['flow-3'], f3);
+      cue(0, p >= STAGE[0]); cue(1, p >= STAGE[1]); cue(2, p >= STAGE[2]);
 
-      // The output column is the same three units, stacked, and it stops
-      // dead on the ruled level. Only then does anything exceed it.
-      rise(E['bar-parts'], eo(seg(p, 0.70, 0.80)));
-      wipe(E.ref, eo(seg(p, 0.76, 0.83)));
-      rise(E['bar-surplus'], eo(seg(p, 0.79, 0.89)));
+      // The total rises and stops DEAD on the ruled level, which is drawn
+      // and named the moment it is met. Only then does anything exceed it.
+      rise(E['bar-parts'], eo(seg(p, 0.68, 0.80)));
+      var tR = eo(seg(p, 0.74, 0.82));
+      wipe(E.ref, tR);
+      arrive(E.reflabel, mix(8, 0, tR), tR);
 
-      for (var i = 0; i < glyphs.length; i++) {
-        var g = eo(seg(p, 0.72 + i * 0.025, 0.82 + i * 0.025));
-        arrive(glyphs[i], mix(18, 0, g), g);
-      }
-      // The "5" is the only glyph on a back-out, and it scales from its own
-      // baseline (transform-origin sits at the foot of its line box) so it
-      // never drifts off the line the "1"s stand on while it settles.
-      var b5 = backOut(seg(p, 0.80, 0.95));
-      if (E.five) {
-        E.five.style.transform =
-          'translate3d(0,' + mix(-26, 0, b5).toFixed(2) + 'px,0) scale(' + (0.34 + 0.66 * b5).toFixed(4) + ')';
-        E.five.style.opacity = clamp01(seg(p, 0.80, 0.87) * 1.3).toFixed(3);
-      }
+      // THE ONE OVERSHOOT ON THIS PAGE. It goes past the level it is being
+      // measured against and settles above it — which is the claim.
+      rise(E['bar-surplus'], backOut(seg(p, 0.82, 0.96)));
 
-      var tG = eo(seg(p, 0.86, 0.94)), tC = eo(seg(p, 0.90, 0.98));
-      arrive(E.gloss, mix(14, 0, tG), tG);
+      var tC = eo(seg(p, 0.90, 1.0));
       arrive(E.cap, mix(14, 0, tC), tC);
     }
 
@@ -593,10 +623,12 @@
       ticking = false;
       // If the OS setting flips mid-session, stop scrubbing and leave the
       // finished composition standing rather than wherever the scroll was.
-      // Includes stopping the specimens: if the OS setting flips mid-session the
-      // clips have to stop too, not just the scrub, or "reduce motion" would
-      // leave three videos looping in the vessels.
-      if (reduceMotion.matches) { specimens(false); scene.classList.remove('is-live'); render(1); return; }
+      // Includes the specimens: the clips have to stop too, not just the
+      // scrub. settle() parks them on their LAST frame rather than pausing
+      // them where they were or rewinding them to an empty vessel — the
+      // finished still is the end of the process, which is the same frame
+      // the poster carries.
+      if (reduceMotion.matches) { settle(); scene.classList.remove('is-live'); render(1); return; }
       // Self-heal. A resize event can arrive while the viewport still reports
       // zero, and no second event follows; the scene would then be pinned at
       // the wrong width forever. Two integer compares a frame is cheaper than
@@ -625,28 +657,83 @@
        attribute for the same reason one level down — with scripts off, there
        is nothing to start the clips at all.
 
-       Bytes are not spent until the scene is worth loading. The clips ship
-       preload="none", so a reader who never scrolls this far downloads three
-       posters and no video; the observer promotes them to preload="auto" and
-       starts them ~300px before the scene arrives, and pauses them the moment
-       it leaves so three looping videos are never decoding behind the rest of
-       the page. */
-    var vids = scene.querySelectorAll('video');
+       R4 — PLAYBACK IS THE SEQUENCE NOW. Round 3 started all three clips from
+       ONE observer on the whole scene, 300px early, on `loop`, with no
+       per-stage reset. So the three vessels the scroll fades in one at a time
+       were all already running, at whatever phase the reader's scroll speed
+       happened to land them on: the build said "first this, then this, then
+       this" and the footage said "everything has been happening the whole
+       time". In a figure whose entire argument is SEQUENCE, the motion
+       contradicted the drawing.
+
+       Each clip is now held at frame 0 and cued by its OWN stage: on the
+       stage opening it seeks to 0 and plays once, settling on its last frame;
+       on the stage closing (a reader scrubbing back up) it pauses and rewinds
+       to 0. So what a vessel is doing is always exactly what the build says
+       it is doing, at any scroll position and at any scroll speed.
+
+       Two separate concerns, deliberately not merged:
+         visible  — bytes and decoding. The clips ship preload="none", so a
+                    reader who never scrolls this far downloads three posters
+                    and no video. The observer promotes them ~300px early and
+                    pauses everything the moment the scene leaves, so three
+                    videos are never decoding behind the rest of the page.
+         onStage  — whether this specimen's stage has been reached at all.
+       A clip plays only where both are true. */
+    var vids = [E['bed-1'], E['bed-2'], E['bed-3']];
+    var onStage = [false, false, false];
+    var visible = false, halted = false;
+
+    function start(v) {
+      // Autoplay can still be refused (power saving, engine policy). The
+      // refusal is not an error worth surfacing: the poster is the settle
+      // frame, so the scene simply stays as drawn.
+      var q = v.play();
+      if (q && q.catch) { q.catch(function () {}); }
+    }
+    function cue(i, on) {
+      var v = vids[i];
+      if (halted || !v || onStage[i] === on) return;
+      onStage[i] = on;
+      // Seeking an element with no data yet is harmless — it is a no-op until
+      // metadata lands, and play() starts from 0 regardless.
+      try { v.currentTime = 0; } catch (e) {}
+      if (on) { if (visible) start(v); }
+      else if (!v.paused) { v.pause(); }
+    }
     function specimens(on) {
+      visible = on;
       for (var i = 0; i < vids.length; i++) {
         var v = vids[i];
+        if (!v) continue;
         if (on) {
           if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
-          // Autoplay can still be refused (power saving, engine policy). The
-          // refusal is not an error worth surfacing: the poster is already the
-          // finished still, so the scene simply stays as drawn.
-          var q = v.play();
-          if (q && q.catch) { q.catch(function () {}); }
+          // Resume only what the scroll says should be running. A stage the
+          // reader has not reached stays on frame 0.
+          if (onStage[i] && v.paused && !v.ended) { start(v); }
         } else if (!v.paused) {
           v.pause();
         }
       }
     }
+    // Reduced motion, arriving mid-session. Every clip stops ON ITS LAST
+    // FRAME — the resolved specimen — because that, and not frame 0 and not
+    // wherever the scroll happened to be, is the finished still this figure
+    // promises in three other places (no-JS, the poster, and the CSS resting
+    // state). A clip with no metadata yet is left alone: it is still showing
+    // its poster, which is that same frame.
+    function settle() {
+      halted = true;
+      for (var i = 0; i < vids.length; i++) {
+        var v = vids[i];
+        if (!v) continue;
+        if (!v.paused) v.pause();
+        if (v.duration > 0 && isFinite(v.duration) && v.currentTime < v.duration - 0.06) {
+          try { v.currentTime = v.duration - 0.05; } catch (e) {}
+        }
+      }
+    }
+
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         specimens(entries[entries.length - 1].isIntersecting);

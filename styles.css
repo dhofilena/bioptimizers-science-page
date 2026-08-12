@@ -1696,12 +1696,42 @@ section { position: relative; padding-block: var(--pad-y); }
    through named vessels is the actual mechanism, and it is the
    only reading a directional chain permits.
 
-   THE EQUATION AND THE DIAGRAM AGREE. The apparatus outputs
-   ACROSS A DIVIDER RULE into a read-out panel. "The Formula" is
-   the stated law; the plate is the instance that confirms it.
-   So the equation is a reading, never a census of the vessels —
-   and the "5" stands directly above the surplus it names, on the
-   same dotted leader that ties every other column together.
+   R4 — THE PLATE MEASURES; THE PLACARD STATES. Round 3 claimed
+   "the equation is a reading, never a census of the vessels",
+   and then drew the opposite: the last conduit discharged INTO
+   the equation, "The Formula" sat at the terminus of the chain,
+   and the "5" stood on top of a column exactly five units tall
+   whose lower three units were ruled into three countable bands.
+   Three named vessels, two addends, one frame. A reader does the
+   arithmetic the picture invites — 3 + 2 — and it does not match
+   a maxim that says 1 + 1.
+
+   The maxim is source copy and cannot be corrected, so the fix
+   is not arithmetic, it is GRAMMAR: a measurement and a maxim
+   are different speech acts and cannot contradict each other.
+
+     THE PLATE MEASURES. Its quantity is named and explicitly
+     RELATIVE (.rig__unit) — no numbers, no units, nothing to
+     add. Two levels are ruled and named: SUM OF PARTS, where
+     the three separate contributions reach, and the level the
+     combination actually reaches. The total is ONE CONTINUOUS
+     MAGNITUDE — the counting hairlines are gone — and it is
+     deliberately not a whole number of contributions:
+     --sur is 0.53 of the sum, not one, not a half, not a third.
+
+     THE PLACARD STATES. "The Formula" is a titled plate mounted
+     beside the apparatus in its own frame (.rig__divide, which
+     used to be the rule the apparatus discharged across and is
+     now the four sides of the thing it does NOT feed). Nothing
+     flows into it: vessel 3's outlet elbows DOWN into the output
+     column, which is where the material actually goes, and the
+     axis stops at column 4. It is fully set at p=0, because a
+     principle is not computed.
+
+   SO THE "5" CAPS NOTHING. It stands beside the plate, not on
+   top of a column. The page's one overshoot moved off the
+   numeral and onto the measured surplus, where an instrument
+   going past a ruled level and settling above it IS the claim.
 
    NOTHING FLOATS. One dotted leader per column runs from the
    vessel's bottom edge, through the axis, to the name beneath.
@@ -1780,17 +1810,25 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ------------------------------------------------------------------
-   THE RIG. One grid, six rows, four columns. Every part of the figure
+   THE RIG. One grid, six rows, FIVE columns. Every part of the figure
    is a direct child of it, which is the whole trick: the vessel, its
    leader, its yield column and its name cannot drift apart, because
    they are the same grid column. Alignment is structural, not nudged.
 
      row 1  plate head — the figure's title, on its rule
-     row 2  vessels           |  the read-out (label + equation)
-     row 3  yield columns, on the shared axis, with the sum-of-parts level
-     row 4  leader drop
-     row 5  names             |  the gloss on the sum-of-parts line
+     row 2  vessels 1-3   | elbow | THE PLACARD
+     row 3  yield columns, on the shared axis, with the sum-of-parts
+            level | the total     | THE PLACARD
+     row 4  leader drop                           | THE PLACARD
+     row 5  names 1-3     | "all three together"  | THE PLACARD
      row 6  plate foot — the caption, on its rule
+
+   COLUMN 5 IS NEW IN R4 AND IT IS THE WHOLE FIX. Round 3 stacked the
+   equation ON TOP OF the output column in one track, so the type read
+   as that column's cap and the plate read as the equation's proof.
+   The measured total and the stated principle now sit SIDE BY SIDE in
+   different tracks, divided by the placard's own frame. Nothing in
+   column 5 is on the plate's axis, and nothing flows into it.
 
    WIDTH. The scene is the one full-bleed moment on the page, so it
    uses the bleed: --shell + 420px, floored by the stage's own gutters.
@@ -1799,24 +1837,51 @@ section { position: relative; padding-block: var(--pad-y); }
    relatively SMALLER as the screen got bigger — 15.5vw of nothing.
    ------------------------------------------------------------------ */
 .rig {
-  /* geometry */
-  --u: clamp(16px, 3.4vh, 46px);            /* one unit of yield */
-  --ves: clamp(160px, 27vh, 380px);         /* vessel height == row 2 */
+  /* geometry.
+     --u is ONE CONTRIBUTION. --sum is where three of them reach, which
+     is the only number in this figure a reader is ever asked to trust,
+     and it is trivially checkable against the three columns beside it.
+     --sur is the surplus, and it is expressed against the LEVEL, never
+     against the unit: 0.53 of the sum is not one contribution, not a
+     half and not a third, so the total cannot be counted in units.
+     Round 3 made it exactly two, on a total of exactly five, directly
+     under a "5". */
+  --u: clamp(15px, 3.1vh, 42px);            /* one contribution */
+  --sum: calc(var(--u) * 3);                /* where three of them reach */
+  --sur: calc(var(--sum) * 0.53);           /* what the combination adds */
+  /* The chart owns a band above itself for its own name. Without it the
+     measure label lands hard against the bottom of vessel 1 and reads as
+     that vessel's caption rather than as the chart's header. Everything
+     else in row 3 is align-self:end, so the band costs the geometry
+     nothing — it is headroom, not scale. */
+  --lab: clamp(1.6rem, 3.8vh, 2.8rem);
+  --yield: calc(var(--sum) + var(--sur));   /* the drawn magnitude */
+  --ves: clamp(150px, 26vh, 360px);         /* vessel height == row 2 */
   --drop: clamp(18px, 2.4vh, 34px);         /* leader drop under the axis */
-  --gap: clamp(1.1rem, 2.6vw, 3.75rem);     /* column gap == conduit length */
-  --barw: clamp(38px, 46%, 112px);
+  --gap: clamp(1.1rem, 2.4vw, 3.25rem);     /* column gap == conduit length */
+  /* THE COLUMNS LOST TWO THIRDS OF THEIR AREA. R4: "three pixel-identical
+     112x27px white slugs ... the brightest objects in the frame, louder
+     than the footage they exist to support." 112x27 -> ~52x28, and the
+     total 236x153 -> ~75x140: quantities, not slabs. */
+  --barw: clamp(24px, 26%, 58px);
+  --outw: clamp(52px, 4.6vw, 118px);        /* absolute: the elbow reads it */
   --band: clamp(1.4rem, 4vh, 4rem);         /* plate head/foot breathing */
+  --math-fs: clamp(2.6rem, 4.2vw, 5rem);
+  --five-fs: clamp(4.9rem, 7.9vw, 9.4rem);
   /* chassis ink */
   --ink: rgba(167, 254, 117, 0.34);
   --ink-2: rgba(167, 254, 117, 0.66);
-  --mat: rgba(255, 255, 255, 0.92);
+  /* THE DRAWN MATERIAL steps back off pure white so the specimens are the
+     brightest thing in their own figure. 0.88 over --deep measures 10.80:1
+     — a graphic needs 3:1, so this is spend, not thrift. */
+  --mat: rgba(255, 255, 255, 0.88);
 
   width: 100%;
   max-width: calc(var(--shell) + 420px);
   margin-inline: auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.22fr);
-  grid-template-rows: auto var(--ves) calc(var(--u) * 5) var(--drop) auto auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 0.6fr) minmax(0, 1.42fr);
+  grid-template-rows: auto var(--ves) calc(var(--yield) + var(--lab)) var(--drop) auto auto;
   column-gap: var(--gap);
   color: var(--white);
 }
@@ -1852,20 +1917,53 @@ section { position: relative; padding-block: var(--pad-y); }
   max-width: 34em; color: var(--cream);
 }
 
-/* ---- chassis: axis, sum-of-parts level, leaders, divider ---- */
+/* ---- chassis: axis, sum-of-parts level, leaders, placard frame ----
+   THE AXIS STOPS AT COLUMN 4. It runs under the three contributions and
+   the total and then it ends, because the placard in column 5 is not on
+   this scale, is not measured, and must not look like it is. */
 .rig__axis {
-  grid-area: 3 / 1 / 4 / -1; align-self: end; position: relative; z-index: 1;
+  grid-area: 3 / 1 / 4 / 5; align-self: end; position: relative; z-index: 1;
   height: 0; border-top: 1px solid var(--ink-2);
 }
+/* THE MEASURE, NAMED. R4: "no axis label, no scale, no unit — a chart shape
+   with no quantity in it." This is the quantity, and the word RELATIVE is
+   load-bearing: the page has no bioavailability dataset, so the plate
+   prints no number and no unit and says which of those it is. A ticked
+   scale here would be an invented measurement, which is the one thing
+   every other figure on this page refuses to do.
+
+   It is anchored to the TOP OF THE DRAWN MAGNITUDE, not to the top of its
+   row: a label pinned to the row top lands hard against the bottom of
+   vessel 1 and reads as that vessel's caption. Sitting just above the
+   tallest thing the chart can draw, at the left, is where a plot area's
+   unit belongs and is unambiguously the chart's own. */
+.rig__unit {
+  grid-area: 3 / 1 / 4 / 4; align-self: end; position: relative; z-index: 4;
+  margin-bottom: calc(var(--yield) + 0.45rem);
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.16em; line-height: 1; color: var(--vital);
+  pointer-events: none;
+}
 /* THE SUM OF THE PARTS, as a level. Three contributions of one unit each,
-   so their sum is three units, so the line sits at 3u. The output column
-   reaches it exactly and then continues in orange — which is the sentence
-   printed directly beneath it, drawn. */
+   so their sum is three units, so the line sits at 3u — and unlike every
+   other magnitude in this figure that one IS checkable, by eye, against
+   the three columns standing under it. The total reaches it exactly and
+   then continues in orange past it. */
 .rig__ref {
-  grid-area: 3 / 1 / 4 / -1; align-self: end; position: relative; z-index: 4;
-  height: calc(var(--u) * 3);
+  grid-area: 3 / 1 / 4 / 5; align-self: end; position: relative; z-index: 4;
+  height: var(--sum);
   border-top: 1px dashed rgba(255, 255, 255, 0.78);
   transform-origin: left center;
+}
+/* and the level is named, on the line, at the end of the run of columns
+   that make it — so it lands immediately left of the total that crosses
+   it, never over the orange. */
+.rig__reflabel {
+  grid-area: 3 / 1 / 4 / 4; align-self: end; position: relative; z-index: 4;
+  margin-bottom: calc(var(--sum) + 0.34rem); text-align: right;
+  font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.16em; line-height: 1; color: var(--vital);
+  pointer-events: none;
 }
 /* THE LEADERS. One per column, from the vessel's bottom edge, through the
    axis, down to the name. This is the tether the last round did not have. */
@@ -1876,13 +1974,26 @@ section { position: relative; padding-block: var(--pad-y); }
 .rig__lead--1 { grid-column: 1; }
 .rig__lead--2 { grid-column: 2; }
 .rig__lead--3 { grid-column: 3; }
-.rig__lead--4 { grid-column: 4; }
-/* The apparatus ends and the reading begins. The last conduit crosses this
-   rule on purpose: the rig OUTPUTS into the read-out. */
+/* The total's leader is offset to the column's centre, because the column is
+   left-aligned in its track so the elbow can land on it with an absolute
+   length. It runs ONLY the drop row: above the axis that space belongs to
+   the elbow coming down from vessel 3, and two dashed verticals 2px apart
+   doing the same job is a smudge, not a tether. */
+.rig__lead--4 {
+  grid-row: 4; grid-column: 4;
+  justify-self: start; margin-left: calc(var(--outw) / 2);
+}
+/* THE PLACARD FRAME. This element used to be a single rule that the last
+   conduit crossed "on purpose: the rig OUTPUTS into the read-out". That
+   sentence was the bug. It is now the four sides of a mounted plate that
+   the apparatus does not feed, does not measure and does not reach — its
+   left edge still sits in the same gutter, so the divider is still a
+   divider; it just now encloses something. */
 .rig__divide {
-  grid-row: 2 / 6; grid-column: 4; justify-self: start;
+  grid-area: 2 / 5 / 6 / 6; justify-self: stretch; align-self: stretch;
   margin-left: calc(var(--gap) * -0.5);
-  width: 0; border-left: 1px solid var(--ink);
+  margin-block: calc(var(--band) * -0.25);
+  border: 1px solid var(--ink); border-radius: 3px;
 }
 
 /* ---- the vessels ---- */
@@ -1930,6 +2041,29 @@ section { position: relative; padding-block: var(--pad-y); }
 .vessel__bed {
   position: absolute; inset: 0; overflow: hidden;
   border-radius: 2px; background: var(--deep);
+}
+/* THE CLEARANCE, AND WHY IT IS NOT THE MASK'S JOB ANY MORE.
+
+   The radial mask holds matter off the wall as a fraction of the SPECIMEN's
+   radius, so how close bright matter gets to the drawn border depends on how
+   bright that footage is. R4 re-cut vessel 2 from t=0 and recovered its whole
+   bloom — 4.7% of peak to 87.4% — and the worst frame promptly walked in from
+   4.16:1 against the wall to 2.73:1. A guarantee that a better clip can break
+   is not a guarantee.
+
+   This vignette is tied to the WALL instead of to the footage: a soft ring of
+   --deep, painted OVER the blended specimen, so whatever the clip does the
+   last ~24px inside the border return to the vessel's own ground. Measured
+   across 75 composited frames of real playback, worst matter against the wall
+   goes 3.11 / 2.73 / 2.96 -> see the block comment at the top of this piece.
+
+   It has to be a separate element painted above: a box-shadow on .vessel__bed
+   itself would paint UNDER its own child, and any opacity on an ancestor of
+   the video would isolate the group and break the screen blend. */
+.vessel__bed::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  border-radius: 2px; pointer-events: none;
+  box-shadow: inset 0 0 26px 14px var(--deep);
 }
 
 /* THE SPECIMEN. Shot as luminance on black — bright matter, dead black ground.
@@ -2012,10 +2146,30 @@ section { position: relative; padding-block: var(--pad-y); }
   border-top: 1.5px solid var(--ink-2); border-right: 1.5px solid var(--ink-2);
   transform: translateY(-50%) rotate(45deg);
 }
-/* The last conduit stops ON the divider rather than short of it: the rig
-   discharges INTO the reading, which is the whole relationship between the
-   apparatus and the equation. */
-.vessel--3 .vessel__pipe { width: calc(var(--gap) / 2); }
+/* THE LAST CONDUIT ELBOWS DOWN INTO THE TOTAL. R3 ran it half a gap and
+   stopped it ON the divider — "the rig discharges INTO the reading" — and
+   that single decision is what made a maxim read as an instrument read-out.
+   The material's destination is the thing that MEASURES it. So the run
+   continues to the centre of the output column and turns down into its top:
+   --gap of horizontal, then --ves/2 of vertical, which is exactly the drop
+   from the vessels' centre line (the pipe's own position) to the bottom of
+   row 2, which is the top of the column. There is no row-gap, so those two
+   lengths are the whole journey and neither is a guess.
+
+   This is also why --outw is an absolute clamp rather than a percentage:
+   a percentage in the pipe's `width` would resolve against the VESSEL, not
+   against the column's track, and the elbow would land somewhere else at
+   every viewport. */
+.vessel--3 .vessel__pipe { width: calc(var(--gap) + var(--outw) / 2); }
+.vessel--3 .vessel__pipe::before {
+  content: ''; position: absolute; right: 0; top: 0;
+  width: 0; height: calc(var(--ves) / 2 + var(--lab));
+  border-left: 1px dotted var(--ink);
+}
+.vessel--3 .vessel__pipe::after {
+  right: 0; top: calc(var(--ves) / 2 + var(--lab));
+  transform: translate(50%, -50%) rotate(135deg);
+}
 .vessel__pipe > span {
   position: absolute; left: 0; top: -1px; width: 100%; height: 0;
   border-top: 2px solid var(--white);
@@ -2032,33 +2186,48 @@ section { position: relative; padding-block: var(--pad-y); }
    height, same fill, same wall, same type. Only the bed granularity differs,
    and that is a statement about function, not about rank. */
 .col--1, .col--2, .col--3 {
-  height: var(--u); background: var(--white);
+  height: var(--u); background: var(--mat);
   transform-origin: bottom center; will-change: transform;
 }
 .col--1 { grid-column: 1; }
 .col--2 { grid-column: 2; }
 .col--3 { grid-column: 3; }
-/* The output column is centred on the same leader the read-out is centred on,
-   so the equation, the surplus it reads and the note beneath it are one
-   vertical stack rather than three things that happen to be nearby. It is
-   wider than an input column because it is a different KIND of quantity — a
-   total, not a contribution — never because it outranks them. */
-.col--out { grid-column: 4; height: calc(var(--u) * 5); width: clamp(96px, 52%, 236px); }
-/* The output column is not a fourth ingredient: it is the same three
-   contributions, stacked and separated by hairlines so you can count them,
-   reaching the dashed level exactly. */
+/* THE TOTAL, LEFT-ALIGNED IN ITS TRACK so the elbow from vessel 3 can land
+   on its centre line with an absolute length. It is wider than a
+   contribution because it is a different KIND of quantity — a total, not a
+   contribution — never because it outranks them. */
+.col--out {
+  grid-column: 4; justify-self: start;
+  width: var(--outw); height: var(--yield);
+}
+/* THE SEAM AT THE RULED LEVEL. Measured off rendered pixels, --orange on
+   --mat is 2.29:1 — the two zones of the total are told apart by hue more
+   than by luminance, which is exactly the kind of edge that disappears for
+   a red-green reader. One --deep hairline at the sum-of-parts level puts
+   >5:1 on both sides of the boundary and, more usefully, says in the
+   drawing what the dashed rule says across the plate: THIS is where the
+   parts stop. It lives on .col--out, which is never scaled, so it does not
+   squash while the two zones it separates are still growing. */
+.col--out::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: var(--sum);
+  height: 1px; background: var(--deep); z-index: 3;
+}
+/* ONE CONTINUOUS MAGNITUDE, NOT A TALLY. R3 drew this as three banded units
+   "separated by hairlines so you can count them" — which is exactly how a
+   reader arrives at 3 + 2 = 5 standing under a maxim that says 1 + 1 = 5.
+   The bands are gone. What the total says now is only what it is entitled
+   to say: the parts reach the ruled level, and the combination goes past
+   it. There is no integer in the picture to add. */
 .col__parts {
-  position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--u) * 3);
-  background: repeating-linear-gradient(
-    to top,
-    var(--white) 0 calc(var(--u) - 2px),
-    rgba(16, 54, 8, 0.9) calc(var(--u) - 2px) var(--u));
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--sum);
+  background: var(--mat);
   transform-origin: bottom center; will-change: transform;
 }
-/* THE SURPLUS. The only orange in the section besides the "5" it explains. */
+/* THE SURPLUS. The only orange in the section besides the "5" it explains,
+   and the only thing on this page that overshoots — see initSynergy. */
 .col__surplus {
-  position: absolute; left: 0; right: 0; bottom: calc(var(--u) * 3);
-  height: calc(var(--u) * 2); background: var(--orange);
+  position: absolute; left: 0; right: 0; bottom: var(--sum);
+  height: var(--sur); background: var(--orange);
   transform-origin: bottom center; will-change: transform;
 }
 
@@ -2078,17 +2247,55 @@ section { position: relative; padding-block: var(--pad-y); }
   font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.16em; line-height: 1.3; color: var(--vital);
 }
-
-/* ---- the read-out ---- */
-.ro {
-  grid-row: 2; grid-column: 4;
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 0.45rem;
-  padding-bottom: clamp(0.5rem, 1.8vh, 1.6rem); text-align: center;
+/* THE FOURTH COLUMN IS NAMED TOO, and named as what it is. It carries only
+   the uppercase label tier and no product line, because it is not a fourth
+   ingredient — and it says "all three together", not a count, so the plate's
+   own words are about COMBINATION, which is what the maxim beside it claims
+   and what the orange above the ruled line shows. */
+.rig__name--out {
+  grid-column: 4; justify-self: start; text-align: left; padding-top: 0.6rem;
 }
+
+/* ---- THE PLACARD -------------------------------------------------
+   A STATEMENT, NOT A READING. Everything about round 3's read-out said
+   "instrument output": it sat in the vessels' own row at the terminus of
+   the chain, the last conduit discharged into it, and the type stood on
+   top of the column it was supposed to be explaining. It is now a
+   MOUNTED PLATE in its own track — its own frame (.rig__divide), its own
+   title on its own rule, and no connection of any kind to the apparatus.
+
+   NOTHING IN IT IS CENTRED. R4: the thesis sentence was "set centred at
+   caption size, the only centred text in the figure, with 'than'
+   orphaned". The placard is a left-aligned column of three things, the
+   sentence is set at body size, and `text-wrap: pretty` is what keeps the
+   last line off a single word without touching a source string — an nbsp
+   would have edited the copy to fix a typesetting problem.
+
+   NO BACKGROUND FILL. A tint behind this panel would put every measured
+   contrast ratio in the figure onto a different ground than the one they
+   were measured on. The frame does the work; the ground stays --deep. */
+.ro {
+  grid-area: 2 / 5 / 6 / 6;
+  margin-left: calc(var(--gap) * -0.5);
+  display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: flex-start; gap: 0.5rem;
+  padding: clamp(1rem, 2.6vh, 2.1rem) clamp(1rem, 1.5vw, 2.1rem);
+  text-align: left;
+}
+/* The title sits at the HEAD of the plate, exactly like "Fig. 04" does, and
+   the statement it heads is centred in what is left — see the two `auto`
+   margins on .ro__math and .ro__gloss below. No wrapper element, and the
+   placard reads as a mounted plate at any height it is given. */
+/* THE PLATE MARKER GRAMMAR, borrowed on purpose. "Fig. 04" tops the plate
+   with a letterspaced label on a hairline; so does this. That is the
+   signal a reader already knows from four other figures on this page: a
+   titled plate is a thing someone WROTE, not a thing a needle moved to. */
 .ro__label {
+  align-self: stretch;
   font-size: var(--t-eyebrow); font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.22em; color: var(--vital);
+  padding-bottom: 0.6rem; margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--ink-2);
 }
 /* THE EQUATION. line-height:1 on the row AND on every glyph, so the flex
    baseline alignment has nothing to fight: the "1"s and the "5" sit on one
@@ -2099,26 +2306,31 @@ section { position: relative; padding-block: var(--pad-y); }
    characters — "1+1=5" is source copy and has to survive the copy gate as
    one unbroken string. */
 .ro__math {
+  margin-top: auto;                        /* head at the top, statement centred */
   display: flex; align-items: baseline; line-height: 1;
-  font-size: clamp(2.6rem, 4.2vw, 5rem); font-weight: 700;
+  font-size: var(--math-fs); font-weight: 700;
   letter-spacing: -0.03em; color: var(--white);
 }
-.ro__math > span { display: block; line-height: 1; will-change: transform, opacity; }
+.ro__math > span { display: block; line-height: 1; }
 .ro__op { margin-inline: 0.2em; letter-spacing: 0; }
+/* The "5" is still the largest, brightest, only-orange glyph in the scene —
+   it is the climax by DESIGN rather than by timing, which is why it no
+   longer needs to be animated in at the end of the scroll to land. It is
+   there from the first frame, like the rest of the placard. */
 .ro__five {
   margin-left: 0.04em;
-  font-size: clamp(4.9rem, 7.9vw, 9.4rem);
+  font-size: var(--five-fs);
   line-height: 1; color: var(--orange);
-  transform-origin: 50% 100%;
 }
-/* THE OTHER SOURCE SLOGAN, demoted to what it actually is: the note on the
-   dashed line directly above it. It names that line — "the sum of its
-   parts" — so it reads as an annotation, not as a second conclusion. */
+/* THE PRINCIPLE IN PLAIN ENGLISH — and it belongs HERE, with the equation
+   it glosses, not floating under a chart as a second centred conclusion.
+   One statement, said twice: in symbols and in words. Round 3 had these two
+   sentences 200px apart in different columns, which is what made the
+   equation look like a measurement and this look like a slogan. */
 .ro__gloss {
-  grid-row: 5; grid-column: 4; padding-top: 0.6rem;
-  max-width: 26em; margin-inline: auto; text-align: center;   /* 36ch measured 44cpl, one under the floor */
-  font-size: max(0.875rem, 0.78vw); line-height: 1.5;
-  color: var(--cream);
+  max-width: 30em; margin: 0.35rem 0 auto; text-align: left;
+  font-size: max(1.0625rem, 0.95vw); line-height: 1.45;
+  color: var(--cream); text-wrap: pretty;
 }
 
 /* ------------------------------------------------------------------
@@ -2134,26 +2346,75 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 
 /* ------------------------------------------------------------------
-   NARROW STAGE. Four columns will not survive a phone — or a stage that
-   lost its bleed because scripts are off — so the chain turns 90° and
-   runs down the page: vessel, conduit, vessel, conduit, vessel, then the
-   read-out. The yield chart is a wide-stage enrichment and is dropped
-   rather than crushed; it is aria-hidden geometry, so nothing is lost to
-   a reader, and every name stays tethered to its vessel by sitting
-   beside it. Round 2 found the no-JS fallback stacking three labels on
-   top of each other; a grid cannot do that, and this query is what makes
-   sure the grid it picks is the one that fits.
+   NARROW STAGE. Five columns will not survive a phone — or a stage that
+   lost its bleed because scripts are off — so the whole plate turns 90°
+   and runs down the page.
+
+   R4: "on mobile the chart is display:none, so the only surviving
+   version of the page's thesis is the bare unsupported assertion." That
+   was true and it was the round-2 failure — "asserting a relationship
+   instead of showing it" — fixed on desktop and left standing on a
+   phone. THE MECHANISM IS REDRAWN HERE, NOT DELETED. Nothing is hidden
+   except the four leader lines, whose job (tethering a name to its
+   column) is done by simple adjacency once every row holds one vessel,
+   one name and one bar.
+
+   THE CHART TURNS INTO A HORIZONTAL BAR CHART, which is the form that
+   actually fits 266px of track — and it sits BELOW the chain rather than
+   inside it, in its own compact band:
+
+     [ vessel 1 ] HCL Breakthrough / STOMACH ACID
+     [ vessel 2 ] MassZymes / ENZYME ACTIVATION
+     [ vessel 3 ] Probiotic Breakthrough / PROBIOTIC DELIVERY
+                  ###                       :
+                     ###                    :
+                        ###                 :
+                  ALL THREE TOGETHER        :
+                  #########################@@@@@@@@@
+                  ------------------------------------  x-axis
+                                            : SUM OF PARTS
+                  RELATIVE CONTRIBUTION
+
+   WHY THE BARS ARE NOT IN THE VESSELS' OWN ROWS, which was the first
+   thing tried: the sum-of-parts rule is a VERTICAL dashed line here, and
+   it has to reach from the third contribution down to the total that
+   crosses it. Run the bars beside the names and that line has to cross
+   three product names to get there. Type with a dashed rule through it is
+   not a chart, it is a mistake. In its own band the rule touches nothing
+   but bars.
+
+   THE THREE CONTRIBUTIONS ARE OFFSET, NOT STACKED — each bar is the same
+   LENGTH (they are equal peers, exactly as on the wide stage) but each
+   starts where the one above it ended, so the three walk across the track
+   and the third lands EXACTLY on the dashed rule. That is the desktop
+   stacking argument laid on its side, and it is the one thing a
+   horizontal chart can show without asking a reader to add three lengths
+   in their head. Their order is the chain's order, immediately under it.
+
+   The total then runs from zero, through the dashed rule, and out the far
+   side in orange. Same two levels, same names, same claim, ~110px tall.
    ------------------------------------------------------------------ */
-@container rig (max-width: 800px) {
+@container rig (max-width: 860px) {
   .rig {
-    --mves: clamp(74px, 12vh, 118px);
-    grid-template-columns: minmax(60px, 22%) minmax(0, 1fr);
-    grid-template-rows: auto repeat(3, var(--mves)) auto auto auto;
+    --mves: clamp(58px, 9vh, 100px);
+    --mbar: 7px;                /* bar thickness */
+    --mstep: clamp(13px, 1.9vh, 19px);   /* one row of the waterfall */
+    --mu: 18%;                  /* one contribution, as track */
+    --msum: 54%;                /* three of them: the ruled level */
+    --mtot: 82.6%;              /* + 0.53 of the sum, as everywhere else */
+    grid-template-columns: minmax(52px, 19%) minmax(0, 1fr);
+    grid-template-rows:
+      auto                       /* 1  plate head */
+      repeat(3, var(--mves))     /* 2-4  the chain */
+      repeat(3, var(--mstep))    /* 5-7  the three contributions */
+      auto var(--mstep)          /* 8-9  the total, named */
+      auto auto auto             /* 10-12  axis, ruled level, measure */
+      auto auto;                 /* 13-14  placard, plate foot */
     column-gap: clamp(0.9rem, 3.5vw, 1.6rem);
   }
-  .rig__axis, .rig__ref, .rig__lead, .rig__divide, .col { display: none; }
+  .rig__lead { display: none; }
 
-  .vessel { grid-column: 1; align-self: center; height: calc(var(--mves) - 1.5rem); max-width: none; }
+  .vessel { grid-column: 1; align-self: center; height: calc(var(--mves) - 1.4rem); max-width: none; }
   .vessel--1 { grid-row: 2; }
   .vessel--2 { grid-row: 3; }
   .vessel--3 { grid-row: 4; }
@@ -2168,7 +2429,7 @@ section { position: relative; padding-block: var(--pad-y); }
   .vessel--1::before, .vessel--3::after { display: none; }
   /* the conduit turns with the chain */
   .vessel__pipe {
-    left: 50%; top: 100%; width: 0; height: 1.5rem;
+    left: 50%; top: 100%; width: 0; height: 1.4rem;
     border-top: 0; border-left: 1px dotted var(--ink); transform: translateX(-50%);
   }
   .vessel__pipe::after {
@@ -2180,22 +2441,108 @@ section { position: relative; padding-block: var(--pad-y); }
     border-top: 0; border-left: 2px solid var(--white);
     transform-origin: center top;
   }
+  /* the wide-stage elbow into the total is a wide-stage drawing; here the
+     chain simply ends at vessel 3 and the chart states the result. */
   .vessel--3 .vessel__pipe { display: none; }
+  .vessel--3 .vessel__pipe::before { display: none; }
 
   .rig__name { grid-column: 2; align-self: center; text-align: left; padding-top: 0; }
   .rig__name--1 { grid-row: 2; }
   .rig__name--2 { grid-row: 3; }
   .rig__name--3 { grid-row: 4; }
 
+  /* ---- the chart, on its side ---- */
+  .col {
+    grid-column: 2; justify-self: start; align-self: center;
+    width: auto; height: var(--mbar); z-index: 2;
+  }
+  .col--1, .col--2, .col--3 {
+    width: var(--mu); height: var(--mbar);
+    transform-origin: left center;
+  }
+  .col--1 { grid-row: 5; margin-left: 0; }
+  .col--2 { grid-row: 6; margin-left: var(--mu); }
+  .col--3 { grid-row: 7; margin-left: calc(var(--mu) * 2); }   /* ends on --msum */
+  /* The dashed rule runs down through this row to reach the total, so the
+     label is capped at the rule's own offset and wraps rather than being
+     struck through. A measured cap, not a guessed font-size. */
+  .rig__name--out {
+    grid-row: 8; grid-column: 2; justify-self: start;
+    align-self: end; padding-top: clamp(0.5rem, 1.6vh, 1.1rem);
+    max-width: calc(var(--msum) - 0.55rem);
+  }
+  .col--out {
+    grid-row: 9; grid-column: 2;
+    width: var(--mtot); height: var(--mbar);
+  }
+  /* the seam turns with the bar */
+  .col--out::after {
+    left: 65.4%; right: auto; top: 0; bottom: 0;
+    width: 1px; height: auto;
+  }
+  /* white to the ruled level, orange past it — the same two zones, now
+     measured along x. 65.4% of the total IS --msum of the track. */
+  .col__parts {
+    left: 0; right: auto; bottom: 0; top: 0;
+    width: 65.4%; height: auto;
+    transform-origin: left center;
+  }
+  .col__surplus {
+    left: 65.4%; right: 0; bottom: 0; top: 0;
+    width: auto; height: auto;
+    transform-origin: left center;
+  }
+  /* the x-axis is a real x-axis here: it rules under the bars and carries
+     the measure's name and the ruled level's name beneath it. */
+  .rig__axis {
+    grid-row: 10; grid-column: 2; align-self: start;
+    width: 100%; margin-top: 0.5rem;
+  }
+  /* rows 5-10: the three contributions, the total, and the axis. Bars
+     only — no type is crossed. */
+  .rig__ref {
+    grid-row: 5 / 11; grid-column: 2; justify-self: start; align-self: stretch;
+    margin-left: var(--msum); margin-bottom: 0;
+    width: 0; height: auto;
+    border-top: 0; border-left: 1px dashed rgba(255, 255, 255, 0.78);
+    transform-origin: center top;
+  }
+  .rig__reflabel {
+    grid-row: 11; grid-column: 2; align-self: start;
+    margin-left: var(--msum); margin-bottom: 0; margin-top: 0.45rem;
+    text-align: left; letter-spacing: 0.12em;
+  }
+  .rig__unit {
+    grid-row: 12; grid-column: 2; align-self: start;
+    margin-top: 0.55rem; margin-bottom: 0; letter-spacing: 0.12em;
+  }
+
+  /* ---- the placard, still a placard ---- */
   .ro {
-    grid-row: 5; grid-column: 1 / -1; margin-top: var(--band);
-    align-items: flex-start; text-align: left; padding-bottom: 0;
+    grid-area: 13 / 1 / 14 / -1; margin: var(--band) 0 0;
+    padding: clamp(0.9rem, 2vh, 1.4rem) clamp(0.9rem, 3vw, 1.4rem);
   }
-  .ro__gloss {
-    grid-row: 6; grid-column: 1 / -1; max-width: 46ch;
-    margin-inline: 0; text-align: left;
+  .rig__divide {
+    grid-area: 13 / 1 / 14 / -1; margin: var(--band) 0 0;
   }
-  .rig__foot, .rig__sum { grid-row: 7; }
+  .rig__foot, .rig__sum { grid-row: 14; }
+}
+
+/* A SHORT PHONE STILL HAS TO HOLD THE WHOLE PLATE INSIDE ONE PINNED
+   100svh stage, and the equation is the only thing in it sized off the
+   VIEWPORT WIDTH — so on a narrow-and-short screen its clamp floor, not
+   its vw term, is what decides the height. These lower the floors and
+   nothing else; on any wide screen the vw terms already win and this
+   rule changes nothing. */
+@media (max-height: 780px) and (max-width: 900px) {
+  .rig {
+    --math-fs: clamp(2rem, 4.2vw, 5rem); --five-fs: clamp(3.7rem, 7.9vw, 9.4rem);
+    /* and the two breathing bands, which are the only other fixed floors
+       in the column. Measured: 375x667 and 360x660 were the two sizes
+       still eating into the stage's own padding. */
+    --band: clamp(0.95rem, 4vh, 4rem);
+    --mves: clamp(52px, 9vh, 100px);
+  }
 }
 
 /* ============================================================
