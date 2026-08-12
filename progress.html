@@ -40,16 +40,16 @@ code{background:#fff;padding:2px 7px;font-size:13px;border:1px solid var(--line)
 <body>
 <div class="wrap">
   <h1>Breakthrough Science</h1>
-  <p class="sub">Round 4 won · money moment landed · 6 clips live · auto-refreshes every 3 min</p>
+  <p class="sub">Round 4 won · hero rebuilt · 6 clips live and looping · ready for round 5</p>
 
   <div class="hero-stat">
     <div><b>13/13</b><span>pieces built</span></div>
-    <div><b>63</b><span>commits</span></div>
-    <div><b>26</b><span>branches</span></div>
+    <div><b>68</b><span>commits</span></div>
+    <div><b>43</b><span>branches</span></div>
     <div><b>97/97</b><span>copy gate</span></div>
     <div><b>5–2</b><span>round 4, art director</span></div>
     <div><b>4–2</b><span>round 4, ui/ux</span></div>
-    <div><b>9.5M</b><span>page weight / 12M budget</span></div>
+    <div><b>9.6M</b><span>page weight / 12M budget</span></div>
   </div>
 
   <h2>Gates — all green</h2>
@@ -67,7 +67,7 @@ code{background:#fff;padding:2px 7px;font-size:13px;border:1px solid var(--line)
   <h2>Pieces</h2>
   <table>
     <tr><th>#</th><th>Piece</th><th>State</th><th>What it became</th></tr>
-    <tr><td class="n">01</td><td>Hero</td><td><span class="pill p-done">r2</span></td><td>Type and photo in separate grid rows; 171px collision resolved structurally; two CTAs added</td></tr>
+    <tr><td class="n">01</td><td>Hero</td><td><span class="pill p-done">r3</span></td><td>Photo is a full-height right panel, type group centred against it; sharp 1600px source replaces the mobile scrape</td></tr>
     <tr><td class="n">02</td><td>Manifesto</td><td><span class="pill p-done">r1</span></td><td>100svh dark beat; type uncovered by masks, not faded; 80,648 at 157px</td></tr>
     <tr><td class="n">03</td><td>Phase spine</td><td><span class="pill p-done">r2</span></td><td>Real navigation — 5 links, aria-current on the anchor, progress fill alive</td></tr>
     <tr><td class="n">04</td><td>Phase One · The Standard</td><td><span class="pill p-done">r1</span></td><td>Three bands; the gate drawn as three figures; ghost numeral became real type</td></tr>
@@ -103,6 +103,7 @@ code{background:#fff;padding:2px 7px;font-size:13px;border:1px solid var(--line)
     <tr><td><b>A scrim cannot fix white-on-pale</b></td><td>Two agents independently measured it: an alpha wash drags glyph and ground together. 1.30:1 → 1.24:1. Crop, don't dress.</td></tr>
     <tr><td><b>em vs rem measure caps</b></td><td>Three agents independently diagnosed why phase leads sat at 39–40cpl. Now flat at 64–66 across every width.</td></tr>
     <tr><td><b>The visibility floor had a hole — twice</b></td><td>Fallbacks reached the element carrying the attribute, never the descendant carrying the transform.</td></tr>
+    <tr><td><b>The preview server was lying</b></td><td>python -m http.server answers a Range request with 200 and the whole file, so Chrome marks video non-seekable and clamps every seek to 0. Three fixes measured as no-ops before this surfaced. Deploy target must serve 206 — see BACKLOG.</td></tr>
     <tr><td><b>rgba(…,0.22) renders 1.52:1</b></td><td>Found three separate times. I made this error myself after warning every builder about it.</td></tr>
   </table>
 
@@ -112,7 +113,8 @@ code{background:#fff;padding:2px 7px;font-size:13px;border:1px solid var(--line)
     <tr><td><span class="pill p-done">done</span> Shell unfrozen</td><td>The knee law — freeze audit 18 → 0 across 41 elements</td></tr>
     <tr><td><span class="pill p-done">done</span> Money moment</td><td>Contradiction was the equation being styled as a read-out. Plate now measures (4.588 contributions, not an integer), placard states in its own frame</td></tr>
     <tr><td><span class="pill p-done">done</span> Plate motion</td><td>Three phase photographs are now the first frame of a clip — plays once on arrival, settles, rewinds on leave. Photograph is still the floor</td></tr>
-    <tr><td><span class="pill p-open">open</span> Hero composition</td><td>Photo still floats in the corner — a layout decision, not a token one</td></tr><tr><td><span class="pill p-open">open</span> Roster portraits</td><td>Soft upscaled video grabs — needs better source, not generation</td></tr>
+    <tr><td><span class="pill p-done">done</span> Hero composition</td><td>Plate was sized by the type's leftover height, on a block measured against screen heights not browser heights. Now a full-height panel; hero fits the viewport at all 9 width/height combos. Also swapped off the 585px MOBILE scrape onto a 1600px source</td></tr>
+    <tr><td><span class="pill p-done">done</span> Fig. 04 loops</td><td>Vessels loop from measured in-points. Enzyme regenerated as an 8s constant-density clip — wrap step 75.2 → 2.0</td></tr><tr><td><span class="pill p-open">open</span> Roster portraits</td><td>Soft upscaled video grabs — needs better source, not generation</td></tr>
   </table>
 
   <p class="foot">
