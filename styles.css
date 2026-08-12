@@ -1202,7 +1202,7 @@ section { position: relative; padding-block: var(--pad-y); }
    line rather than as the tail of the prose. --deep, 12.60:1. */
 .hunt__bridge {
   color: var(--deep); max-width: 31em;
-  font-size: clamp(1.0625rem, 0.86vw, 1.375rem); line-height: 1.45;
+  font-size: clamp(1.0625rem, min(0.86vw, 0.6875rem + 0.43vw), 1.39rem); line-height: 1.45;
   padding-bottom: clamp(1.1rem, 1.6vw, 1.9rem);
 }
 .assay { display: block; border-bottom: 1px solid var(--hunt-rule); }
@@ -1229,16 +1229,16 @@ section { position: relative; padding-block: var(--pad-y); }
   text-transform: uppercase; letter-spacing: 0.2em; color: var(--deep);
 }
 .assay__no {
-  font-size: clamp(2rem, 2.6vw, 3.25rem); font-weight: 700;
+  font-size: clamp(2rem, min(2.6vw, 1.625rem + 1.3vw), 3.75rem); font-weight: 700;
   letter-spacing: -0.04em; color: var(--green);
   font-variant-numeric: tabular-nums;
 }
 .assay__em {
-  font-size: clamp(1.2rem, 1.3vw, 1.75rem); color: var(--muted);
+  font-size: clamp(1.2rem, min(1.3vw, 0.875rem + 0.65vw), 1.94rem); color: var(--muted);
   padding-inline: 0.1em;
 }
 .assay__name {
-  font-size: clamp(1.35rem, 1.45vw, 1.95rem); font-weight: 400;
+  font-size: clamp(1.35rem, min(1.45vw, 0.975rem + 0.725vw), 2.16rem); font-weight: 400;
   letter-spacing: -0.015em; color: var(--deep);
 }
 
@@ -1252,7 +1252,7 @@ section { position: relative; padding-block: var(--pad-y); }
   /* Grows only past ~1980px, which is the only place the sheet has more
      width than a 17px line can honestly use. 17px to 22px; the em-based
      measure keeps cpl flat at ~69 through the change. */
-  font-size: clamp(1.0625rem, 0.86vw, 1.375rem); line-height: 1.5;
+  font-size: clamp(1.0625rem, min(0.86vw, 0.6875rem + 0.43vw), 1.39rem); line-height: 1.5;
   padding-block: clamp(0.9rem, 1.15vw, 1.25rem) clamp(1rem, 1.3vw, 1.45rem);
   padding-left: var(--hunt-indent);
   padding-right: max(0px, calc(100% - var(--hunt-measure) - var(--hunt-indent)));
