@@ -28,6 +28,11 @@
   .person__frame img { transform: scale(1.10) translateY(var(--ty, 0)) !important; }
   .phase__plate img { transform: none !important; }
   .proof__plate img { transform: scale(1.05) !important; }
+  /* PIECE 08 — Fig. 05 is DRAWN, not faded, so its resting state lives on
+     five pseudo-elements that wait for .is-in on an ancestor. With no script
+     the staircase would be an empty ruled box and the closing descender into
+     #stats would never exist. These are the finished strokes. */
+  .revs__axis, .rev::before, .rev::after, .creed::after { transform: none !important; }
 </style></noscript>
 </head>
 <body>
@@ -368,7 +373,42 @@
       <!-- ---------- PIECE 07: PHASE FOUR — END ---------- -->
 
       <!-- ---------- PIECE 08: PHASE FIVE — START ---------- -->
-      <article class="phase phase--flip" id="phase-5" data-phase="5" tabindex="-1" aria-labelledby="phase-5-heading">
+      <!-- THE LAST ENTRY, AND THE ONLY ONE THAT MEASURES TIME.
+
+           WHAT THIS PHASE WAS. The fifth of five near-identical two-column
+           text+image cards — the 4000px monotony, verbatim — and its one
+           irreplaceable fact was set as the quietest thing in it: "5 —
+           Versions of MassZymes / Since 2005" as a ledger line between two
+           hairlines, at the same weight as everything else on the page.
+
+           WHAT IT IS NOW. That fact is a TWENTY-YEAR ITERATION COUNT, and
+           time is the one dimension nothing else on this page uses. Phase 1
+           has gates, phase 3 has assay stages, phase 4 has the rig — all of
+           them describe a state. Only this one describes CHANGE, so it gets
+           the page's only step function: Fig. 05, a revision history drawn
+           as five equal steps up, ruled on an axis, each tethered to its
+           ordinal — and then a sixth stroke that is dashed, unlabelled and
+           dissolving off the right edge. Five revisions happened; the sixth
+           has not, and drawing it as anything other than open would be
+           inventing a fact.
+
+           THE RISERS ARE EQUAL ON PURPOSE. An unequal staircase would claim
+           magnitudes nobody measured. Equal steps claim exactly what the
+           copy claims and no more: each version is one level up on the last.
+           There is no y-scale for the same reason.
+
+           THE PHOTOGRAPH STOPS BEING HALF THE PAGE. It is a specimen column
+           beside the plate now, not a co-equal card half — which is what
+           frees the lead to take the full row and finally read at a proper
+           measure (39cpl at 2560 before this).
+
+           THE HANDOFF. This is the last cream section before the dark
+           numbers wall, so the phase does not simply stop: the same dashed
+           stroke that leaves the plate turns down at "Evolution is in our
+           DNA." and runs the full height of the section's closing padding,
+           in --deep, into a --deep ground. The line does not end. It is
+           absorbed. -->
+      <article class="phase phase--evo" id="phase-5" data-phase="5" tabindex="-1" aria-labelledby="phase-5-heading">
         <p class="phase__ghost" aria-hidden="true">05</p>
         <header class="phase__head">
           <p class="eyebrow" data-reveal>Phase Five</p>
@@ -376,17 +416,43 @@
         </header>
         <div class="phase__prose" data-reveal data-reveal-delay="2">
           <p class="lead">Even after we launch a product, it doesn't end. We continue evolving. We read all the feedback. We continue testing new raw ingredients. And we level up our formulas.</p>
-          <div class="ledger">
-            <p class="ledger__line">5 — Versions of MassZymes</p>
-            <p class="ledger__note">Since 2005 — because better is always possible.</p>
-          </div>
-          <p class="creed">Evolution is in our DNA.</p>
         </div>
+
+        <!-- FIG. 05. The plate does not fade in — it DRAWS. It is a figure,
+             and a figure that fades is a paragraph wearing a diagram. The
+             caption, the ordinals and the read-out are simply present from
+             the first frame; what arrives is the staircase, ruled up and
+             across, one revision at a time. That is also exactly what
+             prefers-reduced-motion and a scriptless browser render, because
+             every resting state below is the finished state. -->
+        <figure class="revs" data-reveal>
+          <p class="revs__cap">Fig. 05 — Revision History</p>
+          <div class="revs__plot" aria-hidden="true">
+            <span class="revs__axis"></span>
+            <span class="rev rev--1"><b>01</b></span>
+            <span class="rev rev--2"><b>02</b></span>
+            <span class="rev rev--3"><b>03</b></span>
+            <span class="rev rev--4"><b>04</b></span>
+            <span class="rev rev--5"><b>05</b></span>
+            <span class="rev rev--open"></span>
+          </div>
+          <!-- The apparatus outputs into a reading, across a rule — the same
+               grammar PIECE 07 uses. The count is one string split at its own
+               space so the figure can be set at the scale it earns; the words
+               and their order are untouched. -->
+          <figcaption class="revs__out">
+            <p class="revs__count"><b class="revs__n">5</b> <span class="revs__unit">— Versions of MassZymes</span></p>
+            <p class="revs__since">Since 2005 — because better is always possible.</p>
+          </figcaption>
+        </figure>
+
         <figure class="phase__plate" data-reveal>
           <img src="./female-scientist-micropipette-lab-d-6ad408dab2f339193ef3a4c98e1aef93.png"
                alt="Scientist using a micropipette in the BIOLab"
                width="1098" height="826" loading="lazy" decoding="async">
         </figure>
+
+        <p class="creed" data-reveal>Evolution is in our DNA.</p>
       </article>
       <!-- ---------- PIECE 08: PHASE FIVE — END ---------- -->
 
