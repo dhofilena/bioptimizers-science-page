@@ -1187,6 +1187,180 @@ section { position: relative; padding-block: var(--pad-y); }
   width: clamp(1rem, 1.35vw, 1.5rem); height: 2px; background: var(--green);
 }
 
+/* ============================================================
+   FIG. 03 IS NOW A FIGURE.
+   The verdict: 0 SVG, 946 characters of prose, a label with
+   nothing under it — in the phase carrying the most drawable
+   science on the page. This is the drawing, and it is bound
+   INTO the record rather than parked above it: each stage's
+   band sits under its own stage line and above its own
+   entries, one card per entry that names a method, in the
+   entries' order. Stage 01's two cards draw its two entries;
+   stage 02's two cards draw the two of its three that name an
+   assay. The plate is one object — marker, bridge line, and
+   then a record whose paragraphs are illustrated by the thing
+   directly above them.
+
+   WHAT IS DRAWN, AND WHY IT IS THE METHOD.
+     01a  a chromatogram — a mixture resolved into components,
+          one of them ours, with the mass fingerprint of that
+          peak tethered beside it. Separation THEN identity is
+          the sentence's own order.
+     01b  a screen — five lots in, a barrier with apertures,
+          two struck at it, three through. Screening is a cull
+          and the only way to draw a cull is to show what does
+          not get through.
+     02a  a bracketed series — every version a mark on one
+          line, three of them kept.
+     02b  a photometer — emitter, sample, detector. The
+          Bradford assay is colorimetric; this is its rig.
+
+   WHAT IS DELIBERATELY NOT DRAWN. No axis carries a value, no
+   mark carries a count, no peak or kept version is TALLER than
+   its neighbours. PIECE 08 refused an uneven staircase because
+   it "would assert magnitudes nobody measured" and the same
+   refusal is in force here: height would invent a
+   bioavailability figure per version, and putting the kept
+   marks at one end of the range would claim a winning chemical
+   form the copy never names. Selection is colour, and only
+   colour. Nothing is drawn for stage 02's first entry either —
+   it asks the stage's question, it does not name a method, and
+   a glyph under it would be an invented instrument.
+
+   CONTRAST, FROM RENDERED PIXELS. No alpha in this figure and
+   no ancestor opacity over it once it has arrived:
+     wall / fit / bar / solid  --deep  #103608   12.60:1
+     baselines, beams, guides  --muted #6e6663    5.23:1
+     leaders under each card   --muted, 1px dotted 5.23:1
+     card label                --deep             12.60:1
+     card sub-label            --muted             5.23:1
+     material                  --green #32951c     3.59:1
+                               graphics only, never as type.
+
+   MOTION. The chassis is never animated: every wall, axis,
+   beam, barrier, bracket and outline mark is drawn in the
+   first frame. The ONLY thing that moves is .sift__mat — the
+   material, the thing that passed — which ARRIVES on opacity
+   with the shared --ease, four cards left to right, 200ms
+   apart. No new curve, no transform, no fourth gesture. Its
+   resting value is written twice more, in the reduced-motion
+   block below and in the <noscript> block in the document
+   head, so a reader with no script or no motion gets the
+   finished, loaded figure rather than four empty instruments.
+   ============================================================ */
+/* THE CONTAINER AND THE GRID ARE TWO ELEMENTS, AND THEY HAVE TO BE. An
+   element cannot answer its own container query — the query applies to
+   DESCENDANTS of the container — so a single element carrying both
+   `container-type` and the columns silently never stacks. Measured at 390
+   before the split: the band held two columns of 155px and the instruments
+   rendered 83px tall. PIECE 05 has the same two-element shape (.chain
+   queries, .chain__grid composes) for the same reason. */
+.sift {
+  --sift-gap: clamp(1.1rem, 2.2vw, 2.75rem);
+  --sift-drop: clamp(0.85rem, 1.4vw, 1.4rem);
+  container-type: inline-size; container-name: sift;
+  /* The figure starts on the entries' text edge — same --hunt-indent the
+     tick and the paragraph use — so the drawing and the prose it draws
+     share one left margin. It is NOT capped to --hunt-measure: a measure
+     is a reading constraint and this is not read, it is looked at. The
+     width the entries give back at the right is exactly the width this
+     figure has been waiting for. */
+  padding-left: var(--hunt-indent);
+  padding-block: clamp(1.15rem, 1.8vw, 1.95rem) clamp(1.45rem, 2.2vw, 2.35rem);
+}
+.sift__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--sift-gap);
+}
+.sift__card { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
+.sift__frame { position: relative; width: 100%; }
+
+/* The glyphs scale with their card and their strokes do not — the same
+   vector-effect law PIECE 05 wrote for the chain, so a 300px instrument at
+   2560 and a 300px one at 1280 are one drawing, not one drawing at two
+   line weights. */
+.sift__glyph { display: block; width: 100%; height: auto; }
+.sift__glyph * { vector-effect: non-scaling-stroke; }
+.sift__glyph .s-wall  { fill: none; stroke: var(--deep); stroke-width: 1.5px; }
+.sift__glyph .s-fit   { fill: none; stroke: var(--deep); stroke-width: 1.4px; stroke-linecap: round; stroke-linejoin: round; }
+.sift__glyph .s-bar   { fill: none; stroke: var(--deep); stroke-width: 2.4px; }
+.sift__glyph .s-solid { fill: var(--deep); stroke: none; }
+/* Axes and leaders are --muted: an axis is not the finding. */
+.sift__glyph .s-axis  { fill: none; stroke: var(--muted); stroke-width: 1px; }
+.sift__glyph .s-guide { fill: none; stroke: var(--muted); stroke-width: 1px; stroke-dasharray: 2 4; stroke-linecap: round; }
+/* THE MATERIAL. --green marks what passed, and nothing else in this figure
+   is green. */
+.sift__glyph .sift__mat path,
+.sift__glyph .sift__mat circle { fill: var(--green); stroke: none; }
+.sift__glyph .sift__mat .s-peak { fill: none; stroke: var(--green); stroke-width: 2.4px; stroke-linecap: round; }
+
+/* THE CONDUIT. Dotted run and arrowhead, drawn from the first frame like
+   the rest of the chassis: the sample goes through both assays of a stage,
+   in that order, and the reader knows it before anything arrives. */
+.sift__link {
+  position: absolute; top: 50%; left: 100%; width: var(--sift-gap); height: 0;
+  border-top: 1.5px dotted var(--deep);
+}
+.sift__link::after {
+  content: ""; position: absolute; right: 1px; top: 0; width: 7px; height: 7px;
+  border-top: 1.5px solid var(--deep); border-right: 1.5px solid var(--deep);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* NOTHING FLOATS. A dotted leader from every card to its own label. */
+.sift__drop { width: 0; height: var(--sift-drop); border-left: 1px dotted var(--muted); }
+/* Both label lines are the copy's own words. "chromatography and mass
+   spectrometry", "heavy metals", "hundreds of versions" and "catalytic
+   activity" name the instrument; "active compound", "genotoxicity and
+   cytotoxicity", "citrates to bisglycinates" and "Bradford assay" name what
+   it is looking for. Every one of the eight is a verbatim fragment of the
+   paragraph directly beneath it — the same rule Figs 01 and 02 were named
+   under. These are labels, not measures: the longest sets 36 characters. */
+.sift__lab {
+  padding-top: 0.45rem; max-width: 22em;
+  font-size: clamp(0.95rem, 0.78vw, 1.2rem); font-weight: 700;
+  line-height: 1.25; letter-spacing: -0.01em; color: var(--deep);
+}
+.sift__sub {
+  padding-top: 0.15rem; max-width: 24em;
+  font-size: clamp(0.85rem, 0.66vw, 1.05rem); line-height: 1.3; color: var(--muted);
+}
+
+/* THE ONLY THING THAT MOVES. */
+.sift__mat { opacity: 0; transition: opacity 320ms var(--ease); }
+.sift__card--1 .sift__mat { transition-delay: 200ms; }
+.sift__card--2 .sift__mat { transition-delay: 340ms; }
+.sift__card--3 .sift__mat { transition-delay: 480ms; }
+.sift__card--4 .sift__mat { transition-delay: 620ms; }
+.hunt__sheet.is-in .sift__mat { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .sift__mat { opacity: 1 !important; }
+}
+
+/* NARROW. Two instruments will not survive a phone side by side, so the
+   band turns and runs down the page. The conduit between them is DROPPED
+   rather than crushed — it is aria-hidden geometry whose only job is to say
+   "then", and stacking already says it. The card is capped so a single
+   column on a tablet does not hand one instrument a 600px-tall box.
+   A CONTAINER query: the figure composes on the width it actually has,
+   which inside this sheet is not the viewport's. */
+@container sift (max-width: 560px) {
+  .sift__grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(1.5rem, 5vw, 2.5rem);
+  }
+  /* `width: 100%` is load-bearing, not decoration. Auto inline margins on a
+     grid item cancel the default stretch, so the card falls back to
+     fit-content — and an <svg> with `width: 100%` against an indefinite
+     container resolves to its INTRINSIC 300px, not to the column. Measured
+     at 390 without it: a 300px card centred in a 328px column, which looks
+     right and is a 300px floor that would burst the column on any phone
+     narrower than about 340. Stated width, then the cap. */
+  .sift__card { width: 100%; max-width: 34rem; margin-inline: auto; }
+  .sift__link { display: none; }
+}
+
 /* ---- PIECE 06 — RESPONSIVE. Every rule below is inside this piece's own
    selectors; nothing here can reach another phase. ---- */
 @media (min-width: 1024px) {
@@ -1234,10 +1408,17 @@ section { position: relative; padding-block: var(--pad-y); }
     border-top: 2px solid var(--deep);
   }
   .assay__step { grid-column: 1; border-top: 0; }
+  /* The figure joins the entries column, above the paragraphs it draws, and
+     the rail keeps the stage line alone — which is the air this piece went
+     looking for a use for in the first place. Auto-placement puts the band
+     in row 1 beside the stage line and the entries in row 2. */
+  .sift { grid-column: 2; }
   .assay__runs { grid-column: 2; }
-  /* the stage's own 2px rule already opens the first entry; without this
-     the entries column carries 2px + 1px stacked and the rail carries 2px */
-  .assay__runs > p:first-child { border-top: 0; }
+  /* Wave 4 removed this hairline because the stage's own 2px rule opened
+     the first entry directly. It no longer does — the figure is between
+     them now — so the entry takes its rule back, and the doubled 2px + 1px
+     the original note was avoiding cannot occur. */
+  .assay__runs > p:first-child { border-top: 1px solid var(--hunt-rule); }
 }
 
 /* ============================================================
