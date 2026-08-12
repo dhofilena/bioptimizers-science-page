@@ -51,6 +51,15 @@
      EMPTY apparatus with scripts off — drawn, and carrying nothing. */
   .chain__flow { transform: none !important; }
   .chain__mat { opacity: 1 !important; }
+  /* PIECE 06 — Fig. 03. The four instruments are chassis and are already
+     whole here. What is not: the material inside them — the identified peak
+     and its mass line, the lots that clear the screen, the versions that are
+     kept, the sample in the cuvette — which arrives on opacity and waits for
+     .is-in on .hunt__sheet, an ANCESTOR of it. Without this the plate renders
+     with scripts off as four drawn but EMPTY instruments: a chromatogram with
+     no identified peak, a screen nothing gets through, a series with nothing
+     kept. This is the loaded figure. */
+  .sift__mat { opacity: 1 !important; }
   /* PIECE 07 — the specimens inside the vessels. These already rest correctly
      without a rule: the scrub writes transform and opacity as INLINE styles
      from initSynergy, so with no script there is nothing to undo and the CSS
@@ -502,6 +511,28 @@
            BEFORE any ingredient earns a place", which is a sequence. Columns
            said they were parallel.
 
+           AND "FIG. 03" NOW HAS A FIGURE UNDER IT. The record sheet was
+           right and it survives untouched, but for four rounds the marker
+           above it promised a plate and delivered 946 characters of prose
+           and zero drawn marks — in the phase that names chromatography,
+           mass spectrometry, the Bradford assay and genotoxicity, which is
+           the most drawable material anywhere on this page. Four
+           instruments are drawn now, and they are bound INTO the record
+           rather than stacked above it: each stage's pair sits under its
+           own stage line and over the paragraphs it draws, one card per
+           entry that names a method, in the entries' order. Stage 01's two
+           cards are its two entries; stage 02's two are the two of its
+           three that name an assay — nothing is drawn for "how well does
+           it actually perform?", which is the stage's question, not an
+           instrument.
+           WHAT IS NOT DRAWN IS THE POINT. No axis carries a value, no mark
+           carries a count, and no peak or kept version is taller than its
+           neighbours: height would invent a bioavailability number per
+           version and a scale would invent a measurement. See the long
+           note over .sift in styles.css. The drawings are aria-hidden and
+           contain no <text> at all — every word in the figure is real HTML
+           beside it, so it is selectable, translatable and read aloud.
+
            THE STAGE LINE IS ONE LINE OF SOURCE, TYPESET IN THREE VOICES.
            Ritual's tiebreaker was sans + serif italic. There is no second
            family available here (Neue Haas Unica Pro is not installed; it
@@ -565,6 +596,72 @@
         <ol class="assay">
           <li class="assay__stage">
             <h4 class="assay__step"><span class="assay__word">Stage </span><b class="assay__no">01</b><span class="assay__em"> — </span><span class="assay__name">Purity &amp; Safety</span></h4>
+            <!-- STAGE 01, DRAWN. One card per entry, in the entries' order:
+                 the separation the first entry names, the screen the second
+                 one does. The card is above the paragraph it draws. -->
+            <div class="sift">
+              <div class="sift__grid">
+                <!-- THE SEPARATION. A chromatogram: a mixture put through a
+                     column comes off it resolved, and the component we are
+                     after is one peak among the others. The peak is the only
+                     thing here in --green because it is the only thing that
+                     passed — "active compound concentration", verified. Its
+                     mass fingerprint is the stick cluster at the top right,
+                     tethered to the peak by a leader: that is the "and mass
+                     spectrometry" half of the sentence, and the identified
+                     line in it is green for the same reason.
+                     NO AXES ARE LABELLED AND NOTHING IS TICKED TO A SCALE.
+                     The baseline is a baseline. A y-axis in mAU or an x-axis
+                     in minutes would be a measurement we do not have. -->
+                <div class="sift__card sift__card--1">
+                  <div class="sift__frame">
+                    <svg class="sift__glyph" viewBox="0 0 300 160" aria-hidden="true" focusable="false">
+                      <rect class="s-wall" x="1" y="1" width="298" height="158" rx="3"/>
+                      <path class="s-axis" d="M14 128 H286"/>
+                      <path class="s-fit" d="M14 128 L30 128 Q40 112 50 128 L62 128 Q74 82 86 128 L96 128 Q108 36 120 128 L134 128 Q144 106 154 128 L166 128 Q176 96 186 128 L200 128 Q208 116 216 128 L232 128 Q240 118 248 128 L286 128"/>
+                      <path class="s-fit" d="M108 32 V20"/>
+                      <path class="s-guide" d="M112 24 H200"/>
+                      <path class="s-axis" d="M204 76 H288"/>
+                      <path class="s-fit" d="M212 76 V50 M240 76 V58 M254 76 V40 M268 76 V64 M280 76 V54"/>
+                      <g class="sift__mat">
+                        <path d="M96 128 Q108 36 120 128 Z"/>
+                        <path class="s-peak" d="M226 76 V32"/>
+                      </g>
+                    </svg>
+                    <span class="sift__link" aria-hidden="true"></span>
+                  </div>
+                  <span class="sift__drop" aria-hidden="true"></span>
+                  <p class="sift__lab">chromatography and mass spectrometry</p>
+                  <p class="sift__sub">active compound</p>
+                </div>
+                <!-- THE SCREEN. Five lots arrive; the barrier has apertures;
+                     two are stopped at it and struck, three come through. That
+                     is what "we screen for" means and it is the only honest
+                     thing to draw here — WHICH lots fail, and how often, is a
+                     number nobody gave us, so the marks carry no count and the
+                     figure states none. -->
+                <div class="sift__card sift__card--2">
+                  <div class="sift__frame">
+                    <svg class="sift__glyph" viewBox="0 0 300 160" aria-hidden="true" focusable="false">
+                      <rect class="s-wall" x="1" y="1" width="298" height="158" rx="3"/>
+                      <path class="s-guide" d="M60 51 H248 M60 83 H248 M60 115 H248"/>
+                      <g class="s-fit">
+                        <circle cx="26" cy="51" r="6.5"/><circle cx="26" cy="83" r="6.5"/><circle cx="26" cy="115" r="6.5"/>
+                        <circle cx="92" cy="24" r="6.5"/><circle cx="92" cy="142" r="6.5"/>
+                      </g>
+                      <path class="s-fit" d="M86 18 L98 30 M98 18 L86 30 M86 136 L98 148 M98 136 L86 148"/>
+                      <path class="s-bar" d="M114 12 V44 M114 58 V76 M114 90 V108 M114 122 V150"/>
+                      <g class="sift__mat">
+                        <circle cx="178" cy="51" r="6.5"/><circle cx="178" cy="83" r="6.5"/><circle cx="178" cy="115" r="6.5"/>
+                      </g>
+                    </svg>
+                  </div>
+                  <span class="sift__drop" aria-hidden="true"></span>
+                  <p class="sift__lab">heavy metals</p>
+                  <p class="sift__sub">genotoxicity and cytotoxicity</p>
+                </div>
+              </div>
+            </div>
             <div class="assay__runs">
               <p>We bring in raw ingredients from suppliers around the world and test them using chromatography and mass spectrometry to verify purity, potency, and active compound concentration.</p>
               <p>We screen for heavy metals and conduct genotoxicity and cytotoxicity testing to help evaluate safety at the cellular level.</p>
@@ -572,6 +669,75 @@
           </li>
           <li class="assay__stage">
             <h4 class="assay__step"><span class="assay__word">Stage </span><b class="assay__no">02</b><span class="assay__em"> — </span><span class="assay__name">Efficacy Testing</span></h4>
+            <!-- STAGE 02, DRAWN. Two cards again, for the two entries below
+                 that name an actual assay. The first entry of this stage is
+                 the question the stage asks, not a method, so nothing is
+                 drawn for it — a glyph under "how well does it actually
+                 perform?" would be an invented instrument. -->
+            <div class="sift">
+              <div class="sift__grid">
+                <!-- HUNDREDS OF VERSIONS. A series bracketed at both ends —
+                     the range the copy names, citrates at one end and
+                     bisglycinates at the other — with every version a mark on
+                     one line and three of them kept.
+                     THE KEPT MARKS ARE NOT TALLER, AND THEY ARE NOT AT ONE
+                     END. Height would assert a bioavailability figure for each
+                     version, which is a dataset we do not have; clustering the
+                     survivors at one end of the range would assert that one
+                     chemical form won, which the copy does not say. Selection
+                     is carried by colour alone, scattered across the span. -->
+                <div class="sift__card sift__card--3">
+                  <div class="sift__frame">
+                    <svg class="sift__glyph" viewBox="0 0 300 160" aria-hidden="true" focusable="false">
+                      <rect class="s-wall" x="1" y="1" width="298" height="158" rx="3"/>
+                      <path class="s-axis" d="M22 92 H278"/>
+                      <g class="s-fit">
+                        <circle cx="22" cy="92" r="3.6"/><circle cx="38" cy="92" r="3.6"/><circle cx="54" cy="92" r="3.6"/>
+                        <circle cx="86" cy="92" r="3.6"/><circle cx="102" cy="92" r="3.6"/><circle cx="118" cy="92" r="3.6"/>
+                        <circle cx="134" cy="92" r="3.6"/><circle cx="166" cy="92" r="3.6"/><circle cx="182" cy="92" r="3.6"/>
+                        <circle cx="198" cy="92" r="3.6"/><circle cx="214" cy="92" r="3.6"/><circle cx="230" cy="92" r="3.6"/>
+                        <circle cx="262" cy="92" r="3.6"/><circle cx="278" cy="92" r="3.6"/>
+                      </g>
+                      <path class="s-fit" d="M22 116 V124 M22 124 H278 M278 116 V124"/>
+                      <g class="sift__mat">
+                        <circle cx="70" cy="92" r="5"/><circle cx="150" cy="92" r="5"/><circle cx="246" cy="92" r="5"/>
+                        <path class="s-peak" d="M70 80 V66 M150 80 V66 M246 80 V66"/>
+                      </g>
+                    </svg>
+                    <span class="sift__link" aria-hidden="true"></span>
+                  </div>
+                  <span class="sift__drop" aria-hidden="true"></span>
+                  <p class="sift__lab">hundreds of versions</p>
+                  <p class="sift__sub">citrates to bisglycinates</p>
+                </div>
+                <!-- THE READ. The Bradford assay is a colorimetric one: a beam
+                     is put through the sample and what reaches the detector is
+                     the measurement. So the drawing is the instrument — emitter,
+                     sample, detector, signal — and the sample is the green.
+                     There is no dial and no trace on the far side of the
+                     detector, because the number it returns is not on this
+                     page. -->
+                <div class="sift__card sift__card--4">
+                  <div class="sift__frame">
+                    <svg class="sift__glyph" viewBox="0 0 300 160" aria-hidden="true" focusable="false">
+                      <rect class="s-wall" x="1" y="1" width="298" height="158" rx="3"/>
+                      <path class="s-guide" d="M44 80 H258"/>
+                      <path class="s-bar" d="M24 60 V100"/>
+                      <circle class="s-solid" cx="34" cy="80" r="5.5"/>
+                      <path class="s-fit" d="M100 32 V128 H190 V32"/>
+                      <rect class="s-solid" x="258" y="48" width="12" height="64"/>
+                      <g class="sift__mat">
+                        <circle cx="120" cy="102" r="5.5"/><circle cx="144" cy="110" r="5.5"/><circle cx="168" cy="100" r="5.5"/>
+                        <circle cx="130" cy="80" r="5.5"/><circle cx="158" cy="80" r="5.5"/>
+                      </g>
+                    </svg>
+                  </div>
+                  <span class="sift__drop" aria-hidden="true"></span>
+                  <p class="sift__lab">catalytic activity</p>
+                  <p class="sift__sub">Bradford assay</p>
+                </div>
+              </div>
+            </div>
             <div class="assay__runs">
               <p>Our team sets up a battery of experiments to answer one question: How well does it actually perform?</p>
               <p>For Magnesium Breakthrough, we ran solubility and stability testing across hundreds of versions — from citrates to bisglycinates — keeping only those with the strongest bioavailability profile.</p>

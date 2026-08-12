@@ -73,15 +73,58 @@
   /* ---- BRAND. Fixed. ---- */
   --font: "Neue Haas Unica Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
+  /* ============================================================
+     THE KNEE LAW. Every ramp on this page continues past its knee.
+
+     R1 grew --shell from 1240 to 1900 and did NOT grow the type, and
+     that asymmetry is the whole defect this block repairs. Measured on
+     the shipped page: the shell was frozen at 1240 for 1280 / 1366 /
+     1440 / 1512 / 1536 — every common desktop width — and the TYPE was
+     frozen from 1590 up (hero 208, phase title 76, lead 31.2, body 17
+     at both 1920 and 2560). The two ramps were not merely mismatched,
+     they were out of PHASE: below 1600 the type grew inside a frozen
+     container (which is why the document got 14% TALLER from 1280 to
+     1600 without gaining a single pixel of width), and above 1600 the
+     container grew around frozen type. Both halves read as under-scale
+     for the same reason.
+
+     A `clamp(floor, K vw, C)` does not taper — it STOPS, at v = 100C/K,
+     and from there up the design is a 1,590px page in a bigger window.
+     The fix is one line of arithmetic, applied everywhere:
+
+         clamp(F, K vw, C)  ->  clamp(F, min(K vw, C/2 + K/2 vw), C')
+
+     The second term is exactly HALF the old ceiling plus HALF the old
+     slope, which means it crosses the first term precisely at the old
+     knee — so BELOW the old ceiling every value on this page is
+     byte-identical to what shipped, and above it the ramp continues at
+     half rate instead of flatlining. Nothing is re-tuned; a stop is
+     turned into a taper. C' is set so the new ceiling lands where the
+     shell's own ceiling lands (~2613px), so type and container reach
+     their limit on the same viewport instead of 1,000px apart.
+
+     Pieces 06 and 07 still carry local ramps that stop (.hunt-*, .rig-*,
+     .ves-*); the law above is stated here so they are corrected by the
+     same arithmetic rather than by a fourth private guess.
+     ============================================================ */
   /* ---- Scale. Free. Built for a big, confident page. ---- */
-  --t-display: clamp(3.1rem, 10.5vw, 12rem);   /* 144->192px, ceiling 1371->1829 */
-  --t-h1: clamp(2.4rem, 6.2vw, 7rem);   /* 84->112px, ceiling 1355->1806 */
-  --t-h2: clamp(1.9rem, 4.2vw, 4.75rem);   /* 56->76px, ceiling 1333->1810 */
-  --t-h3: clamp(1.45rem, 2.4vw, 2.9rem);   /* 35->46px */
-  --t-lead: clamp(1.15rem, 1.65vw, 1.95rem);   /* 26->31px */
-  --t-body: 1.0625rem;
-  --t-small: 0.9375rem;
-  --t-eyebrow: 0.75rem;
+  --t-display: clamp(3.1rem, min(10.5vw, 6rem + 5.25vw), 14.6rem);   /* 144->192 @1829, then ->233 @2613 */
+  --t-h1: clamp(2.4rem, min(6.2vw, 3.5rem + 3.1vw), 8.6rem);   /* 84->112 @1806, then ->137 */
+  --t-h2: clamp(1.9rem, min(4.2vw, 2.375rem + 2.1vw), 5.8rem);   /* 56->76 @1810, then ->93 */
+  --t-h3: clamp(1.45rem, min(2.4vw, 1.45rem + 1.2vw), 3.4rem);   /* 35->46 @1933, then ->55 */
+  --t-lead: clamp(1.15rem, min(1.65vw, 0.975rem + 0.825vw), 2.35rem);   /* 26->31 @1891, then ->37 */
+  /* THE THREE THAT NEVER RAMPED AT ALL. 17 / 15 / 12px at 1280 and 17 /
+     15 / 12px at 2560 — the reading sizes were the only type on the page
+     with no scale behaviour whatsoever, which is why a 2,033px shell was
+     being read at the same 17px as a 1,240px one. They start at exactly
+     their old values (the floor binds at and below 1280, so the phone and
+     the tablet are untouched to the pixel) and climb 20% across the
+     desktop range: 17->20.4, 15->18, 12->14.4. Every `ch` and `em` cap on
+     this page hangs off these three, so this is also what un-freezes them
+     — a `ch` cap can only track if the font it measures does. */
+  --t-body: clamp(1.0625rem, 0.85rem + 0.266vw, 1.29rem);
+  --t-small: clamp(0.9375rem, 0.75rem + 0.234vw, 1.14rem);
+  --t-eyebrow: clamp(0.75rem, 0.6rem + 0.187vw, 0.91rem);
   /* --t-ghost (clamp(7rem, 20vw, 23rem), 272->368px) is GONE. It sized a
      watermark that no longer exists — see .phase__mast below. Three separate
      pieces were each carrying arithmetic to hold space for it. */
@@ -91,18 +134,41 @@
      quarter larger than the promise — an escalation the reader feels as
      "that number came back bigger", not two agents picking two clamps.
      Anything that shows this figure reads --t-tally; nothing sets it alone. */
-  --t-tally: clamp(3.9rem, 12.2vw, 9.8rem);
+  /* The knee of the shipped clamp was 1285px — the ONE figure on the page
+     that is meant to feel bigger every time you see it was the first thing
+     on the page to stop growing, 5px above the width it was designed at. */
+  --t-tally: clamp(3.9rem, min(12.2vw, 4.9rem + 6.1vw), 14.9rem);   /* 156.8 @1285, then ->238 */
   --tally-bank: 1.25;
 
-  /* ---- Rhythm. Free. Generous. ---- */
-  --pad-y: clamp(5.5rem, 11vw, 11rem);
+  /* ---- Rhythm. Free. Generous. ----
+     The two vertical ramps take a QUARTER slope past their knees, not a
+     half: this page's problem above 1600 is not that it is short. Enough
+     that the rhythm keeps answering the type (176->204, 176->209), little
+     enough that it does not spend the height the width fix just bought. */
+  --pad-y: clamp(5.5rem, min(11vw, 8.25rem + 2.75vw), 12.8rem);   /* 176 @1600, then ->204 */
   --gutter: clamp(1.25rem, 4vw, 4rem);
-  /* The shell GROWS. Fixed at 1240px, every section became an island above
-     1440 and the page was a 1280 design wearing bigger margins. Both critics
-     named this independently as their single biggest gap.
-       1280 -> 1240 (unchanged)   1920 -> 1497   2560 -> 1900 (capped) */
-  --shell: clamp(1240px, 78vw, 1900px);
-  --measure: 34rem;
+  /* THE SHELL, WHERE THE MONITORS ACTUALLY ARE.
+     R1 wrote `clamp(1240px, 78vw, 1900px)` to fix "designed at 1280 and
+     merely displayed above 1440". It fixed nothing below 1590: 78vw does
+     not clear the 1240px floor until 1590px of viewport, so 1366, 1440,
+     1512 and 1536 — which is most of the desktops this page will ever be
+     opened on — all still got exactly 1240, and the complaint moved from
+     1440 to 1590 rather than going away. It was fluid over 1590..2436 and
+     frozen on both sides of that.
+     A two-term ramp puts the lower knee ON 1280 instead of 1590, so the
+     shell is live across the ENTIRE common desktop range and the page's
+     share of the screen falls gently instead of falling off a cliff:
+       1280 1240 (96.9%)   1366 1295 (94.8%)   1440 1341 (93.1%)
+       1512 1387 (91.7%)   1536 1402 (91.3%)   1600 1442 (90.1%)
+       1920 1644 (85.6%)   2560 2047 (80.0%)
+     At 1280 it resolves to 1240.4px — the design width is held to within
+     half a pixel, and below 1280 `width: 100%` governs exactly as before. */
+  --shell: clamp(1240px, 63vw + 434px, 2080px);
+  /* Was 34rem: a ROOT-relative cap on the page's primary reading column,
+     which is frozen at 544px by definition. 32em is the identical 544px at
+     the 17px this page was designed at, and it is the same measure — not
+     the same number of pixels — at every width above it. */
+  --measure: 32em;
 
   /* ============================================================
      MOTION — THE PAGE'S VOCABULARY.
@@ -319,7 +385,10 @@ section { position: relative; padding-block: var(--pad-y); }
   /* 2.7rem floor, not 3.1: at 320px the longest line is 6.29em of rendered
      Arial and .line clips its overflow, so a floor any higher shaves the
      last glyph off "Breakthrough". Measured slack at 320px: 15px. */
-  --t-display: clamp(2.7rem, 13.2vw, 13rem);   /* ceiling 144->208px; 2.7rem floor kept, see above */
+  /* THE KNEE LAW (see :root). This ceiling landed at 1576px, which is where
+     the Art Director's "every type size is byte-identical from 1590 up"
+     measurement came from — the biggest word on the page stopped first. */
+  --t-display: clamp(2.7rem, min(13.2vw, 6.5rem + 6.6vw), 17.3rem);   /* 208 @1576, then ->277 */
   /* WAVE 4 — THE HERO JOINS THE PAGE'S WIDTH SYSTEM.
      Every rule on this page is one of three widths and each says something:
      FULL-BLEED (chapter edges and register lines — the manifesto seam, the
@@ -571,7 +640,7 @@ section { position: relative; padding-block: var(--pad-y); }
    on) and set to the measure it should have had: 26em is 60cpl at every step
    from 900px up, against 48cpl before. Ink 919 -> 1026. */
 .mf-set {
-  font-size: clamp(1.3rem, 2.35vw, 2.1rem); font-weight: 400; line-height: 1.32;
+  font-size: clamp(1.3rem, min(2.35vw, 1.05rem + 1.175vw), 2.97rem); font-weight: 400; line-height: 1.32;
   letter-spacing: -0.015em; color: var(--cream); max-width: 26em; text-wrap: balance;
 }
 .mf-cue {
@@ -591,12 +660,12 @@ section { position: relative; padding-block: var(--pad-y); }
 .mf-close { display: block; }
 .mf-ask {
   display: block; margin-top: clamp(0.9rem, 2.2vh, 1.7rem);
-  font-size: clamp(1rem, 1.45vw, 1.25rem); line-height: 1.45;
+  font-size: clamp(1rem, min(1.45vw, 0.625rem + 0.725vw), 1.81rem); line-height: 1.45;
   letter-spacing: 0.005em; color: var(--cream); max-width: 52ch;
 }
 .mf-q {
   display: block; margin-top: 0.3rem;
-  font-size: clamp(1.4rem, 2.55vw, 2.3rem); font-weight: 400;
+  font-size: clamp(1.4rem, min(2.55vw, 1.15rem + 1.275vw), 3.23rem); font-weight: 400;
   line-height: 1.2; letter-spacing: -0.025em; color: var(--white); max-width: 17em;
 }
 /* WAVE 3: the greeting now OPENS the section (see index.html), so its rule
@@ -607,7 +676,7 @@ section { position: relative; padding-block: var(--pad-y); }
   position: relative;
   margin-bottom: clamp(2.5rem, 6.5vh, 4.75rem);
   padding-bottom: clamp(2rem, 5vh, 3.5rem);
-  font-size: clamp(2.25rem, 5.3vw, 4.4rem); font-weight: 700;
+  font-size: clamp(2.25rem, min(5.3vw, 2.2rem + 2.65vw), 6.53rem); font-weight: 700;
   line-height: 1.02; letter-spacing: -0.035em; color: var(--white);
 }
 .manifesto__title b { font-weight: 700; color: var(--vital); }
@@ -693,8 +762,14 @@ section { position: relative; padding-block: var(--pad-y); }
     /* 34rem, not 27: the question is the section's payoff and a 432px column
        broke "could we make this even better?" onto two lines at every width
        above 900. At 34rem it clears one line and the bottom row grows with
-       the shell instead of stopping 480px short of it. */
-    grid-template-columns: max-content minmax(17rem, 34rem);
+       the shell instead of stopping 480px short of it.
+       R2 — "grows with the shell" was the intent and `rem` was not the way to
+       say it: the track measured 544px at 900 and 544px at 2560, so the
+       question sat in the same box while the shell went 1240 -> 2047 and its
+       own type ramped underneath it. 0.4387 of the shell IS 34rem at the
+       1240px shell this was drawn against, and now it is the whole sentence
+       that scales: 544 / 721 / 898 at 1280 / 1920 / 2560. */
+    grid-template-columns: max-content minmax(17rem, calc(var(--shell) * 0.4387));
     column-gap: clamp(2rem, 3.6vw, 3.4rem);
     justify-content: start; align-items: end;
     grid-template-areas:
@@ -749,10 +824,14 @@ section { position: relative; padding-block: var(--pad-y); }
 
 .process__body {
   width: 100%; max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter);
-  /* The spine column GROWS with the shell. At a fixed 220px against the
-     now-1456px content column at 2560 it was 13% of the row — a gutter with
-     words in it. 220 at 1280, 317 at 1920, 330 at 2560. */
-  --spine-col: clamp(220px, 16.5vw, 330px);
+  /* The spine column GROWS with the shell — and R2 makes that literal
+     rather than approximate. `clamp(220px, 16.5vw, 330px)` ceilinged at
+     2000px of viewport, so the contents column was the one part of this
+     row that stopped while the row kept going. 0.1775 of the shell IS
+     220px at the 1240px shell it was drawn against, and it cannot drift
+     out of proportion with the column beside it at any width:
+     220 at 1280, 292 at 1920, 363 at 2560. */
+  --spine-col: clamp(220px, calc(var(--shell) * 0.1775), 380px);
 }
 
 /* ---- THE SPINE ----------------------------------------------------
@@ -851,7 +930,7 @@ section { position: relative; padding-block: var(--pad-y); }
    -29, 1920 -88 vs -40, 2560 -88 vs -40, 390 -48 vs -12. It never crosses a
    numeral at any width. */
 .phases {
-  --phase-gap: clamp(6rem, 12vw, 11rem);
+  --phase-gap: clamp(6rem, min(12vw, 8.25rem + 3vw), 13.15rem);
   display: flex; flex-direction: column; gap: var(--phase-gap);
 }
 .phase + .phase::before {
@@ -1187,6 +1266,180 @@ section { position: relative; padding-block: var(--pad-y); }
   width: clamp(1rem, 1.35vw, 1.5rem); height: 2px; background: var(--green);
 }
 
+/* ============================================================
+   FIG. 03 IS NOW A FIGURE.
+   The verdict: 0 SVG, 946 characters of prose, a label with
+   nothing under it — in the phase carrying the most drawable
+   science on the page. This is the drawing, and it is bound
+   INTO the record rather than parked above it: each stage's
+   band sits under its own stage line and above its own
+   entries, one card per entry that names a method, in the
+   entries' order. Stage 01's two cards draw its two entries;
+   stage 02's two cards draw the two of its three that name an
+   assay. The plate is one object — marker, bridge line, and
+   then a record whose paragraphs are illustrated by the thing
+   directly above them.
+
+   WHAT IS DRAWN, AND WHY IT IS THE METHOD.
+     01a  a chromatogram — a mixture resolved into components,
+          one of them ours, with the mass fingerprint of that
+          peak tethered beside it. Separation THEN identity is
+          the sentence's own order.
+     01b  a screen — five lots in, a barrier with apertures,
+          two struck at it, three through. Screening is a cull
+          and the only way to draw a cull is to show what does
+          not get through.
+     02a  a bracketed series — every version a mark on one
+          line, three of them kept.
+     02b  a photometer — emitter, sample, detector. The
+          Bradford assay is colorimetric; this is its rig.
+
+   WHAT IS DELIBERATELY NOT DRAWN. No axis carries a value, no
+   mark carries a count, no peak or kept version is TALLER than
+   its neighbours. PIECE 08 refused an uneven staircase because
+   it "would assert magnitudes nobody measured" and the same
+   refusal is in force here: height would invent a
+   bioavailability figure per version, and putting the kept
+   marks at one end of the range would claim a winning chemical
+   form the copy never names. Selection is colour, and only
+   colour. Nothing is drawn for stage 02's first entry either —
+   it asks the stage's question, it does not name a method, and
+   a glyph under it would be an invented instrument.
+
+   CONTRAST, FROM RENDERED PIXELS. No alpha in this figure and
+   no ancestor opacity over it once it has arrived:
+     wall / fit / bar / solid  --deep  #103608   12.60:1
+     baselines, beams, guides  --muted #6e6663    5.23:1
+     leaders under each card   --muted, 1px dotted 5.23:1
+     card label                --deep             12.60:1
+     card sub-label            --muted             5.23:1
+     material                  --green #32951c     3.59:1
+                               graphics only, never as type.
+
+   MOTION. The chassis is never animated: every wall, axis,
+   beam, barrier, bracket and outline mark is drawn in the
+   first frame. The ONLY thing that moves is .sift__mat — the
+   material, the thing that passed — which ARRIVES on opacity
+   with the shared --ease, four cards left to right, 200ms
+   apart. No new curve, no transform, no fourth gesture. Its
+   resting value is written twice more, in the reduced-motion
+   block below and in the <noscript> block in the document
+   head, so a reader with no script or no motion gets the
+   finished, loaded figure rather than four empty instruments.
+   ============================================================ */
+/* THE CONTAINER AND THE GRID ARE TWO ELEMENTS, AND THEY HAVE TO BE. An
+   element cannot answer its own container query — the query applies to
+   DESCENDANTS of the container — so a single element carrying both
+   `container-type` and the columns silently never stacks. Measured at 390
+   before the split: the band held two columns of 155px and the instruments
+   rendered 83px tall. PIECE 05 has the same two-element shape (.chain
+   queries, .chain__grid composes) for the same reason. */
+.sift {
+  --sift-gap: clamp(1.1rem, 2.2vw, 2.75rem);
+  --sift-drop: clamp(0.85rem, 1.4vw, 1.4rem);
+  container-type: inline-size; container-name: sift;
+  /* The figure starts on the entries' text edge — same --hunt-indent the
+     tick and the paragraph use — so the drawing and the prose it draws
+     share one left margin. It is NOT capped to --hunt-measure: a measure
+     is a reading constraint and this is not read, it is looked at. The
+     width the entries give back at the right is exactly the width this
+     figure has been waiting for. */
+  padding-left: var(--hunt-indent);
+  padding-block: clamp(1.15rem, 1.8vw, 1.95rem) clamp(1.45rem, 2.2vw, 2.35rem);
+}
+.sift__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--sift-gap);
+}
+.sift__card { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
+.sift__frame { position: relative; width: 100%; }
+
+/* The glyphs scale with their card and their strokes do not — the same
+   vector-effect law PIECE 05 wrote for the chain, so a 300px instrument at
+   2560 and a 300px one at 1280 are one drawing, not one drawing at two
+   line weights. */
+.sift__glyph { display: block; width: 100%; height: auto; }
+.sift__glyph * { vector-effect: non-scaling-stroke; }
+.sift__glyph .s-wall  { fill: none; stroke: var(--deep); stroke-width: 1.5px; }
+.sift__glyph .s-fit   { fill: none; stroke: var(--deep); stroke-width: 1.4px; stroke-linecap: round; stroke-linejoin: round; }
+.sift__glyph .s-bar   { fill: none; stroke: var(--deep); stroke-width: 2.4px; }
+.sift__glyph .s-solid { fill: var(--deep); stroke: none; }
+/* Axes and leaders are --muted: an axis is not the finding. */
+.sift__glyph .s-axis  { fill: none; stroke: var(--muted); stroke-width: 1px; }
+.sift__glyph .s-guide { fill: none; stroke: var(--muted); stroke-width: 1px; stroke-dasharray: 2 4; stroke-linecap: round; }
+/* THE MATERIAL. --green marks what passed, and nothing else in this figure
+   is green. */
+.sift__glyph .sift__mat path,
+.sift__glyph .sift__mat circle { fill: var(--green); stroke: none; }
+.sift__glyph .sift__mat .s-peak { fill: none; stroke: var(--green); stroke-width: 2.4px; stroke-linecap: round; }
+
+/* THE CONDUIT. Dotted run and arrowhead, drawn from the first frame like
+   the rest of the chassis: the sample goes through both assays of a stage,
+   in that order, and the reader knows it before anything arrives. */
+.sift__link {
+  position: absolute; top: 50%; left: 100%; width: var(--sift-gap); height: 0;
+  border-top: 1.5px dotted var(--deep);
+}
+.sift__link::after {
+  content: ""; position: absolute; right: 1px; top: 0; width: 7px; height: 7px;
+  border-top: 1.5px solid var(--deep); border-right: 1.5px solid var(--deep);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* NOTHING FLOATS. A dotted leader from every card to its own label. */
+.sift__drop { width: 0; height: var(--sift-drop); border-left: 1px dotted var(--muted); }
+/* Both label lines are the copy's own words. "chromatography and mass
+   spectrometry", "heavy metals", "hundreds of versions" and "catalytic
+   activity" name the instrument; "active compound", "genotoxicity and
+   cytotoxicity", "citrates to bisglycinates" and "Bradford assay" name what
+   it is looking for. Every one of the eight is a verbatim fragment of the
+   paragraph directly beneath it — the same rule Figs 01 and 02 were named
+   under. These are labels, not measures: the longest sets 36 characters. */
+.sift__lab {
+  padding-top: 0.45rem; max-width: 22em;
+  font-size: clamp(0.95rem, 0.78vw, 1.2rem); font-weight: 700;
+  line-height: 1.25; letter-spacing: -0.01em; color: var(--deep);
+}
+.sift__sub {
+  padding-top: 0.15rem; max-width: 24em;
+  font-size: clamp(0.85rem, 0.66vw, 1.05rem); line-height: 1.3; color: var(--muted);
+}
+
+/* THE ONLY THING THAT MOVES. */
+.sift__mat { opacity: 0; transition: opacity 320ms var(--ease); }
+.sift__card--1 .sift__mat { transition-delay: 200ms; }
+.sift__card--2 .sift__mat { transition-delay: 340ms; }
+.sift__card--3 .sift__mat { transition-delay: 480ms; }
+.sift__card--4 .sift__mat { transition-delay: 620ms; }
+.hunt__sheet.is-in .sift__mat { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .sift__mat { opacity: 1 !important; }
+}
+
+/* NARROW. Two instruments will not survive a phone side by side, so the
+   band turns and runs down the page. The conduit between them is DROPPED
+   rather than crushed — it is aria-hidden geometry whose only job is to say
+   "then", and stacking already says it. The card is capped so a single
+   column on a tablet does not hand one instrument a 600px-tall box.
+   A CONTAINER query: the figure composes on the width it actually has,
+   which inside this sheet is not the viewport's. */
+@container sift (max-width: 560px) {
+  .sift__grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(1.5rem, 5vw, 2.5rem);
+  }
+  /* `width: 100%` is load-bearing, not decoration. Auto inline margins on a
+     grid item cancel the default stretch, so the card falls back to
+     fit-content — and an <svg> with `width: 100%` against an indefinite
+     container resolves to its INTRINSIC 300px, not to the column. Measured
+     at 390 without it: a 300px card centred in a 328px column, which looks
+     right and is a 300px floor that would burst the column on any phone
+     narrower than about 340. Stated width, then the cap. */
+  .sift__card { width: 100%; max-width: 34rem; margin-inline: auto; }
+  .sift__link { display: none; }
+}
+
 /* ---- PIECE 06 — RESPONSIVE. Every rule below is inside this piece's own
    selectors; nothing here can reach another phase. ---- */
 @media (min-width: 1024px) {
@@ -1234,10 +1487,17 @@ section { position: relative; padding-block: var(--pad-y); }
     border-top: 2px solid var(--deep);
   }
   .assay__step { grid-column: 1; border-top: 0; }
+  /* The figure joins the entries column, above the paragraphs it draws, and
+     the rail keeps the stage line alone — which is the air this piece went
+     looking for a use for in the first place. Auto-placement puts the band
+     in row 1 beside the stage line and the entries in row 2. */
+  .sift { grid-column: 2; }
   .assay__runs { grid-column: 2; }
-  /* the stage's own 2px rule already opens the first entry; without this
-     the entries column carries 2px + 1px stacked and the rail carries 2px */
-  .assay__runs > p:first-child { border-top: 0; }
+  /* Wave 4 removed this hairline because the stage's own 2px rule opened
+     the first entry directly. It no longer does — the figure is between
+     them now — so the entry takes its rule back, and the doubled 2px + 1px
+     the original note was avoiding cannot occur. */
+  .assay__runs > p:first-child { border-top: 1px solid var(--hunt-rule); }
 }
 
 /* ============================================================
@@ -1316,13 +1576,16 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 #phase-1 .gate + .gate { border-top: 1px solid var(--rule); }
 #phase-1 .gate__name {
-  font-size: clamp(1.0625rem, 1.1vw, 1.375rem);
+  font-size: clamp(1.0625rem, 0.56rem + 0.628vw, 1.59rem);
   font-weight: 700; line-height: 1.2; letter-spacing: -0.012em;
   color: var(--deep); text-transform: none;
 }
 /* margin-top:auto floors the three plates on one line even when a name
    wraps to two — the figures are a row, so they read as a row. */
-#phase-1 .gate__fig { width: 100%; max-width: 21rem; height: auto; margin-top: auto; }
+/* Was 21rem — a ROOT-relative cap, so the triptych's plates were the one
+   part of phase one that stopped at 336px and stayed there. 0.271 of the
+   shell IS 21rem at the 1240px shell this was drawn against. */
+#phase-1 .gate__fig { width: 100%; max-width: calc(var(--shell) * 0.271); height: auto; margin-top: auto; }
 
 /* THE FIGURES. One grammar across three different plate types:
      --muted  5.23:1  axes, reference lines, the trend that fades
@@ -2202,7 +2465,7 @@ section { position: relative; padding-block: var(--pad-y); }
    a 652px plate at its worst, 1920). */
 .revs__count { display: block; }
 .revs__n {
-  display: block; font-size: clamp(2.9rem, 4.5vw, 5.5rem); font-weight: 700;
+  display: block; font-size: clamp(2.9rem, min(4.5vw, 2.75rem + 2.25vw), 6.43rem); font-weight: 700;
   line-height: 0.78; letter-spacing: -0.045em; color: var(--dark);
 }
 .revs__unit {
@@ -2230,7 +2493,7 @@ section { position: relative; padding-block: var(--pad-y); }
    by it. Nothing outside PIECE 08 is touched to do this. */
 .creed {
   position: relative;
-  font-size: clamp(1.6rem, 3.05vw, 3.85rem); font-weight: 700;
+  font-size: clamp(1.6rem, min(3.05vw, 1.925rem + 1.525vw), 4.42rem); font-weight: 700;
   line-height: 1.05; letter-spacing: -0.035em; color: var(--dark);
   text-wrap: balance;
 }
@@ -2402,8 +2665,12 @@ section { position: relative; padding-block: var(--pad-y); }
        --vital strike that ties it back to the promise
    Two readings of one number instead of one slide shown twice. Contrast on
    --deep: white 13.51:1, --vital 10.99:1 at 12px bold. */
+/* KNEE LAW (see :root). This ceiling landed at 1176px — the register's five
+   supporting figures stopped growing BELOW the width the page is designed at,
+   so from 1280 up they were a fixed 40px sat beside a --t-tally lead that is
+   now 156->238. Continued at half slope they read 40 / 46 / 54. */
 .tally__val {
-  font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700;
+  font-size: clamp(1.7rem, min(3.4vw, 1.25rem + 1.7vw), 4.44rem); font-weight: 700;
   line-height: 1; letter-spacing: -0.035em; color: var(--white);
   font-variant-numeric: tabular-nums;
 }
@@ -2429,10 +2696,15 @@ section { position: relative; padding-block: var(--pad-y); }
   letter-spacing: 0.18em; line-height: 1.4; color: var(--vital);
 }
 .tally__desc { font-size: var(--t-small); line-height: 1.5; color: rgba(255,255,255,0.72); max-width: 48ch; }
-.tally__entry--lead .tally__label { font-size: 0.8125rem; letter-spacing: 0.2em; }
+.tally__entry--lead .tally__label { font-size: calc(var(--t-eyebrow) * 1.084); letter-spacing: 0.2em; }
+/* 34em fixed the 416px freeze and overshot the other way: at 2560 it measured
+   1060.8px = 80.6 CHARACTERS PER LINE, the longest line on the page and 5.6
+   over the ceiling this page holds everything else to. 26em is the same
+   549px at 1280 (the entry is column-bound there, so nothing moves at the
+   design width) and 62cpl at 2560. Neither frozen nor unread. */
 .tally__entry--lead .tally__desc {
   margin-top: 0.9rem; font-size: var(--t-lead); line-height: 1.35;
-  color: rgba(255,255,255,0.82); max-width: 34em;   /* was 24ch = 32cpl frozen at 416px from 1920 up */
+  color: rgba(255,255,255,0.82); max-width: 26em;
 }
 
 /* Mobile register: value beside its label, description under both. */
@@ -2626,7 +2898,7 @@ section { position: relative; padding-block: var(--pad-y); }
 .proof__claim {
   position: relative;
   padding-block: clamp(1.15rem, 1.8vw, 1.6rem);
-  font-size: clamp(1.0625rem, 1.05vw, 1.3rem);
+  font-size: clamp(1.0625rem, 0.635rem + 0.534vw, 1.51rem);
   line-height: 1.55; color: rgba(255, 255, 255, 0.78);
   /* THE MEASURE, IN THE CLAIM'S OWN CURRENCY. `31rem` was a ROOT-relative cap
      on type that is not root-sized, so it froze at 496px while the font grew;
@@ -2673,7 +2945,7 @@ section { position: relative; padding-block: var(--pad-y); }
    the argument does not close, it runs into the CTA. */
 .proof__claim--turn {
   padding-top: clamp(1.6rem, 2.4vw, 2.25rem);
-  font-size: clamp(1.25rem, 1.5vw, 1.75rem); font-weight: 700;
+  font-size: clamp(1.25rem, 0.434rem + 1.02vw, 2.1rem); font-weight: 700;
   line-height: 1.25; letter-spacing: -0.02em; color: var(--white);
   text-wrap: balance;   /* insurance: if a wide fallback face wraps it, it
                            wraps into two halves and never orphans "next." */
@@ -3166,7 +3438,7 @@ section { position: relative; padding-block: var(--pad-y); }
    relative to the shared "TABLET AND UP" rules below. ---- */
 @media (min-width: 700px) {
   .finder .finder__grid {
-    --door-name: clamp(1.0625rem, 1.42vw, 1.9rem);
+    --door-name: clamp(1.0625rem, min(1.42vw, 0.95rem + 0.71vw), 2.11rem);
     grid-template-columns: repeat(3, 1fr);
     /* row gap is the name-to-its-own-photograph distance; column gap is the
        distance between two doors. They are different jobs, so two values. */
@@ -3204,7 +3476,9 @@ section { position: relative; padding-block: var(--pad-y); }
      legal link. This is the structure of a 13,000px argument, so it is
      set like one: the names come off uppercase into the case they are
      actually written in, they scale with the shell (15px at 1280 ->
-     18px at 1920 -> 20px at 2560), the rail doubles to 2px, and the
+     18.6px at 1920 -> 22px at 2560 — the old clamp said 15/18/20 and
+     ceilinged at 2105, which is 20px at 2105 AND at 2560), the rail
+     doubles to 2px, and the
      rows get real air. It reads as a table of contents because that is
      what it is. ---- */
   .process__body { display: grid; grid-template-columns: var(--spine-col) 1fr; gap: clamp(3rem, 6vw, 6rem); align-items: start; }
@@ -3216,7 +3490,7 @@ section { position: relative; padding-block: var(--pad-y); }
   .spine {
     display: block; position: sticky; top: 18vh;
     --spine-pad: clamp(1.6rem, 1.5vw, 2.4rem);
-    font-size: clamp(0.9375rem, 0.95vw, 1.25rem);
+    font-size: clamp(0.9375rem, 0.494rem + 0.555vw, 1.4rem);
   }
   /* The rail runs from the FIRST marker to the LAST one — it is the span of
      the journey, so its ends are the two ends of the journey. JS then scales
@@ -3245,7 +3519,7 @@ section { position: relative; padding-block: var(--pad-y); }
     font-size: inherit;
   }
   /* The numeral is a fixed proportion of the name it marks, floored at 12px
-     so it never falls out of legibility at the small end. 12 / 12.8 / 14px
+     so it never falls out of legibility at the small end. 12 / 13 / 15.5px
      across 1280 / 1920 / 2560. */
   .spine__num { font-size: max(0.75rem, 0.7em); letter-spacing: 0.08em; }
   .spine__name { font-size: 1em; }
@@ -3367,7 +3641,12 @@ section { position: relative; padding-block: var(--pad-y); }
    figure. 41rem is the one ceiling that holds 45-75cpl at all three
    widths for a type size that jumps 21px -> 31px between them:
    69.3 / 47.0 / 47.0 cpl at 1280 / 1920 / 2560. */
-#phase-2 .bp__lede { margin-top: clamp(1.1rem, 1.9vw, 2.1rem); max-width: 41rem; }
+/* 41rem is 656px at every viewport this page has: the standfirst measured
+   69cpl at 1280 and 47 at both 1920 and 2560, because a ROOT-relative cap
+   cannot answer a lead that grows. 31em is the measure phases 1, 3, 4 and 5
+   all settled on, it is 655px at 1280 (one pixel off what shipped), and it
+   holds 69cpl at every width. */
+#phase-2 .bp__lede { margin-top: clamp(1.1rem, 1.9vw, 2.1rem); max-width: 31em; }
 
 /* PIECE 05's re-cut ghost clamp — `clamp(6rem, 13vw, 15rem)`, chosen so a
    240px watermark would start just past a 41rem standfirst — is gone. It
@@ -3455,7 +3734,7 @@ section { position: relative; padding-block: var(--pad-y); }
 /* The material's name, on the inlet it enters by. */
 .chain__src {
   position: absolute; left: 0; bottom: 50%; margin-bottom: 0.5rem;
-  font-size: clamp(0.95rem, 1.05vw, 1.3rem); font-weight: 700;
+  font-size: clamp(0.95rem, 0.414rem + 0.669vw, 1.51rem); font-weight: 700;
   line-height: 1.2; letter-spacing: -0.01em; color: var(--deep);
   white-space: nowrap;
 }
@@ -3498,11 +3777,11 @@ section { position: relative; padding-block: var(--pad-y); }
 /* --green is 3.59:1 on cream: it passes 3:1 for LARGE text only. 1.7rem at
    700 weight is 27.2px, and the clamp never goes below it. */
 .chain__key b {
-  font-size: clamp(1.7rem, 2.5vw, 3rem); font-weight: 700; line-height: 1;
+  font-size: clamp(1.7rem, min(2.5vw, 1.5rem + 1.25vw), 3.54rem); font-weight: 700; line-height: 1;
   letter-spacing: -0.02em; color: var(--green);
 }
 .chain__key span {
-  font-size: clamp(1rem, 1.05vw, 1.35rem); font-weight: 700;
+  font-size: clamp(1rem, 0.489rem + 0.639vw, 1.53rem); font-weight: 700;
   line-height: 1.25; letter-spacing: -0.01em; color: var(--deep);
 }
 
@@ -3599,7 +3878,12 @@ section { position: relative; padding-block: var(--pad-y); }
   /* The discussion keeps the left margin every other full-width row in this
      phase is set on — head, figure, caption — so the type reads as one
      column all the way down and the photograph closes on the right. */
-  #phase-2 { grid-template-columns: minmax(0, 30rem) minmax(0, 1fr); }
+  /* 28.25em, not 30rem. The comment above promises "65.8 / 63.9 cpl at every
+     width"; a `rem` track delivers 480px at every width, which is that cpl
+     only while the type is frozen at 17px. In the paragraph's own em it is
+     480px at 1280 — the same column, to a quarter of a pixel — and 65.8cpl
+     from 1280 to 2560 instead of 65.8 falling to 54.9. */
+  #phase-2 { grid-template-columns: minmax(0, 28.25em) minmax(0, 1fr); }
   #phase-2 .phase__head { grid-column: 1 / -1; grid-row: 1; }
   #phase-2 .chain { grid-column: 1 / -1; grid-row: 2; }
   #phase-2 .bp__body { grid-column: 1; grid-row: 3; max-width: none; }
