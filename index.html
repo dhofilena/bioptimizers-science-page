@@ -476,24 +476,67 @@
 
 
 <!-- ============ PIECE 10: LIVING PROOF — START ============ -->
+<!--
+  WE CANNOT CITE ANYONE, SO WE CITE THE ONLY THING WE EARNED. There are no
+  press logos and no named members in this source, and inventing them would be
+  fabrication. What the page does own is a number it spent nine screens
+  earning: PIECE 09's register hands the reader "1.2M+ / People Helped" as the
+  last line of its ledger, and the second claim below says that same figure
+  again, in words. So the two sections are drawn as ONE OBJECT rather than two
+  neighbours — the ledger's rules cross the join, enter this section from the
+  same page edge at the same weight, carry the three claims, and stop dead
+  against the photograph of one of the 1.2 million. The figure itself is set
+  in the register's own ink (white, 700, tabular) inside the sentence, so the
+  eye catches it as the same object returning. That is the page's established
+  device, not a new one: 80,648 is promised in --vital by the manifesto and
+  banked in white by the register, 9,400px apart.
+
+  ONE BESPOKE GESTURE, SPENT ONCE, ON THE THESIS. The lede is the emotional
+  payoff of the whole page, so it is the only thing here with a gesture of its
+  own: two sentences, two masks, two CLIMBs on --ease-climb. The manifesto
+  asks the page's question in white type climbing out of a mask; this answers
+  it in white type climbing out of a mask, at the same curve. Two reveals
+  become one rhyme. The split is also what kills the 1920 widow structurally —
+  each sentence owns its own line box, so "day." can no longer be orphaned.
+
+  THE CLAIMS ARE NOT A CHECKLIST. Three ✓ ticks set all three at one weight
+  and made the section a bulleted list. They are three different kinds of
+  statement, so they are set as two: the two EVIDENCE claims are ruled entries
+  in the register's body size, and the third — the shortest, most quotable,
+  and the only one that faces forward — is set up as the closing line and runs
+  straight into the CTA. Sensation, then evidence, then the turn.
+-->
 <section class="proof" id="living-proof" aria-labelledby="proof-heading">
   <div class="proof__type">
     <h2 id="proof-heading" class="proof__title" data-reveal>Living Proof</h2>
-    <p class="proof__lede" data-reveal data-reveal-delay="1">The final test doesn't happen in the BIOLab. It's how you move, feel, and perform every day.</p>
+    <!-- The masks are spans and the moving elements are the <i>s, which is the
+         hero's idiom. [data-reveal] sits on the <i> — the thing that actually
+         transforms — so the noscript floor and the reduced-motion escape in
+         <head> reach it without a single new line in either. That is the hole
+         that shipped twice: a transform on a DESCENDANT of the revealed
+         element, which neither override can see. There is no descendant here.
+         The two spans are kept on one source line, separated by one space, so
+         textContent is byte-identical to the single sentence it was. -->
+    <p class="proof__lede"><span class="proof__mask"><i class="proof__line" data-reveal data-reveal-delay="1">The final test doesn't happen in the BIOLab.</i></span> <span class="proof__mask"><i class="proof__line" data-reveal data-reveal-delay="2">It's how you move, feel, and perform every day.</i></span></p>
     <!-- One list, one arrival. Three ruled claims dealt 0/110/220ms apart was
          the page's generic move performed on its most important promise; the
          list is a single ruled object and now behaves like one. -->
-    <ul class="proof__list" data-reveal data-reveal-delay="2">
-      <li>You enjoy deeper, more restorative sleep. Digestion feels smoother. Stress feels more manageable and focus feels sharper.</li>
-      <li>For over 20 years, we've helped 1.2 million people on their journey to live a stronger, longer, better life.</li>
-      <li>Now we're turning what's possible into what's next.</li>
+    <ul class="proof__list" data-reveal data-reveal-delay="3">
+      <li class="proof__claim">You enjoy deeper, more restorative sleep. Digestion feels smoother. Stress feels more manageable and focus feels sharper.</li>
+      <li class="proof__claim">For over 20 years, we've helped <b class="proof__figure">1.2 million</b> people on their journey to live a stronger, longer, better life.</li>
+      <li class="proof__claim proof__claim--turn">Now we're turning what's possible into what's next.</li>
     </ul>
-    <a class="btn" aria-label="Learn More — shop BIOptimizers" href="https://bioptimizers.com/shop" data-reveal>Learn More</a>
+    <a class="btn" aria-label="Learn More — shop BIOptimizers" href="https://bioptimizers.com/shop" data-reveal data-reveal-delay="3">Learn More</a>
   </div>
+  <!-- width/height were 978x674. The file is 1010x801 — the stylesheet's own
+       corner-crop note has said "a 1010px-wide plate" all along. A wrong
+       intrinsic ratio is a real cost, not a typo: it is what the browser
+       reserves for a lazy, below-the-fold image, so the placeholder was 27%
+       too short and the page jumped when the photograph arrived. -->
   <figure class="proof__plate" data-reveal>
     <img src="./bioptimizers-athlete-holding-pink-bottle-d-fb93f9e144872e2820b49a8d90e8c73e.png"
          alt="Athlete holding a BIOptimizers bottle with pink drink"
-         width="978" height="674" loading="lazy" decoding="async">
+         width="1010" height="801" loading="lazy" decoding="async">
   </figure>
 </section>
 <!-- ============ PIECE 10: LIVING PROOF — END ============ -->
