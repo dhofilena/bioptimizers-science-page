@@ -482,9 +482,16 @@
     }
 
     // Four verbs, and every one of them is a transform or an opacity.
-    function charge(n, t) {                       // a vessel bed filling
+    // A vessel's SPECIMEN charging in. It settles from 1.06 DOWN to 1 rather
+    // than growing from 0.9 up: the bed is now a clipping frame with real
+    // footage in it, and any scale below 1 would pull the matter off the
+    // vessel wall and show a rim of empty --deep all the way round while it
+    // arrived. Scaling down into place keeps the frame covered at every
+    // instant, and reads as material settling rather than a box shrinking.
+    function charge(n, t) {
       if (!n) return;
-      n.style.transform = 'scale3d(' + (0.9 + 0.1 * t).toFixed(4) + ',' + (0.9 + 0.1 * t).toFixed(4) + ',1)';
+      var s = (1.06 - 0.06 * t).toFixed(4);
+      n.style.transform = 'scale3d(' + s + ',' + s + ',1)';
       n.style.opacity = t.toFixed(3);
     }
     function rise(n, t) {                         // a yield column
@@ -549,7 +556,10 @@
       ticking = false;
       // If the OS setting flips mid-session, stop scrubbing and leave the
       // finished composition standing rather than wherever the scroll was.
-      if (reduceMotion.matches) { scene.classList.remove('is-live'); render(1); return; }
+      // Includes stopping the specimens: if the OS setting flips mid-session the
+      // clips have to stop too, not just the scrub, or "reduce motion" would
+      // leave three videos looping in the vessels.
+      if (reduceMotion.matches) { specimens(false); scene.classList.remove('is-live'); render(1); return; }
       // Self-heal. A resize event can arrive while the viewport still reports
       // zero, and no second event follows; the scene would then be pinned at
       // the wrong width forever. Two integer compares a frame is cheaper than
@@ -570,6 +580,43 @@
       requestAnimationFrame(frame);
     }
     function onResize() { remeasure(); last = -1; onScroll(); }
+
+    /* THE SPECIMENS. This code is below the reduced-motion return above, and
+       that placement IS the reduced-motion guarantee: a reader who asked for
+       less motion never reaches it, so nothing ever calls play() and the
+       vessels stand on their poster frames. The markup carries no `autoplay`
+       attribute for the same reason one level down — with scripts off, there
+       is nothing to start the clips at all.
+
+       Bytes are not spent until the scene is worth loading. The clips ship
+       preload="none", so a reader who never scrolls this far downloads three
+       posters and no video; the observer promotes them to preload="auto" and
+       starts them ~300px before the scene arrives, and pauses them the moment
+       it leaves so three looping videos are never decoding behind the rest of
+       the page. */
+    var vids = scene.querySelectorAll('video');
+    function specimens(on) {
+      for (var i = 0; i < vids.length; i++) {
+        var v = vids[i];
+        if (on) {
+          if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
+          // Autoplay can still be refused (power saving, engine policy). The
+          // refusal is not an error worth surfacing: the poster is already the
+          // finished still, so the scene simply stays as drawn.
+          var q = v.play();
+          if (q && q.catch) { q.catch(function () {}); }
+        } else if (!v.paused) {
+          v.pause();
+        }
+      }
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        specimens(entries[entries.length - 1].isIntersecting);
+      }, { rootMargin: '300px 0px' }).observe(scene);
+    } else {
+      specimens(true);
+    }
 
     scene.classList.add('is-live');
     remeasure();

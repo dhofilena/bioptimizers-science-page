@@ -51,6 +51,15 @@
      EMPTY apparatus with scripts off — drawn, and carrying nothing. */
   .chain__flow { transform: none !important; }
   .chain__mat { opacity: 1 !important; }
+  /* PIECE 07 — the specimens inside the vessels. These already rest correctly
+     without a rule: the scrub writes transform and opacity as INLINE styles
+     from initSynergy, so with no script there is nothing to undo and the CSS
+     defaults (opacity 1, no transform) are the finished frame. It is stated
+     anyway because the two holes this block has already had were both a
+     descendant transform whose resting value lived somewhere a later edit
+     could move it. If anyone ever gives .vessel__vid an opening crop in the
+     stylesheet, the floor is already written. */
+  .vessel__vid { opacity: 1 !important; transform: none !important; }
 </style></noscript>
 </head>
 <body>
@@ -329,7 +338,8 @@
         </div>
 
         <figure class="phase__plate" data-reveal>
-          <img src="./laboratory-pipette-drop-test-tubes-d-7fc4d93f0f60fce5c1e908bc899cf7d3.png"
+          <img class="plate--breathe plate--breathe-a"
+               src="./laboratory-pipette-drop-test-tubes-d-7fc4d93f0f60fce5c1e908bc899cf7d3.png"
                alt="Laboratory pipette dropping liquid into test tubes"
                width="761" height="677" loading="lazy" decoding="async">
         </figure>
@@ -464,7 +474,8 @@
           <p>That's why Berberine Breakthrough isn't a single ingredient, but a blend of 10 ingredients designed to support multiple aspects of glucose metabolism.</p>
         </div>
         <figure class="phase__plate bp__plate" data-reveal>
-          <img src="./microscopic-plant-cells-chloroplasts-m-5b2cbe44cb7ab2a94076068d9a5066e8.png"
+          <img class="plate--breathe plate--breathe-b"
+               src="./microscopic-plant-cells-chloroplasts-m-5b2cbe44cb7ab2a94076068d9a5066e8.png"
                alt="Microscopic view of plant cells with green chloroplasts"
                width="489" height="516" loading="lazy" decoding="async">
         </figure>
@@ -535,7 +546,8 @@
           <p class="lead">In formulation, everything starts with the raw material. The wrong source, form, or purity, and the rest doesn't matter. Once we know what a formula needs, we look for the best ingredients — not the cheapest or easiest to source. The best.</p>
         </div>
         <figure class="phase__plate hunt__plate" data-reveal>
-          <img src="./biolab-ingredient-testing-cherry-pour-d-b2fbfdc410f5ce7567de5480a527dbaa.png"
+          <img class="plate--breathe plate--breathe-c"
+               src="./biolab-ingredient-testing-cherry-pour-d-b2fbfdc410f5ce7567de5480a527dbaa.png"
                alt="Pink liquid poured during BIOLab ingredient testing"
                width="519" height="656" loading="lazy" decoding="async">
         </figure>
@@ -631,11 +643,24 @@
                 <span class="rig__lead rig__lead--4" aria-hidden="true"></span>
                 <span class="rig__divide" aria-hidden="true"></span>
 
-                <!-- VESSELS. Identical peers; only the bed granularity differs —
-                     coarse (broken down), fine (released), wall-bound (colonised). -->
-                <span class="vessel vessel--1" aria-hidden="true"><span class="vessel__bed" data-syn="bed-1"></span><span class="vessel__pipe"><span data-syn="flow-1"></span></span></span>
-                <span class="vessel vessel--2" aria-hidden="true"><span class="vessel__bed" data-syn="bed-2"></span><span class="vessel__pipe"><span data-syn="flow-2"></span></span></span>
-                <span class="vessel vessel--3" aria-hidden="true"><span class="vessel__bed" data-syn="bed-3"></span><span class="vessel__pipe"><span data-syn="flow-3"></span></span></span>
+                <!-- VESSELS. Identical peers; only the SPECIMEN differs — eroded
+                     (broken down), released (a plume), wall-bound (colonised).
+                     Each vessel holds real matter now, masked to the vessel and
+                     sitting inside the drawn chassis, which is untouched.
+
+                     NO `autoplay` ATTRIBUTE, DELIBERATELY. Playback is started by
+                     initSynergy and by nothing else, which is what makes the two
+                     escape hatches on this page actually hold: with scripts off
+                     there is no attribute to fire, so the vessels rest on their
+                     poster frames and the plate is a finished still; and a reader
+                     on prefers-reduced-motion is served by the same fact, because
+                     initSynergy returns before it ever reaches the videos. An
+                     `autoplay` attribute would play through BOTH of those. The
+                     clips are muted/playsinline/loop so that when they do run
+                     they cannot take sound, focus or the screen. -->
+                <span class="vessel vessel--1" aria-hidden="true"><span class="vessel__bed"><video class="vessel__vid" data-syn="bed-1" src="./vessel-acid-erosion.mp4" poster="./vessel-acid-erosion.jpg" muted playsinline loop preload="none" tabindex="-1" disablepictureinpicture></video></span><span class="vessel__pipe"><span data-syn="flow-1"></span></span></span>
+                <span class="vessel vessel--2" aria-hidden="true"><span class="vessel__bed"><video class="vessel__vid" data-syn="bed-2" src="./vessel-enzyme-plume.mp4" poster="./vessel-enzyme-plume.jpg" muted playsinline loop preload="none" tabindex="-1" disablepictureinpicture></video></span><span class="vessel__pipe"><span data-syn="flow-2"></span></span></span>
+                <span class="vessel vessel--3" aria-hidden="true"><span class="vessel__bed"><video class="vessel__vid" data-syn="bed-3" src="./vessel-probiotic-colony.mp4" poster="./vessel-probiotic-colony.jpg" muted playsinline loop preload="none" tabindex="-1" disablepictureinpicture></video></span><span class="vessel__pipe"><span data-syn="flow-3"></span></span></span>
 
                 <!-- YIELD. Three equal contributions; then the output column:
                      those same three stacked to the dashed level, plus surplus. -->
