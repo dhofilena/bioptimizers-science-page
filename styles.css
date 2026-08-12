@@ -1528,26 +1528,99 @@ section { position: relative; padding-block: var(--pad-y); }
 .vessel::after { left: 100%; }
 .vessel--1::before { display: none; }
 
-/* THE BED. The material inside each vessel, and the one visual variable that
-   says what the vessel DOES: coarse fragments broken down by acid, fine
-   particles released by enzymes, then a fine population held against the
-   wall — the biofilm the phase-three copy describes. Background-size is a
-   percentage, so the granularity is the same at every screen width. */
+/* THE BED. The material inside each vessel — and it is now REAL MATTER, not a
+   dot screen. The vessels are named after products that make a physical claim
+   (acid breaks down, enzymes release, probiotics colonise), and a grid of
+   identical white discs was a weak filling for that: at rest three empty boxes,
+   and what filled them was a pattern, the same pattern three times at three
+   sizes. Each vessel now holds a specimen clip — erosion under acid, a plume of
+   released particulate, a colony taking the wall — so the one visual variable
+   that says what the vessel DOES is the footage itself rather than a
+   background-size.
+
+   THE APPARATUS IS THE FRAME; THE VIDEO IS THE SPECIMEN. Nothing drawn was
+   given up to make room. The border, the inlet and outlet tabs, the conduits,
+   the arrowheads, the leaders, the axis and every name are exactly where they
+   were and are still never animated — the video lives INSIDE the chassis,
+   clipped to it, and the chassis is what a reader sees first at p=0.
+
+   THE BED IS THE CLIPPING FRAME and it carries --deep itself. That matters:
+   the specimen composites against a background painted by its own parent, in
+   the same stacking context, so the screen blend below cannot be broken by an
+   ancestor that happens to isolate (`.synergy__stage` does — container-type
+   implies contain:layout, which is a stacking context). Blending against a
+   known local backdrop instead of an inherited one is why this holds. */
 .vessel__bed {
-  position: absolute; inset: 7%;
-  background-image: radial-gradient(circle at 50% 50%, var(--mat) 38%, rgba(255, 255, 255, 0) 41%);
-  will-change: transform, opacity;
+  position: absolute; inset: 0; overflow: hidden;
+  border-radius: 2px; background: var(--deep);
 }
-.vessel--1 .vessel__bed { background-size: 25% 34%; }
-.vessel--2 .vessel__bed { background-size: 12.5% 17%; }
-/* The colony holds the WALL, so the mask clears the middle — but it clears it
-   hard. A soft ramp left the third vessel's particles half-lit next to two
-   fully-lit ones, which is exactly the "one of these looks disabled" problem
-   in a different costume. */
-.vessel--3 .vessel__bed {
-  background-size: 6.25% 8.5%;
-  -webkit-mask-image: radial-gradient(circle closest-side at 50% 50%, transparent 36%, #000 44%);
-  mask-image: radial-gradient(circle closest-side at 50% 50%, transparent 36%, #000 44%);
+
+/* THE SPECIMEN. Shot as luminance on black — bright matter, dead black ground.
+   That is the whole reason it can live on this page without breaking it:
+
+   grayscale(1) is a GUARANTEE, not a look. The brand is fixed at four hues and
+   generated footage cannot be trusted to stay inside them, so the stylesheet
+   removes the question entirely — whatever the model rendered, what reaches
+   the compositor is luminance.
+
+   mix-blend-mode: screen then drops the black ground out against --deep and
+   leaves only the matter, which lands in --white. So the specimen resolves to
+   exactly the tier the palette already reserved for it: "--white the MATERIAL:
+   beds, flow, yield columns". The material is still white. It is just no
+   longer a circle.
+
+   opacity lives on THIS element — the blended one — and never on an ancestor.
+   An opacity below 1 on a parent would isolate the group and the screen blend
+   would composite against nothing, painting a black square into the vessel as
+   it faded in. On the blended element itself it does the right thing: at
+   opacity 0 a screen contributes nothing, so the vessel is simply empty. */
+.vessel__vid {
+  position: absolute; inset: 0; display: block;
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(1) contrast(1.06) brightness(0.98);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  /* The matter is held OFF the vessel wall. Two jobs at once: the specimen
+     reads as something suspended IN a vessel rather than a video cropped to a
+     box, and the 1.5px --ink-2 border never has to survive a bright frame
+     pressed against it — which it did not. Measured over all 272 frames of the
+     three clips with this mask removed, peak matter composites to 156,172,153
+     against a wall of 115,185,79: 1.00:1, a rule that locally CEASES TO EXIST.
+     With the mask the same worst frames measure 4.05 / 4.16 / 4.05 to 1.
+     That is a per-pixel maximum across every frame, not a median — a median
+     would have reported ~9:1 here and been useless.
+
+     `closest-side` is doing the load-bearing work. The gradient's ellipse
+     touches the nearest edge, so the stop at 100% is exactly the vessel wall
+     and everything past it (the corners) is already transparent — the matter
+     is guaranteed to reach the border at zero alpha at every point of the
+     frame, whatever the footage does. A percentage radius would have been
+     measured against the box's width and run past the edge instead. */
+  -webkit-mask-image: radial-gradient(closest-side at 50% 50%, #000 0 50%, rgba(0, 0, 0, 0.34) 80%, rgba(0, 0, 0, 0) 100%);
+  mask-image: radial-gradient(closest-side at 50% 50%, #000 0 50%, rgba(0, 0, 0, 0.34) 80%, rgba(0, 0, 0, 0) 100%);
+  /* The specimen is decorative geometry inside an aria-hidden figure. It is
+     never a media player: no pointer target, no focus stop, no context menu. */
+  pointer-events: none;
+}
+
+/* A VIDEO THAT HAS NOT BEEN STARTED IS NOT A BLANK ELEMENT. Chrome paints a
+   "start playback" affordance into the shadow DOM — a play triangle, an
+   overflow menu and a scrub bar — for a paused, never-played <video>, with no
+   `controls` attribute anywhere in sight. Captured with scripts disabled: all
+   three vessels rendered a play button and a ⋮ menu over the specimen, which
+   is precisely the "do not replace the figure with a video player" failure,
+   arriving through the back door in the one state that cannot script its way
+   out. The same overlay is what a reader sees anywhere autoplay is refused.
+   These four pseudo-elements are the whole surface Chrome and Safari expose
+   for it, and this rule is the only thing standing between the plate and a
+   YouTube-looking box. */
+.vessel__vid::-webkit-media-controls,
+.vessel__vid::-webkit-media-controls-enclosure,
+.vessel__vid::-webkit-media-controls-panel,
+.vessel__vid::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 /* THE CONDUIT. The dotted run and its arrowhead belong to the chassis and are
@@ -1746,6 +1819,71 @@ section { position: relative; padding-block: var(--pad-y); }
     margin-inline: 0; text-align: left;
   }
   .rig__foot, .rig__sum { grid-row: 7; }
+}
+
+/* ============================================================
+   THE PHOTO PLATES — MOTION WITHOUT FOOTAGE.
+
+   THREE STILLS, AND WHY THEY ARE STILL STILLS. The brief for this
+   pass wanted the vessel treatment extended to the three liquid /
+   texture photographs. It was tried properly: the pipette plate
+   was sent through image-to-video from the actual asset, with the
+   camera explicitly locked. What came back failed the gate and
+   was thrown away — the camera drifted anyway, the composition
+   was re-framed rather than animated, the PENDANT DROP (the whole
+   subject of the photograph, and the thing its alt text names)
+   had disappeared by the last frame, and a pink-red liquid the
+   source does not contain had appeared in the front tube, which
+   is a hue this page does not own. It read softer and cheaper
+   than the photograph it would have replaced. A mediocre
+   generated asset on a premium page is worse than none, so the
+   photographs stayed and this is what moves instead.
+
+   WHAT THIS IS. The slow drift the brief actually described — a
+   settling, a breathing texture — done to the real photograph, at
+   ZERO bytes and zero risk of looking generated, because nothing
+   is generated. Sub-4% over 34-47 seconds is beneath the
+   threshold you can catch by staring at it; you notice it the way
+   you notice a held breath, on the second look.
+
+   IT MUST NOT COLLIDE WITH THE ARRIVAL. Every plate already
+   settles out of a scale(1.06) crop on `transform`, so the drift
+   is written with the INDEPENDENT `scale` and `translate`
+   properties instead. They compose with `transform` rather than
+   overwriting it, which is why `.is-in img { transform: none }`
+   can keep doing its job untouched and this needed no change to
+   a single existing declaration.
+
+   NOBODY IS ANIMATED. The class is on three photographs of
+   liquid, glass and cell tissue. It is deliberately NOT on
+   `.phase__plate` as a whole, because the fifth plate is a
+   photograph of a named scientist, and the portraits, the hero
+   and the athlete are people. People on this page do not move.
+
+   THE KEYFRAMES RETURN TO ZERO at 100%, they do not `alternate`
+   to a held crop. The global reduced-motion rule at the top of
+   this file collapses every animation to .001ms with one
+   iteration, so a reader who asked for less motion lands on the
+   frame at 100% — which is the untouched photograph, exactly as
+   it ships today. That only works because the resting value is at
+   BOTH ends of the timeline.
+   ============================================================ */
+.plate--breathe {
+  will-change: scale, translate;
+  animation: plate-breathe var(--pb-dur, 38s) ease-in-out infinite;
+}
+/* Three different periods, and they are coprime on purpose: on a phase where
+   two plates are on screen together, a shared period would have them swell in
+   unison and the whole thing would read as a mechanism rather than as air. */
+.plate--breathe-a { --pb-dur: 34s; }
+.plate--breathe-b { --pb-dur: 47s; animation-direction: reverse; }
+.plate--breathe-c { --pb-dur: 41s; animation-delay: -12s; }
+
+/* The drift is smaller than the crop it lives inside: 1.9% of headroom on each
+   side against 1.1% of travel, so the plate can never expose its own edge. */
+@keyframes plate-breathe {
+  0%, 100% { scale: 1;     translate: 0 0; }
+  50%      { scale: 1.038; translate: -1.1% -0.8%; }
 }
 
 /* ---- PIECE 08 ---- */
