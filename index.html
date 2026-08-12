@@ -28,6 +28,13 @@
   .person__frame img { transform: scale(1.10) translateY(var(--ty, 0)) !important; }
   .phase__plate img { transform: none !important; }
   .proof__plate img { transform: scale(1.05) !important; }
+  /* PIECE 12. Two transforms in the finale wait on .is-in and both live on a
+     DESCENDANT of the element carrying [data-reveal], so the rule above misses
+     them: the three doors' hairlines are drawn with scaleX(0 -> 1), and each
+     photograph settles out of a scale(1.12) crop. With scripts off that left
+     three unruled, over-zoomed tiles. These are the finished stills. */
+  .door__row::before { transform: none !important; }
+  .door__frame img { transform: scale(1.28) !important; }
 </style></noscript>
 </head>
 <body>
@@ -562,21 +569,82 @@
 
 
 <!-- ============ PIECE 12: FIND YOUR BREAKTHROUGH — START ============ -->
+<!-- THE LABELS ARE BURNED INTO THE PIXELS, SO THE PIXELS GET CROPPED.
+     Each PNG carries its own label — "SHOP SLEEP >", "SHOP DIGESTION +
+     ENZYMES >", "SHOP STRESS + MOOD >" — as white display type across the
+     BOTTOM-LEFT of the frame (measured in the source: rows 628-698 of 747 on
+     the enzymes plate, 662-687 on the other two). The build that shipped tried
+     to rescue them with `.door::after`, a gradient running from 42% opacity at
+     the TOP of the tile to zero at 42% height. It scrimmed empty sky. Every
+     label sat 84-93% down the frame, in the half the scrim never reached, and
+     the enzymes label crossed a cream canvas tote: measured on the rendered
+     1920 screenshot, white glyph against the ground it actually touches came
+     out at 2.68:1, and 1.50 / 1.58:1 on the other two where the type crossed
+     white piping and grey concrete. (A median sample of the same band reads
+     10-17:1, which is how that band passed an earlier review — the median is
+     the dark part of the photograph, not the part under the letters.)
+
+     You cannot edit a raster, and you cannot scrim your way out of type that
+     sits on both the darkest and the lightest thing in the picture. So the
+     labels come out of the photograph entirely. The frame is cropped above the
+     baked band (see --door-crop in the stylesheet for the arithmetic) and the
+     same words are set as LIVE TEXT above each photograph, on cream, where
+     they measure 12.60:1 and are selectable, translatable and resizable.
+
+     The alt attribute keeps the string verbatim, so the link's accessible name
+     is unchanged and the copy gate still sees it; the visible span repeating it
+     is aria-hidden so a screen reader hears "Shop Sleep" once, not twice. No
+     new copy: the three visible labels ARE the three alts, and the arrow is a
+     glyph, the same one .btn draws.
+
+     NOT CHANGED, FLAGGED: door three is labelled "Shop Stress + Mood" and
+     points at /collections/energy. That mismatch is in the source and may be a
+     deliberate merchandising alias; a URL is not ours to silently rewrite.
+     Left exactly as it was — someone with access to the shop should confirm it.
+
+     Intrinsic sizes were wrong: every img declared 652x996 against files that
+     are really 647x747, so the browser reserved a box 33% too tall and each row
+     jumped ~238px on load. Corrected to the real dimensions. -->
 <section class="finder" id="find-breakthrough" aria-labelledby="finder-heading">
-  <h2 id="finder-heading" class="finder__title" data-reveal>Find Your Breakthrough</h2>
-  <div class="finder__grid">
-    <a class="door" href="https://bioptimizers.com/shop/collections/sleep?cbanner=sleep" data-reveal>
-      <img src="./shop-sleep-pink-beverage-d-e8450b191bbbfcc45860949e409f4690.png"
-           alt="Shop Sleep" width="652" height="996" loading="lazy" decoding="async">
-    </a>
-    <a class="door" href="https://bioptimizers.com/shop/collections/enzymes" data-reveal data-reveal-delay="1">
-      <img src="./shop-digestion-enzymes-berberine-d-5edf58bc96f5d52f2417a24e3b35e085.png"
-           alt="Shop Digestion + Enzymes" width="652" height="996" loading="lazy" decoding="async">
-    </a>
-    <a class="door" href="https://bioptimizers.com/shop/collections/energy" data-reveal data-reveal-delay="2">
-      <img src="./shop-stress-mood-battle-ropes-d-64231ee0e4cb96466bceee32bbd1d14b.png"
-           alt="Shop Stress + Mood" width="652" height="996" loading="lazy" decoding="async">
-    </a>
+  <div class="shell">
+    <h2 id="finder-heading" class="finder__title" data-reveal>Find Your Breakthrough</h2>
+
+    <!-- ONE reveal for the whole row, not one per tile. It carries no fade of
+         its own (see the stylesheet); it exists so three rules and three
+         photographs can arrive as a single composition. -->
+    <div class="finder__grid" data-reveal>
+      <a class="door" href="https://bioptimizers.com/shop/collections/sleep?cbanner=sleep">
+        <span class="door__row">
+          <span class="door__name" aria-hidden="true">Shop Sleep</span>
+          <span class="door__go" aria-hidden="true">&#8594;</span>
+        </span>
+        <span class="door__frame">
+          <img src="./shop-sleep-pink-beverage-d-e8450b191bbbfcc45860949e409f4690.png"
+               alt="Shop Sleep" width="647" height="747" loading="lazy" decoding="async">
+        </span>
+      </a>
+      <a class="door" href="https://bioptimizers.com/shop/collections/enzymes">
+        <span class="door__row">
+          <span class="door__name" aria-hidden="true">Shop Digestion + Enzymes</span>
+          <span class="door__go" aria-hidden="true">&#8594;</span>
+        </span>
+        <span class="door__frame">
+          <img src="./shop-digestion-enzymes-berberine-d-5edf58bc96f5d52f2417a24e3b35e085.png"
+               alt="Shop Digestion + Enzymes" width="647" height="747" loading="lazy" decoding="async">
+        </span>
+      </a>
+      <!-- slug flagged above, deliberately unchanged -->
+      <a class="door" href="https://bioptimizers.com/shop/collections/energy">
+        <span class="door__row">
+          <span class="door__name" aria-hidden="true">Shop Stress + Mood</span>
+          <span class="door__go" aria-hidden="true">&#8594;</span>
+        </span>
+        <span class="door__frame">
+          <img src="./shop-stress-mood-battle-ropes-d-64231ee0e4cb96466bceee32bbd1d14b.png"
+               alt="Shop Stress + Mood" width="647" height="747" loading="lazy" decoding="async">
+        </span>
+      </a>
+    </div>
   </div>
 </section>
 <!-- ============ PIECE 12: FIND YOUR BREAKTHROUGH — END ============ -->

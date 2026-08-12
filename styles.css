@@ -1864,20 +1864,194 @@ section { position: relative; padding-block: var(--pad-y); }
 
 /* ============================================================
    PIECE 12 — FIND YOUR BREAKTHROUGH
+
+   The room the reader is let out into. It follows the page's
+   longest dark run — 3 movements of --deep down to --deep-3 —
+   so it stays cream, and it is the last thing anyone sees after
+   13,000px of argument about rigour. It is also, apart from two
+   buttons, the only place on the page a persuaded reader can
+   actually act. Three cropped photographs in a row did not say
+   that; a register of three named doors does.
+
+   ---- THE LABELS WERE IN THE PIXELS. NOW THEY ARE TEXT. ----
+   See the HTML comment for the full measurement. Short version:
+   all three PNGs carry their label baked in across the bottom
+   of the frame, the shipped scrim ran the wrong way (top 42% of
+   a tile whose type sits at 84-93%), and where the white glyphs
+   crossed a cream tote / white piping / grey concrete the
+   RENDERED contrast was 2.68 / 1.50 / 1.58:1.
+
+   You cannot re-set type that is already pixels, and no scrim
+   saves type that crosses both the lightest and the darkest
+   thing in one picture. So the baked band is cropped off and
+   the words are set live, on cream, above each photograph.
+
+   THE CROP IS ARITHMETIC, NOT TASTE. The frame keeps the
+   plate's OWN ratio — 647/747 — so object-fit has nothing to
+   correct and one uniform zoom, pinned to the top edge, does
+   all the work:
+       visible = 1 / 1.28 = 78.1% of the source, both axes
+   The frame therefore ends at source row 583; the highest baked
+   glyph on any of the three plates starts at row 628. That is
+   44 rows of clearance — 37px rendered at 1920, 49px at 2560 —
+   and it only widens under the hover zoom (1.33 -> row 561) and
+   under the arrival (1.35 -> row 553). Verified on all three
+   plates at every breakpoint below.
+
+   Keeping the plate's ratio also means the 22% the zoom takes
+   off the sides is a real composition decision rather than a
+   side effect, and on all three it is an improvement: the
+   bottle centres, the portrait tightens, the rope reads. And it
+   buys back the shape the section needs — a door is taller than
+   it is wide, and a frame cropped only along the bottom would
+   have left three near-square thumbnails.
+
+   The zoom does a second job. The PNGs have rounded corners
+   baked in as transparency, r = 14px of 647 — the same defect
+   PIECE 11's poster documents — and a frame filled edge to edge
+   would notch them into --cream-warm. 14% of overscan per side
+   puts the source's own corners 59px outside the frame at 1920
+   against an arc that renders 11.8px. It clears everywhere,
+   which is why the crop is permanent rather than an arrival
+   trick. Cost, stated: at 2560 the visible 505 source px are
+   drawn across 559 css px, a 10% upscale. On a photograph, at
+   that size, that is the cheaper half of the trade.
+
+   ---- ONE ARRIVAL, NOT THREE ----
+   This shipped as four [data-reveal] elements, three of them the
+   same 44px fade at 0 / 110 / 220ms. It is now two, and only one
+   of them fades. The grid carries [data-reveal] purely to hand
+   .is-in to its children, and the section's motion is the page's
+   own vocabulary, used once each:
+     ARRIVE  the title rises; the photographs settle out of a
+             crop, exactly as .film, .phase__plate and
+             .proof__plate do — PHOTOGRAPHS DO NOT SLIDE
+     DRAW    three hairlines rule themselves left to right, the
+             gesture the spine's fill and the roster rule use.
+             The page's last act is to rule its final three doors.
+   Nothing was re-cut. Two fades were removed.
+
+   ---- FRAME ----
+   The old section put the h2 in a --shell box and let the grid
+   run 0 -> 1920, which is the round-3 complaint in one element:
+   content clustered, band stretched. Title and doors now share
+   one .shell, so both grow 1240 / 1498 / 1900 and both stop on
+   the same two pixels at every width.
    ============================================================ */
 .finder { background: var(--cream); }
 .finder__title {
   font-size: var(--t-h1); font-weight: 700; line-height: 1; letter-spacing: -0.035em;
-  text-align: center; max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter);
+  text-align: center;
 }
-.finder__grid { margin-top: clamp(3rem, 6vw, 5rem); display: grid; gap: 1px; background: var(--dark-12); }
-.door { position: relative; display: block; overflow: hidden; background: var(--cream-warm); }
-.door::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, rgba(16,54,8,.42) 0%, rgba(16,54,8,0) 42%);
+
+/* Stacked and generous on one column; the name is large here because the
+   tile is the full measure of the screen. */
+.finder__grid {
+  --door-name: clamp(1.25rem, 4.4vw, 1.9rem);
+  margin-top: clamp(3rem, 6vw, 5rem);
+  display: grid; gap: clamp(2.5rem, 6vw, 3.5rem);
 }
-.door img { width: 100%; transition: transform 1200ms var(--ease); }
-.door:hover img { transform: scale(1.04); }
+/* The grid is scaffolding for .is-in, not an arrival of its own — the same
+   exemption .phase__plate and .proof__plate take from the shared reveal.
+   Specificity 0,3,0 so it wins wherever this block lands in the cascade. */
+.finder .finder__grid[data-reveal] { opacity: 1; transform: none; transition: none; }
+
+.door { display: grid; grid-template-rows: auto auto; gap: clamp(0.9rem, 1.1vw, 1.4rem); }
+
+/* ---- The ruled row. Name first, then the photograph.
+   The words sit ABOVE the picture on purpose: this is the one place on the
+   page a reader is asked to leave, so what each door leads to is the first
+   thing in the block, not a caption discovered after the image. Three rules
+   across three columns are also the page's own register grammar (PIECE 09),
+   which is what makes a shop row read as part of this document. ---- */
+.door__row {
+  position: relative;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.75em; padding-top: clamp(0.7rem, 0.85vw, 1.1rem);
+  color: var(--deep);   /* 12.60:1 on --cream */
+}
+.door__row::before, .door__row::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  transform-origin: left;
+}
+/* Not --dark-22. That token computes 12.27:1 and RENDERS 1.51:1 over cream —
+   the trap the hero's rule already fell into and climbed out of at line 341.
+   This is that same corrected literal, so the page's first rule and its last
+   rule are one line: --dark at 0.58, rendered 3.52:1. */
+.door__row::before {
+  background: rgba(56, 46, 44, 0.58);
+  transform: scaleX(0);
+  transition: transform 620ms var(--ease-draw);   /* DRAW, same 620 as .spine__fill */
+}
+.finder__grid.is-in .door__row::before { transform: scaleX(1); }
+/* The hover state is the same line drawn again in green, over the top. */
+.door__row::after {
+  background: var(--green); transform: scaleX(0);
+  transition: transform 520ms var(--ease-draw);
+}
+.door:hover .door__row::after,
+.door:focus-visible .door__row::after { transform: scaleX(1); }
+
+.door__name { font-size: var(--door-name); font-weight: 700; line-height: 1.08; letter-spacing: -0.02em; }
+/* --green is 3.59:1 on cream: a pass for LARGE text only, so the glyph is
+   floored at 24px and set bold and never allowed to be small enough to break
+   its own token. Above ~1700 it simply matches the name. */
+.door__go {
+  flex: none; color: var(--green);
+  font-size: max(1.5rem, 1em); font-weight: 700; line-height: 1;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.door:hover .door__go, .door:focus-visible .door__go { transform: translateX(5px); }
+
+/* ---- The photograph. See --door-crop reasoning at the top of this block. ---- */
+.door__frame {
+  display: block; position: relative; overflow: hidden;
+  aspect-ratio: 647 / 747;   /* the plate's own ratio; see the block header */
+  /* If a plate is still loading, or never arrives, the door is a considered
+     panel under a named rule rather than a hole — same call as .film. */
+  background: var(--cream-warm);
+}
+.door__frame img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%;
+  transform: scale(1.35); transform-origin: 50% 0;
+  transition: transform 1200ms var(--ease);   /* ARRIVE, the shop doors' own 1200 */
+}
+.finder__grid.is-in .door__frame img { transform: scale(1.28); }
+.finder__grid.is-in .door:hover .door__frame img,
+.finder__grid.is-in .door:focus-visible .door__frame img { transform: scale(1.33); }
+
+/* Reduced motion: the shared block at the top of this file zeroes every
+   duration and resets [data-reveal], but it cannot reach a transform on a
+   DESCENDANT of the reveal — which is both of mine. Pin them to their resting
+   values here. The hover rule is left alone: with durations at .001ms it is a
+   state change, not motion, and it is the only feedback a pointer gets. */
+@media (prefers-reduced-motion: reduce) {
+  .finder .door__row::before { transform: scaleX(1) !important; }
+  .finder .door__frame img { transform: scale(1.28) !important; }
+  .finder__grid.is-in .door:hover .door__frame img,
+  .finder__grid.is-in .door:focus-visible .door__frame img { transform: scale(1.28) !important; }
+}
+
+/* ---- THREE COLUMNS. Own block, own breakpoint, and deliberately at a
+   specificity of 0,2,0 so it does not depend on where this block sits
+   relative to the shared "TABLET AND UP" rules below. ---- */
+@media (min-width: 700px) {
+  .finder .finder__grid {
+    --door-name: clamp(1.0625rem, 1.42vw, 1.9rem);
+    grid-template-columns: repeat(3, 1fr);
+    /* row gap is the name-to-its-own-photograph distance; column gap is the
+       distance between two doors. They are different jobs, so two values. */
+    gap: clamp(0.85rem, 1vw, 1.3rem) clamp(1.5rem, 2.6vw, 3rem);
+    /* subgrid so all three names share a baseline and all three photographs
+       start on one pixel even when a name wraps to two lines — which
+       "Shop Digestion + Enzymes" does between 700 and ~1150. Without subgrid
+       the doors still span the same two rows, so the tiles stay equal height
+       and only the inner rows drift: the same behaviour as before. */
+    grid-template-rows: auto auto;
+  }
+  .finder .door { grid-row: span 2; grid-template-rows: subgrid; row-gap: inherit; }
+  .finder .door__frame { align-self: start; }
+}
 
 /* ============================================================
    TABLET AND UP
