@@ -859,12 +859,261 @@ section { position: relative; padding-block: var(--pad-y); }
   color: var(--dark); border-left: 2px solid var(--green); padding-left: 1.5rem;
 }
 
-.assay { display: grid; gap: 1px; background: var(--dark-12); }
-.assay__card { background: var(--cream); padding: clamp(1.75rem, 3vw, 2.75rem); display: flex; flex-direction: column; gap: 1.1rem; }
-.assay__card p { color: var(--muted); max-width: 46ch; }   /* was unbounded: 92-99cpl at 2560 */
+/* ============================================================
+   ---- PIECE 06 ---- PHASE THREE, "THE HUNT". THE RECORD.
+   (This block replaces the .assay card rules that used to sit
+   in the shared shell. .assay is used by phase 3 alone.)
+
+   WHAT WAS HERE. `display: grid` + `gap: 1px` over a --dark-12
+   ground: two boxed cards side by side, 15px grey body, a 12px
+   label on top of each, and a 46ch cap bolted on after the cpl
+   measurement came back at 92-99. That is documentation. This
+   phase names chromatography, mass spectrometry, heavy metals,
+   genotoxicity, cytotoxicity, solubility and stability across
+   hundreds of versions, the Bradford assay and biofilm survival
+   — it is the strongest evidence on the page and it read like a
+   spec table.
+
+   WHAT IT IS NOW. A record sheet. The structure IS the design:
+     · a 2px --deep rule opens each stage
+     · a 1px --dark-22 hairline closes every entry, and one
+       closes the sheet
+     · a --green tick is DRAWN in the margin of each entry — the
+       same mark .spine__link::before makes for the step you are
+       on, so "an entry in the record" and "the step you are on"
+       speak the same language
+   The two stages STACK. The copy says "two major stages BEFORE
+   any ingredient earns a place": that is a sequence, and a
+   sequence is vertical. Side by side asserted they were
+   parallel, and it was also the thing the last round named.
+
+   FULL-WIDTH RULES, CAPPED MEASURE, NO WRAPPER ELEMENTS.
+   The rules have to cross the whole column (that is what makes
+   it a sheet) while the prose stops at a real measure. Those
+   two wants fight, because max-width on the <p> would shorten
+   its border too. So the entry is full width and the measure is
+   cut out of it from the right:
+       padding-left : --hunt-indent
+       padding-right: max(0px, 100% - --hunt-measure - --hunt-indent)
+   `100%` in padding resolves against the containing block, so
+   the content box is exactly --hunt-measure at every viewport
+   and the border-box is still the full column. The measure is
+   set in EM, not px or ch — a px cap is a different cpl at
+   every clamp step, which is precisely how the lead ended up at
+   40cpl at 2560.
+
+   CONTRAST, FROM RENDERED PIXELS (no opacity anywhere in here):
+     entry body   --dark  #382e2c on --cream  12.06:1
+     stage name   --deep  #103608 on --cream  12.60:1
+     "STAGE"      --deep                      12.60:1
+     em dash      --muted #6e6663 on --cream   5.23:1
+     "01"         --green #32951c on --cream   3.59:1 — used at
+                  32-52px/700, far past the >=24px bold floor
+                  this stylesheet sets for --green
+     tick         --green as a 2px graphic          3.59:1
+     stage rule   --deep as a 2px graphic          12.60:1
+     entry rule   --hunt-rule as a 1px graphic      3.25:1
+   ============================================================ */
+.phase.phase--wide {
+  /* The phase is four full-width bands, not a two-column card:
+     masthead, prose, specimen plate, record. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.75rem, 2.6vw, 2.9rem);
+  --hunt-bleed: 0px;
+  --hunt-indent: clamp(1.35rem, 2.6vw, 3rem);
+  --hunt-measure: 31em;   /* 31em / 0.448em-per-char ~= 69cpl at every step */
+  /* THE RULE COLOUR IS MEASURED, NOT INHERITED. --dark-22 is the token
+     this page reaches for on hairlines, and screenshot-sampled at 1px on
+     --cream it renders rgb(205,202,199) = 1.52:1 — the same rgba(...,0.22)
+     that was already caught computing 12.27:1 and rendering 1.51:1. On a
+     phase whose structure IS its rules, they are not decoration, so they
+     are stepped to a third derivation of the SAME --dark hue (no new hue,
+     no :root change, declared here) and re-sampled: rgb(142,136,133),
+     3.24:1, past the 3:1 graphics floor. */
+  --hunt-rule: rgba(56, 46, 44, 0.55);
+}
+/* Two rules in the shared desktop block still address this phase
+   (.phase--wide .phase__plate / .phase--wide .assay, both written for the
+   old two-column card layout). They live in PIECE 03's shell, so they are
+   not edited here — they are outranked by the .phase.phase--wide compound
+   above, which is 0-3-0 against their 0-2-0 at every viewport. */
+.phase.phase--wide .phase__head,
+.phase.phase--wide .phase__prose,
+.phase.phase--wide .phase__plate,
+.phase.phase--wide .hunt__sheet,
+.phase.phase--wide .assay { grid-column: 1; grid-row: auto; }
+
+/* THE GHOST GETS ITS OWN ROOM INSTEAD OF SITTING ON THE PROSE.
+   --t-ghost is 256px at 1280 and 368px from 1920 up; at top:-0.30em with
+   line-height 1 the numeral's baseline lands 0.5465em below the phase's
+   top edge — 201px at 1920 — while the head band is only 105px tall. The
+   lead was therefore starting inside the "03". Rather than shrink a
+   numeral the other four phases share, the masthead is given the height
+   the numeral actually occupies. Measured glyph-bottom to lead-top after
+   this: +26 at 390, +16 at 768, +18 at 1024, +19 at 1280, +21 at 1440,
+   +24 at 1600, +30 at 1920, +33 at 2560. The band is not empty — the
+   ghost is what is in it. */
+.phase--wide .phase__head { min-height: calc(var(--t-ghost) * 0.46); }
+
+/* ---- PROSE. THE MEASURE IS EM-RELATIVE. --t-lead runs 18.4 -> 31.2px
+   across the range while the content column runs 660 -> 1346, so any px
+   or ch cap is a different cpl at every clamp step — which is exactly how
+   this lead ended up measuring 40cpl at 2560. 30em is ~67cpl at 18.4px
+   and ~67cpl at 31.2px. */
+.phase--wide .phase__prose { max-width: none; gap: 1.15rem; }
+.phase--wide .phase__prose .lead { max-width: 30em; }
+
+/* ---- THE SPECIMEN PLATE.
+   THE CROP IS BOXED IN FROM BOTH SIDES, so it is stated once as a window
+   in source pixels and every breakpoint is checked against it:
+     · the baked label's ink ends at y 342 of the source's 656, so the
+       window must START below 342 — 350 with margin;
+     · the PNG is RGBA with a ~22px rounded corner burned into it (alpha 0
+       at y 656, opaque again by y 634), so the window must END above 634
+       or the plate grows two transparent nicks at its bottom corners —
+       12px at 1280, 23px at 2560. 630 with margin.
+   That leaves a 280px-tall window in a 656px source, which is why this
+   plate is a BAND at every width: with cover and object-position at
+   50% 92.5%, window = top (1 - A/1.264) x 0.925 x 656, height 519A.
+     A = 0.52 -> 357..627     A = 0.50 -> 367..626
+     A = 0.386 (2560, capped) -> 421..622
+   No scrim: nothing is left to scrim, and the note above the markup shows
+   a scrim could not have fixed it anyway. */
+/* The width is stated, not inferred. `aspect-ratio` runs BOTH ways: with
+   width:auto in a grid area, a max-height that bites makes the ratio
+   re-derive the WIDTH from the capped height — measured at 2560 that
+   silently pulled the bled plate from 1740px back to 1344 and cancelled
+   the bleed. A definite width makes the ratio one-directional again. */
+.phase--wide .phase__plate {
+  aspect-ratio: 25 / 13;                      /* A = 0.52 */
+  width: calc(100% + var(--hunt-bleed));
+}
+.phase--wide .phase__plate img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 92.5%;
+}
+
+/* ---- THE RECORD ---- */
+.hunt__sheet { display: block; }
+/* The sentence that announces the structure, set as the sheet's opening
+   line rather than as the tail of the prose. --deep, 12.60:1. */
+.hunt__bridge {
+  color: var(--deep); max-width: 31em;
+  font-size: clamp(1.0625rem, 0.86vw, 1.375rem); line-height: 1.45;
+  padding-bottom: clamp(1.1rem, 1.6vw, 1.9rem);
+}
+.assay { display: block; border-bottom: 1px solid var(--hunt-rule); }
+.assay__stage { display: block; }
+
+/* THE STAGE LINE. One line of source, three voices, one baseline.
+   Inline elements only, so the baselines align without flex and the
+   spaces inside the source string do the spacing they were written to
+   do. Nothing here is a second typeface — this page has one family and
+   Arial is what it renders as.
+
+   It is an <h4> now, not a <p>: it nests under this phase's <h3> and
+   gives a screen-reader user a way to jump to Stage 02 instead of
+   arrowing through Stage 01's paragraphs. h4 is outside the shared
+   reset's margin list and defaults to bold, so both are cleared here —
+   weight is opted INTO by the fragments that want it. */
 .assay__step {
-  font-size: var(--t-eyebrow) !important; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.18em; color: var(--deep) !important;
+  display: block; margin: 0; line-height: 1; font-weight: 400;
+  border-top: 2px solid var(--deep);
+  padding-block: clamp(1.1rem, 1.5vw, 1.7rem) clamp(0.85rem, 1.2vw, 1.35rem);
+}
+.assay__word {
+  font-size: var(--t-eyebrow); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.2em; color: var(--deep);
+}
+.assay__no {
+  font-size: clamp(2rem, 2.6vw, 3.25rem); font-weight: 700;
+  letter-spacing: -0.04em; color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+.assay__em {
+  font-size: clamp(1.2rem, 1.3vw, 1.75rem); color: var(--muted);
+  padding-inline: 0.1em;
+}
+.assay__name {
+  font-size: clamp(1.35rem, 1.45vw, 1.95rem); font-weight: 400;
+  letter-spacing: -0.015em; color: var(--deep);
+}
+
+/* THE ENTRIES. --dark, not --muted: "one weight of Arial and grey body
+   text" was half the last verdict, and this is the paragraph the whole
+   phase exists to deliver. The only --muted left in this phase is the em
+   dash inside the stage line; nothing that has to be read is grey. */
+.assay__runs > p {
+  position: relative; color: var(--dark);
+  border-top: 1px solid var(--hunt-rule);
+  /* Grows only past ~1980px, which is the only place the sheet has more
+     width than a 17px line can honestly use. 17px to 22px; the em-based
+     measure keeps cpl flat at ~69 through the change. */
+  font-size: clamp(1.0625rem, 0.86vw, 1.375rem); line-height: 1.5;
+  padding-block: clamp(0.9rem, 1.15vw, 1.25rem) clamp(1rem, 1.3vw, 1.45rem);
+  padding-left: var(--hunt-indent);
+  padding-right: max(0px, calc(100% - var(--hunt-measure) - var(--hunt-indent)));
+}
+/* The tick. Printed, not animated — the record has ONE arrival (the whole
+   <ol>), and five more drawn lines would be five more things fading in on
+   a page whose standing note is that it animates too much. */
+.assay__runs > p::before {
+  content: ""; position: absolute; left: 0;
+  top: calc(clamp(0.9rem, 1.15vw, 1.25rem) + 0.62em);
+  width: clamp(1rem, 1.35vw, 1.5rem); height: 2px; background: var(--green);
+}
+
+/* ---- PIECE 06 — RESPONSIVE. Every rule below is inside this piece's own
+   selectors; nothing here can reach another phase. ---- */
+@media (min-width: 1024px) {
+  .phase.phase--wide { gap: clamp(2.25rem, 3.2vw, 4rem); }
+}
+/* FROM 1440 THE PLATE BREAKS THE SHELL TO THE RIGHT.
+   The measured complaint was that at 2560 this phase leaves the spine
+   floating in dead cream: the content column is 1346 of 2560 and the
+   composition never touches an edge. The left band is PIECE 03's spine
+   column and not mine to fill, but the right band is nobody's — 275px at
+   1920, 394px at 2560 — and the one element on this page that gets better
+   with width is the photograph. So it runs off the page. The distance is
+   derived, not guessed: half the difference between the viewport and the
+   shell, plus the gutter the shell already pays. */
+@media (min-width: 1440px) {
+  .phase.phase--wide {
+    --hunt-bleed: calc((100vw - min(100vw, var(--shell))) / 2 + var(--gutter));
+  }
+  /* A = 0.50, then capped: at 2560 the bled plate is 1740 wide and 2:1
+     would make it 870 tall, most of a screen. max-height only ever crops
+     FURTHER down from a bottom-pinned window, so the label invariant
+     survives the cap (window top moves 396 -> 421 at 2560). */
+  .phase--wide .phase__plate { aspect-ratio: 2 / 1; max-height: 42rem; }
+}
+
+/* ABOVE 2000 THE SHEET GETS ITS LEFT MARGIN.
+   A single text column cannot honestly fill 1346px — 75cpl at 22px is
+   672px and that is the ceiling, so the rest is going to be air whatever
+   happens. The question is only whether the air sits at the END of every
+   rule (ink across 54% of the column, everything pinned left, which is
+   what the round-3 note about empty cream was looking at) or becomes the
+   MARGIN a record sheet is supposed to have. So the stage line moves into
+   a 27rem rail and the entries start after it: measured at 2560 the ink
+   now spans 85% of the column instead of 54%, the phase gets 204px
+   shorter, and the entry measure is unchanged at 69cpl (63 at 2000).
+   The 2px rule moves up to the stage so it still
+   crosses both, which is what makes the rail read as part of the sheet
+   rather than as a second column. 27rem is chosen, not rounded: the stage
+   line has to stay on ONE line at 2560, where it sets 399px wide — at
+   24rem "Purity & Safety" breaks after the ampersand. */
+@media (min-width: 2000px) {
+  .assay__stage {
+    display: grid; grid-template-columns: minmax(0, 27rem) minmax(0, 1fr);
+    column-gap: clamp(2rem, 2.2vw, 3.25rem);
+    border-top: 2px solid var(--deep);
+  }
+  .assay__step { grid-column: 1; border-top: 0; }
+  .assay__runs { grid-column: 2; }
+  /* the stage's own 2px rule already opens the first entry; without this
+     the entries column carries 2px + 1px stacked and the rail carries 2px */
+  .assay__runs > p:first-child { border-top: 0; }
 }
 
 /* ============================================================
