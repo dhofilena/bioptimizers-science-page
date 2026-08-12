@@ -412,7 +412,11 @@ section { position: relative; padding-block: var(--pad-y); }
 }
 .hero__grid {
   width: 100%; max-width: var(--shell); margin-inline: auto;
-  padding: clamp(1.25rem, 5svh, 3.75rem) var(--gutter) 0;
+  /* Hoisted to a token because the desktop plate has to cancel it exactly:
+     a panel that starts below the grid's top padding leaves a cream strip
+     above it and stops reading as an edge of the page. */
+  --hero-pad-top: clamp(1.25rem, 5svh, 3.75rem);
+  padding: var(--hero-pad-top) var(--gutter) 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto auto 1fr;
@@ -519,26 +523,61 @@ section { position: relative; padding-block: var(--pad-y); }
    min-width:1024px block at the foot of this file is being edited by other
    pieces in parallel and must not carry hero rules. */
 @media (min-width: 1024px) {
+  /* WAVE 5 — THE PLATE STOPS BEING A CORNER SCRAP.
+     It used to sit in row 3 beside .hero__say, which made its height
+     whatever the display type left over. That was fine at the heights this
+     block was originally measured against (it assumed 1080 of viewport at
+     1920 and 1440 at 2560 — screen heights, not browser heights). On a real
+     1920x900 window the title alone took 651px, the hero ran 1012px inside a
+     900px viewport, and the plate collapsed onto its own 15rem floor: a
+     730x240 letterbox of a near-square photograph, welded to the corner and
+     half of it below the fold. That is the "floating in the lower right".
+
+     The plate now spans all three rows, so its height is the hero's height
+     rather than the type's remainder, and it is a full-height panel with a
+     hard right edge. Its width is the thing that is chosen, not its height. */
   .hero__grid {
-    grid-template-columns: minmax(0, 1fr) clamp(18rem, 34vw, 33rem);
-    grid-template-rows: auto auto 1fr;
+    grid-template-columns: minmax(0, 1fr) clamp(19rem, 27vw, 31rem);
+    /* The two 1fr rows are empty on purpose. Against a photograph that now
+       runs the full height of the page, a type group pinned to the top left
+       reads as top-heavy with a hole under it — at 1366 that hole measured
+       360px. Equal flexible rows above and below centre the group optically
+       against the panel and split the air in two. They collapse to nothing
+       on a short viewport, where the padding below is the floor. */
+    grid-template-rows: 1fr auto auto auto 1fr;
     grid-template-areas:
-      "title title"
-      "rule  rule"
-      "say   plate";
-    column-gap: clamp(2rem, 5vw, 5rem);
+      ".     plate"
+      "title plate"
+      "rule  plate"
+      "say   plate"
+      ".     plate";
+    column-gap: clamp(2rem, 4.5vw, 4.5rem);
     row-gap: clamp(1.75rem, 4.2vh, 3.5rem);
   }
+  /* The type now lives in a COLUMN, not the full shell, so its ceiling is
+     set by that column and not by the viewport. "Breakthrough" renders
+     6.14em wide, so the column has to hold 6.14 x this value; the ramp
+     below is the widest that still does at every width from 1024 up. */
+  .hero { --t-display: clamp(2.7rem, min(8.6vw, 4.2rem + 4.4vw), 13.6rem); }
   .hero__say { padding-bottom: clamp(2rem, 6vh, 4.5rem); }
-  /* height:100% fills the row exactly, so the plate always bleeds into the
-     bottom-right corner; max-height stops a 1440-tall viewport from asking
-     a 528px-tall source to be 900px tall. Measured worst case is 1.14x. */
+  /* Cancels the grid's top padding so the panel runs to the very top edge of
+     the page, and bleeds to the right edge the same way the rule does. Full
+     height now, so no max-height: the source is large enough to fill it. */
   .hero__plate {
+    grid-row: 1 / -1; align-self: stretch;
     margin-inline: 0; margin-right: calc(var(--hero-bleed) * -1);
-    max-height: 37.5rem;
+    margin-top: calc(var(--hero-pad-top) * -1);
+    height: auto; max-height: none;
   }
-  .hero__plate img { object-position: 52% 36%; }
-  .hero__plate::after { background: linear-gradient(90deg, var(--cream) 0%, rgba(248, 247, 242, 0) 28%); }
+  /* The rule's bleed was written when the plate sat in the bottom corner and
+     the hairline had to reach the page edge past it. The plate is now a
+     full-height panel in that column, so the bleed only buries the rule
+     underneath it — and the panel's inboard edge dissolves, so a buried rule
+     can show faintly through it. The rule now stops at the panel. */
+  .hero__rule { margin-right: 0; }
+  .hero__plate img { object-position: 58% 28%; }
+  /* The edge facing the type dissolves; the outboard edges stay hard. */
+  .hero__plate::after { background: linear-gradient(90deg, var(--cream) 0%, rgba(248, 247, 242, 0) 30%); }
 }
 
 /* PIECE 01 — the 1600px override that used to live here has been removed. Its
