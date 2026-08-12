@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="180">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>Build Progress — Breakthrough Science</title>
 <style>
 :root{--green:#32951c;--deep:#103608;--deep2:#0c2706;--vital:#a7fe75;--dark:#382e2c;
@@ -118,5 +119,12 @@ code{background:#fff;padding:2px 7px;font-size:13px;border:1px solid var(--line)
     Full detail in <code>BACKLOG.md</code> (14 items, outside <code>proj/</code> so it never ships)
   </p>
 </div>
+<script>
+  // Self-refresh that actually refreshes. <meta refresh> serves from cache;
+  // a fresh query string cannot be served from cache.
+  setTimeout(function () {
+    location.replace(location.pathname + '?t=' + Date.now());
+  }, 180000);
+</script>
 </body>
 </html>
